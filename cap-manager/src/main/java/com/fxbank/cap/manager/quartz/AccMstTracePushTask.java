@@ -52,6 +52,7 @@ import com.fxbank.cip.base.util.JsonUtil;
 import com.fxbank.cip.pub.service.IPublicService;
 import com.tienon.util.FileFieldConv;
 
+import net.minidev.json.JSONUtil;
 import redis.clients.jedis.Jedis;
 
 @Configuration
@@ -131,6 +132,7 @@ public class AccMstTracePushTask {
 			}
 			String refMax = esb_rep_30015700901.getRepBody().getQueryArray().get(0).getRefMax();
 
+			myLog.info(logger, "esb_rep_30015700901  = "+JsonUtil.toJson(esb_rep_30015700901));
 			// 3、判断核心返回当前最大流水与上送流水是否相同，如相同，则无数据，不取文件
 			if (refMax.equals(reference)) {
 				myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]无流水返回[" + reference + "]");
@@ -143,16 +145,18 @@ public class AccMstTracePushTask {
 					+ String.format("%06d", sysTime) + String.format("%08d", sysTraceno) + ".act";
 			String localFile = localPath + File.separator + fileName;
 			loadTraceLogFile(myLog, remoteFile, localFile);
+			
+			//将成功记录插入数据库中
+			String buffer = InsertPafAccMst(myLog,fileName,centerNo,departCode,String.format("%08d", sysDate)
+					+ String.format("%06d", sysTime),localFile,pafAcNoInfo);
 
 			// 5、推送从核心获取的文件，推送至公积金系统
-			CLI_REP_DATA pack = pushTraceLogFile(myLog, localFile, fileName, sysDate, sysTime, sysTraceno);
+			CLI_REP_DATA pack = pushTraceLogFile(myLog, buffer, fileName, sysDate, sysTime, sysTraceno);
 			if (pack.getHead().get("TxStatus").equals("0") && pack.getHead().get("RtnCode").equals("00000")) {
 				// 6、成功，则更新最大流水号
 				myLog.info(logger, "发送账户签约通知成功[" + pafAcNoInfo.getAcNo() + "][" + refMax + "]");
 				setMaxRef(myLog, centerNo, pafAcNoInfo.getAcNo(), refMax);
-				//将成功记录插入数据库中
-				InsertPafAccMst(myLog,fileName,centerNo,departCode,String.format("%08d", sysDate)
-						+ String.format("%06d", sysTime),localFile);
+				
 			} else {
 				// 7、失败，不更新
 				myLog.info(logger, "发送账户签约通知失败[" + pafAcNoInfo.getAcNo() + "]");
@@ -168,9 +172,11 @@ public class AccMstTracePushTask {
 	 * @param departCode 部门编码
 	 * @param reportTime 上报时间(YYYYMMDDHHMMSS)
 	 * @param localFile 本地文件路径
+	 * @param pafAcNoInfo 
 	 */
-	private void InsertPafAccMst(MyLog myLog,String fileName, String centerNo, String departCode, String reportTime, String localFile) {
+	private String InsertPafAccMst(MyLog myLog,String fileName, String centerNo, String departCode, String reportTime, String localFile, PafAcNoInfo pafAcNoInfo) {
 		BufferedReader br = null;
+		StringBuffer buffer = new StringBuffer();
 		myLog.info(logger, "账户变动信息入库开始");
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(localFile)),"UTF-8"));
@@ -194,15 +200,23 @@ public class AccMstTracePushTask {
                 pafAccMstReport.setTranCode(array[3]); //交易代码
                 pafAccMstReport.setOthAcctNo(array[4]); //交易对手账号
                 pafAccMstReport.setOthAcctName(array[5]); //交易对手户名
-                pafAccMstReport.setTranAmt((array[6]==null||"".equals(array[6]))?new BigDecimal("0.00"): new BigDecimal(array[6])); //金额
+                BigDecimal amt = (array[6]==null||"".equals(array[6])?new BigDecimal("0.00"):new BigDecimal(array[6]));
+                pafAccMstReport.setTranAmt(amt); //金额
                 pafAccMstReport.setTranDate(array[7]); //交易日期
                 pafAccMstReport.setTranTime(array[8]); //交易时间
-                pafAccMstReport.setAvailableAmt((array[9]==null||"".equals(array[9]))?new BigDecimal("0.00"): new BigDecimal(array[9])); //可用金额
+                BigDecimal availableAmt=((array[9]==null||"".equals(array[9]))?new BigDecimal("0.00"): new BigDecimal(array[9]));
+                BigDecimal balance = (array[14]==null||"".equals(array[14]))?new BigDecimal("0.00"): new BigDecimal(array[14]);
+                if("2".equals(pafAcNoInfo.getAcType())) {
+                	String sumAmt = pafAccMstService.getSumAmt(pafAcNoInfo.getAcNo());
+                	availableAmt = amt.add(new BigDecimal((sumAmt==null||"".equals(sumAmt)?"0.00":sumAmt)));
+                	balance = amt.add(new BigDecimal((sumAmt==null||"".equals(sumAmt)?"0.00":sumAmt)));
+                }
+                pafAccMstReport.setAvailableAmt(availableAmt); //可用金额
                 pafAccMstReport.setBranch(array[10]); //开户机构号
                 pafAccMstReport.setRemark(array[11]); //备注
                 pafAccMstReport.setCcy(array[12]); //币别
                 pafAccMstReport.setAmtType(array[13]); //钞汇鉴别
-                pafAccMstReport.setBalance((array[14]==null||"".equals(array[14]))?new BigDecimal("0.00"): new BigDecimal(array[14])); //余额
+                pafAccMstReport.setBalance(balance); //余额
                 pafAccMstReport.setOdtBalance((array[15]==null||"".equals(array[15]))?new BigDecimal("0.00"): new BigDecimal(array[15])); //可透支余额
                 pafAccMstReport.setDocType(array[16]); //凭证种类
                 pafAccMstReport.setVoucherNo(array[17]); //凭证号码
@@ -213,8 +227,34 @@ public class AccMstTracePushTask {
                 pafAccMstReport.setVolumeNum(array[22]); //册号
 
                 pafAccMstService.save(pafAccMstReport);
+                
+                buffer.append(array[0]).append("|");
+                buffer.append(array[1]).append("|");
+                buffer.append(array[2]).append("|");
+                buffer.append(array[3]).append("|");
+                buffer.append(array[4]).append("|");
+                buffer.append(array[5]).append("|");
+                buffer.append(array[6]).append("|");
+                buffer.append(array[7]).append("|");
+                buffer.append(array[8]).append("|");
+                buffer.append(availableAmt.toString()).append("|");
+                buffer.append(array[10]).append("|");
+                buffer.append(array[11]).append("|");
+                buffer.append(array[12]).append("|");
+                buffer.append(array[13]).append("|");
+                buffer.append(balance.toString()).append("|");
+                buffer.append(array[15]).append("|");
+                buffer.append(array[16]).append("|");
+                buffer.append(array[17]).append("|");
+                buffer.append(array[18]).append("|");
+                buffer.append(array[19]).append("|");
+                buffer.append(array[20]).append("|");
+                buffer.append(array[21]).append("|");
+                buffer.append(array[21]).append("|");
+                buffer.append("\n");
 			}
 
+			return buffer.toString();
 		} catch (Exception e) {
             myLog.error(logger, "文件【"+localFile+"】插入失败", e);
             throw new RuntimeException("文件【"+localFile+"】插入失败");
@@ -262,13 +302,14 @@ public class AccMstTracePushTask {
 	}
 
 	/**
+	 * @param pafAcNoInfo 
 	 * @Title: pushTraceLogFile @Description: 推送账户变更文件至公积金系统 @param @param
 	 * myLog @param @param localFile @param @param fileName @param @param
 	 * sysDate @param @param sysTime @param @param
 	 * sysTraceno @param @return @param @throws PafTradeExecuteException
 	 * 设定文件 @return CLI_REP_DATA 返回类型 @throws
 	 */
-	private CLI_REP_DATA pushTraceLogFile(MyLog myLog, String localFile, String fileName, Integer sysDate,
+	private CLI_REP_DATA pushTraceLogFile(MyLog myLog, String fileBuf, String fileName, Integer sysDate,
 			Integer sysTime, Integer sysTraceno) throws PafTradeExecuteException {
 		CLI_REQ_BDC reqData = new CLI_REQ_BDC(myLog, sysDate, sysTime, sysTraceno);
 		FIELDS_LIST_OUTER outer = new FIELDS_LIST_OUTER("FILE_LIST");
@@ -278,7 +319,7 @@ public class AccMstTracePushTask {
 		inner0.getField().add(new FIELD("NAME", fileName));
 		String bcdString = null;
 		try {
-			String fileBuf = FileUtil.readToString(localFile, "UTF-8");
+//			String fileBuf = FileUtil.readToString(localFile, "UTF-8");
 			myLog.info(logger, "发送的账户信息[" + fileBuf + "]");
 			bcdString = FileFieldConv.fieldASCtoBCD(fileBuf, PAF.ENCODING);
 		} catch (IOException e) {
