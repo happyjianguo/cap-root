@@ -94,5 +94,9 @@
     <select id="selectMaxId" resultType="String" >
     select max(id) from paf_acct_mst_report
   </select>
+  
+  <select id="selectSumAmt" resultType="String" >
+    select sum(tran_amt) from paf_acct_mst_report where acct_no = #{acNo}
+  </select>
 
 </mapper>
