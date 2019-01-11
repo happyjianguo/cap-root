@@ -149,14 +149,13 @@ public class AccMstTracePushTask {
 			//将成功记录插入数据库中
 			String buffer = InsertPafAccMst(myLog,fileName,centerNo,departCode,String.format("%08d", sysDate)
 					+ String.format("%06d", sysTime),localFile,pafAcNoInfo);
-
+			setMaxRef(myLog, centerNo, pafAcNoInfo.getAcNo(), refMax);
+			
 			// 5、推送从核心获取的文件，推送至公积金系统
 			CLI_REP_DATA pack = pushTraceLogFile(myLog, buffer, fileName, sysDate, sysTime, sysTraceno);
 			if (pack.getHead().get("TxStatus").equals("0") && pack.getHead().get("RtnCode").equals("00000")) {
 				// 6、成功，则更新最大流水号
 				myLog.info(logger, "发送账户签约通知成功[" + pafAcNoInfo.getAcNo() + "][" + refMax + "]");
-				setMaxRef(myLog, centerNo, pafAcNoInfo.getAcNo(), refMax);
-				
 			} else {
 				// 7、失败，不更新
 				myLog.info(logger, "发送账户签约通知失败[" + pafAcNoInfo.getAcNo() + "]");
