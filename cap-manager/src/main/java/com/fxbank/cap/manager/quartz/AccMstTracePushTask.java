@@ -190,6 +190,7 @@ public class AccMstTracePushTask {
 	        String line;
 	        rf.seek(readIndex);// 设置偏移量为文件末尾
 	        int c = -1;
+	        int num=0;
 	        while (readIndex > start) {
 	        	c = rf.read();
 	            String lineTxt = null;
@@ -216,12 +217,13 @@ public class AccMstTracePushTask {
 	                    continue;
 	                }
 
+	                num=num+1;
 	                PafAccMstReport pafAccMstReport = new PafAccMstReport();
 	                pafAccMstReport.setFileName(fileName);
 	                pafAccMstReport.setCenterNo(centerNo);
 	                pafAccMstReport.setDepartCode(departCode);
 	                pafAccMstReport.setReportTime(reportTime);
-	                pafAccMstReport.setNum(array[0]);  //序号
+	                pafAccMstReport.setNum(num+"");  //序号
 	                pafAccMstReport.setAcctNo(array[1]);  //帐号
 	                pafAccMstReport.setReference(array[2]); //银行主机流水号
 	                pafAccMstReport.setTranCode(array[3]); //交易代码
@@ -255,7 +257,7 @@ public class AccMstTracePushTask {
 
 	                pafAccMstService.save(pafAccMstReport);
 	                
-	                buffer.append(array[0]).append("|");
+	                buffer.append(num).append("|");
 	                buffer.append(array[1]).append("|");
 	                buffer.append(array[2]).append("|");
 	                buffer.append(array[3]).append("|");
