@@ -208,77 +208,78 @@ public class AccMstTracePushTask {
 	            	lineTxt = rf.readLine();
 	            	lineTxt = new String(lineTxt.getBytes("ISO-8859-1"), "UTF-8");
 	            }
-	        	
-				lineTxt += "*|";
-				String[] array = lineTxt.split("\\|");
-                if(array.length<24){
-                    myLog.info(logger,"文件【"+localFile+"】内容缺失");
-                    continue;
-                }
+	            if (lineTxt != null) {
+	            	lineTxt += "*|";
+					String[] array = lineTxt.split("\\|");
+	                if(array.length<24){
+	                    myLog.info(logger,"文件【"+localFile+"】内容缺失");
+	                    continue;
+	                }
 
-                PafAccMstReport pafAccMstReport = new PafAccMstReport();
-                pafAccMstReport.setFileName(fileName);
-                pafAccMstReport.setCenterNo(centerNo);
-                pafAccMstReport.setDepartCode(departCode);
-                pafAccMstReport.setReportTime(reportTime);
-                pafAccMstReport.setNum(array[0]);  //序号
-                pafAccMstReport.setAcctNo(array[1]);  //帐号
-                pafAccMstReport.setReference(array[2]); //银行主机流水号
-                pafAccMstReport.setTranCode(array[3]); //交易代码
-                pafAccMstReport.setOthAcctNo(array[4]); //交易对手账号
-                pafAccMstReport.setOthAcctName(array[5]); //交易对手户名
-                BigDecimal amt = (array[6]==null||"".equals(array[6])?new BigDecimal("0.00"):new BigDecimal(array[6]));
-                pafAccMstReport.setTranAmt(amt); //金额
-                pafAccMstReport.setTranDate(array[7]); //交易日期
-                pafAccMstReport.setTranTime(array[8]); //交易时间
-                BigDecimal availableAmt=((array[9]==null||"".equals(array[9]))?new BigDecimal("0.00"): new BigDecimal(array[9]));
-                BigDecimal balance = (array[14]==null||"".equals(array[14]))?new BigDecimal("0.00"): new BigDecimal(array[14]);
-                if("2".equals(pafAcNoInfo.getAcType())) {
-                	String sumAmt = pafAccMstService.getSumAmt(pafAcNoInfo.getAcNo());
-                	availableAmt = amt.add(new BigDecimal((sumAmt==null||"".equals(sumAmt)?"0.00":sumAmt)));
-                	balance = amt.add(new BigDecimal((sumAmt==null||"".equals(sumAmt)?"0.00":sumAmt)));
-                }
-                pafAccMstReport.setAvailableAmt(availableAmt); //可用金额
-                pafAccMstReport.setBranch(array[10]); //开户机构号
-                pafAccMstReport.setRemark(array[11]); //备注
-                pafAccMstReport.setCcy(array[12]); //币别
-                pafAccMstReport.setAmtType(array[13]); //钞汇鉴别
-                pafAccMstReport.setBalance(balance); //余额
-                pafAccMstReport.setOdtBalance((array[15]==null||"".equals(array[15]))?new BigDecimal("0.00"): new BigDecimal(array[15])); //可透支余额
-                pafAccMstReport.setDocType(array[16]); //凭证种类
-                pafAccMstReport.setVoucherNo(array[17]); //凭证号码
-                pafAccMstReport.setOthBranch(array[18]); //交易对手行号
-                pafAccMstReport.setNarrative(array[19]); //摘要
-                pafAccMstReport.setReversak(array[20]); //冲正标识
-                pafAccMstReport.setSerialNum(array[21]); //笔号
-                pafAccMstReport.setVolumeNum(array[22]); //册号
+	                PafAccMstReport pafAccMstReport = new PafAccMstReport();
+	                pafAccMstReport.setFileName(fileName);
+	                pafAccMstReport.setCenterNo(centerNo);
+	                pafAccMstReport.setDepartCode(departCode);
+	                pafAccMstReport.setReportTime(reportTime);
+	                pafAccMstReport.setNum(array[0]);  //序号
+	                pafAccMstReport.setAcctNo(array[1]);  //帐号
+	                pafAccMstReport.setReference(array[2]); //银行主机流水号
+	                pafAccMstReport.setTranCode(array[3]); //交易代码
+	                pafAccMstReport.setOthAcctNo(array[4]); //交易对手账号
+	                pafAccMstReport.setOthAcctName(array[5]); //交易对手户名
+	                BigDecimal amt = (array[6]==null||"".equals(array[6])?new BigDecimal("0.00"):new BigDecimal(array[6]));
+	                pafAccMstReport.setTranAmt(amt); //金额
+	                pafAccMstReport.setTranDate(array[7]); //交易日期
+	                pafAccMstReport.setTranTime(array[8]); //交易时间
+	                BigDecimal availableAmt=((array[9]==null||"".equals(array[9]))?new BigDecimal("0.00"): new BigDecimal(array[9]));
+	                BigDecimal balance = (array[14]==null||"".equals(array[14]))?new BigDecimal("0.00"): new BigDecimal(array[14]);
+	                if("2".equals(pafAcNoInfo.getAcType())) {
+	                	String sumAmt = pafAccMstService.getSumAmt(pafAcNoInfo.getAcNo());
+	                	availableAmt = amt.add(new BigDecimal((sumAmt==null||"".equals(sumAmt)?"0.00":sumAmt)));
+	                	balance = amt.add(new BigDecimal((sumAmt==null||"".equals(sumAmt)?"0.00":sumAmt)));
+	                }
+	                pafAccMstReport.setAvailableAmt(availableAmt); //可用金额
+	                pafAccMstReport.setBranch(array[10]); //开户机构号
+	                pafAccMstReport.setRemark(array[11]); //备注
+	                pafAccMstReport.setCcy(array[12]); //币别
+	                pafAccMstReport.setAmtType(array[13]); //钞汇鉴别
+	                pafAccMstReport.setBalance(balance); //余额
+	                pafAccMstReport.setOdtBalance((array[15]==null||"".equals(array[15]))?new BigDecimal("0.00"): new BigDecimal(array[15])); //可透支余额
+	                pafAccMstReport.setDocType(array[16]); //凭证种类
+	                pafAccMstReport.setVoucherNo(array[17]); //凭证号码
+	                pafAccMstReport.setOthBranch(array[18]); //交易对手行号
+	                pafAccMstReport.setNarrative(array[19]); //摘要
+	                pafAccMstReport.setReversak(array[20]); //冲正标识
+	                pafAccMstReport.setSerialNum(array[21]); //笔号
+	                pafAccMstReport.setVolumeNum(array[22]); //册号
 
-                pafAccMstService.save(pafAccMstReport);
-                
-                buffer.append(array[0]).append("|");
-                buffer.append(array[1]).append("|");
-                buffer.append(array[2]).append("|");
-                buffer.append(array[3]).append("|");
-                buffer.append(array[4]).append("|");
-                buffer.append(array[5]).append("|");
-                buffer.append(array[6]).append("|");
-                buffer.append(array[7]).append("|");
-                buffer.append(array[8]).append("|");
-                buffer.append(availableAmt.toString()).append("|");
-                buffer.append(array[10]).append("|");
-                buffer.append(array[11]).append("|");
-                buffer.append(array[12]).append("|");
-                buffer.append(array[13]).append("|");
-                buffer.append(balance.toString()).append("|");
-                buffer.append(array[15]).append("|");
-                buffer.append(array[16]).append("|");
-                buffer.append(array[17]).append("|");
-                buffer.append(array[18]).append("|");
-                buffer.append(array[19]).append("|");
-                buffer.append(array[20]).append("|");
-                buffer.append(array[21]).append("|");
-                buffer.append(array[21]).append("|");
-                buffer.append("\n");
+	                pafAccMstService.save(pafAccMstReport);
+	                
+	                buffer.append(array[0]).append("|");
+	                buffer.append(array[1]).append("|");
+	                buffer.append(array[2]).append("|");
+	                buffer.append(array[3]).append("|");
+	                buffer.append(array[4]).append("|");
+	                buffer.append(array[5]).append("|");
+	                buffer.append(array[6]).append("|");
+	                buffer.append(array[7]).append("|");
+	                buffer.append(array[8]).append("|");
+	                buffer.append(availableAmt.toString()).append("|");
+	                buffer.append(array[10]).append("|");
+	                buffer.append(array[11]).append("|");
+	                buffer.append(array[12]).append("|");
+	                buffer.append(array[13]).append("|");
+	                buffer.append(balance.toString()).append("|");
+	                buffer.append(array[15]).append("|");
+	                buffer.append(array[16]).append("|");
+	                buffer.append(array[17]).append("|");
+	                buffer.append(array[18]).append("|");
+	                buffer.append(array[19]).append("|");
+	                buffer.append(array[20]).append("|");
+	                buffer.append(array[21]).append("|");
+	                buffer.append(array[21]).append("|");
+	                buffer.append("\n");
+	            }
 			}
 
 			return buffer.toString();
