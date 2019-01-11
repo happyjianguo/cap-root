@@ -176,11 +176,39 @@ public class AccMstTracePushTask {
 	private String InsertPafAccMst(MyLog myLog,String fileName, String centerNo, String departCode, String reportTime, String localFile, PafAcNoInfo pafAcNoInfo) {
 		BufferedReader br = null;
 		StringBuffer buffer = new StringBuffer();
+		RandomAccessFile rf = null;
 		myLog.info(logger, "账户变动信息入库开始");
 		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(localFile)),"UTF-8"));
-			String lineTxt=null;
-			while ((lineTxt = br.readLine()) != null) {
+			rf = new RandomAccessFile(localFile, "r");
+	        long fileLength = rf.length();
+	        long start = rf.getFilePointer();// 返回此文件中的当前偏移量
+	        long readIndex = start + fileLength -1;
+	        
+//			br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(localFile)),"UTF-8"));
+//			String lineTxt=null;
+//			while ((lineTxt = br.readLine()) != null) {
+	        String line;
+	        rf.seek(readIndex);// 设置偏移量为文件末尾
+	        int c = -1;
+	        while (readIndex > start) {
+	        	c = rf.read();
+	            String lineTxt = null;
+	            if (c == '\n' || c == '\r') {
+	                line = rf.readLine();
+	                if (line != null) {
+	                	lineTxt = new String(line.getBytes("ISO-8859-1"), "UTF-8");
+	                } else {
+	                    System.out.println("read line : " + line);
+	                }
+	                readIndex--;
+	            }
+	            readIndex--;
+	            rf.seek(readIndex);
+	            if (readIndex == 0) {// 当文件指针退至文件开始处，输出第一行
+	            	lineTxt = rf.readLine();
+	            	lineTxt = new String(lineTxt.getBytes("ISO-8859-1"), "UTF-8");
+	            }
+	        	
 				lineTxt += "*|";
 				String[] array = lineTxt.split("\\|");
                 if(array.length<24){
