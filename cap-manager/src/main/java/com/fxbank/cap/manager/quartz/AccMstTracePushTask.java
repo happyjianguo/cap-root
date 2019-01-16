@@ -132,7 +132,6 @@ public class AccMstTracePushTask {
 			}
 			String refMax = esb_rep_30015700901.getRepBody().getQueryArray().get(0).getRefMax();
 
-			myLog.info(logger, "esb_rep_30015700901  = "+JsonUtil.toJson(esb_rep_30015700901));
 			// 3、判断核心返回当前最大流水与上送流水是否相同，如相同，则无数据，不取文件
 			if (refMax.equals(reference)) {
 				myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]无流水返回[" + reference + "]");
