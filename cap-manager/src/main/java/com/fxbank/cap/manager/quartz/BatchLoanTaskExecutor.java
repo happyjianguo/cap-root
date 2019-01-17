@@ -123,6 +123,7 @@ public class BatchLoanTaskExecutor implements Runnable {
 							//判断足额标志,0：足额1：非足额
 							String enghFlag = record.getEnghFlag();
 							ESB_REP_30011000101 esbRep_30011000101 = null;
+							/**
 							if("1".equals(enghFlag)) {
 							//非足额时，先查询可用余额
 								ESB_REP_30013000201 esbRep30013000201 = queryBalance(record);
@@ -136,12 +137,13 @@ public class BatchLoanTaskExecutor implements Runnable {
 								updModel.setSuAmt(suAmt);
 								batchLoanService.updateDetail(updModel);
 							}else {
+							**/
 								record.setSuAmt(record.getTxAmt());
 								updModel.setBatchNo(masterModel.getBatchNo());
 								updModel.setSeqNo(str);
 								updModel.setSuAmt(record.getTxAmt());
 								batchLoanService.updateDetail(updModel);
-							}
+							//}
 							try {
 								esbRep_30011000101 = innerCapCharge(record);
 							} catch (Exception e) {
@@ -243,6 +245,11 @@ public class BatchLoanTaskExecutor implements Runnable {
 		reqBody_30011000101.setSettlementDate(String.valueOf(masterModel.getSysDate()));
 		// 对账标识,Y-参与对账;N-不参与对账
 		reqBody_30011000101.setCollateFlag("Y");
+		//判断足额标志,0：足额1：非足额
+		//Y：非足额扣款
+		if("1".equals(record.getEnghFlag())) {
+			reqBody_30011000101.setFullPayFlag("Y");
+		}
 		ESB_REP_30011000101 esbRep_30011000101 = forwardToESBService.sendToESB(esbReq_30011000101, reqBody_30011000101,
 				ESB_REP_30011000101.class);
 		return esbRep_30011000101;
