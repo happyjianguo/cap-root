@@ -13,4 +13,5 @@ public interface PafAccMstReportMapper extends MyMapper<PafAccMstReport> {
     List getDepartCodeByParentId(String departId);
     List<PafAccMstReport> getFileListByCenterNo(PafAccMstReport data);
     String selectMaxId();
+	String selectSumAmt(String acNo);
 }

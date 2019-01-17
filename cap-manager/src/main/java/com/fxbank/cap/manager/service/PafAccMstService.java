@@ -73,4 +73,9 @@ public class PafAccMstService {
         pafAccMstReport.setId(Integer.parseInt(id)+1);
         mapper.insertSelective(pafAccMstReport);
     }
+
+
+	public String getSumAmt(String acNo) {
+		return mapper.selectSumAmt(acNo);
+	}
 }
