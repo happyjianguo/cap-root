@@ -101,8 +101,18 @@ public class ESB_REQ_30011000101 extends ESB_BASE {
 		private String trustedPayNo;//受托支付编号
 		@JSONField(name = "SPECIAL_PAY_NO")
 		private String specialPayNo;//特殊扣划流水
+		@JSONField(name = "FULL_PAY_FLAG")
+		private String fullPayFlag;//是否非足额扣款标志
 		public String getInternalAcct() {
 			return internalAcct;
+		}
+
+		public String getFullPayFlag() {
+			return fullPayFlag;
+		}
+
+		public void setFullPayFlag(String fullPayFlag) {
+			this.fullPayFlag = fullPayFlag;
 		}
 
 		public void setInternalAcct(String internalAcct) {
