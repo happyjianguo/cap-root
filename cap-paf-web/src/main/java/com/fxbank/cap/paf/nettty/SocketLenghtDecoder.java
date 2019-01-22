@@ -54,6 +54,8 @@ public class SocketLenghtDecoder extends ByteToMessageDecoder {
 			byte[] req = new byte[readLen];
 			ByteBuf buf = in.readBytes(readLen);
 			buf.readBytes(req);
+			//解决io.netty.util.ResourceLeakDetector - LEAK问题
+			buf.release();
 			logUtil.error(logger, new String(req, PAF.ENCODING));
 			return null;
 		}
@@ -62,6 +64,8 @@ public class SocketLenghtDecoder extends ByteToMessageDecoder {
 		ByteBuf headerBuf = in.readBytes(HEADERLENGTH);
 		byte[] headerBytes = new byte[HEADERLENGTH];
 		headerBuf.readBytes(headerBytes);
+		//解决io.netty.util.ResourceLeakDetector - LEAK问题
+		headerBuf.release();
 		String header = new String(headerBytes, PAF.ENCODING);
 		logUtil.info(logger, "接收到的报文头[" + header + "]");
 
@@ -101,6 +105,8 @@ public class SocketLenghtDecoder extends ByteToMessageDecoder {
 			int readLen = in.readableBytes() > 1024 ? 1024 : in.readableBytes();
 			ByteBuf buf = in.readBytes(readLen);
 			buf.readBytes(data,pos,readLen);
+			//解决io.netty.util.ResourceLeakDetector - LEAK问题
+			buf.release();
 			pos += readLen;
 		}
 
