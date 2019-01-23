@@ -127,8 +127,8 @@ public class BatchResultQryTrade implements TradeExecutionStrategy {
 			sendSeqNo = record.getSndSeqNo();
 			batchTotalNum = record.getTotalNum().toString();
 			batchTotalAmt = record.getTotalAmt().toString();
-			batchTotalSuccNum = record.getSuccNum().toString();
-			batchTotalSuccAmt = record.getSuccAmt().toString();
+			batchTotalSuccNum = null==record.getSuccNum()?"0":record.getSuccNum().toString();
+			batchTotalSuccAmt = null==record.getSuccAmt()?"0":record.getSuccAmt().toString();
 			remark = record.getRemark();
 			summary = record.getTxMsg();
 			txStatus = record.getTxStatus();
@@ -167,8 +167,8 @@ public class BatchResultQryTrade implements TradeExecutionStrategy {
 			sendSeqNo = record.getSndSeqNo();
 			batchTotalNum = record.getTotalNum().toString();
 			batchTotalAmt = record.getTotalAmt().toString();
-			batchTotalSuccNum = record.getSuccNum().toString();
-			batchTotalSuccAmt = record.getSuccAmt().toString();
+			batchTotalSuccNum = null==record.getSuccNum()?"0":record.getSuccNum().toString();
+			batchTotalSuccAmt = null==record.getSuccAmt()?"0":record.getSuccAmt().toString();
 			remark = record.getRemark();
 			summary = record.getTxMsg();
 			txStatus = record.getTxStatus();
