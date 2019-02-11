@@ -3,6 +3,7 @@ package com.fxbank.cap.paf.trade.paf;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Resource;
@@ -133,12 +134,20 @@ public class BatchCrdtTrade implements TradeExecutionStrategy {
 		//业务类型 仅是账务操作，不控制业务种类
 		String busType = reqDto.getBody().get(BUSTYPE).toString();
 		//如果利息有值抛出异常
-		String batchIntAmt = reqDto.getBody().get(BATCHINTAMT).toString();
-		if(!"".equals(batchIntAmt) ) {
-			PafTradeExecuteException e = new PafTradeExecuteException(
-					PafTradeExecuteException.PAF_E_10016);
-			myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
-			throw e;
+		String batchIntAmt = null == reqDto.getBody().get(BATCHINTAMT)?"0":reqDto.getBody().get(BATCHINTAMT).toString();
+		try{
+		BigDecimal intAmtNum = new BigDecimal(batchIntAmt);
+			if(intAmtNum.compareTo(new BigDecimal("0"))>0) {
+				PafTradeExecuteException e1 = new PafTradeExecuteException( PafTradeExecuteException.PAF_E_10016);
+				myLog.error(logger, e1.getRspCode() + " | " + e1.getRspMsg()); 
+				throw e1;
+		} 
+		}catch(Exception e) {
+			if(batchIntAmt.trim().length()>0) {
+				PafTradeExecuteException e1 = new PafTradeExecuteException( PafTradeExecuteException.PAF_E_10024);
+				myLog.error(logger, e1.getRspCode() + " | " + e1.getRspMsg()); 
+				throw e1;
+			}
 		}
 		//接收文件
 		String batchNo = rcvBatchCrdtFile(reqDto);
@@ -223,7 +232,7 @@ public class BatchCrdtTrade implements TradeExecutionStrategy {
 		record.setDe_intacctname(bodyMap.get(DEINTACCTNAME).toString());
 		record.setDe_intacctclass(bodyMap.get(DEINTACCTCLASS).toString());
 		record.setDe_intcracct(bodyMap.get(DEINTCRACCT).toString());
-		record.setInt_amt(bodyMap.get(BATCHINTAMT).toString());
+		record.setInt_amt(null==bodyMap.get(BATCHINTAMT)?"0":bodyMap.get(BATCHINTAMT).toString());
 		record.setBank_accno(bodyMap.get(BANKACCTNO).toString());
 		record.setTotal_num(bodyMap.get(BATCHTOTALNUM).toString());
 		record.setTotal_amt(bodyMap.get(BATCHTOTALAMT).toString());
