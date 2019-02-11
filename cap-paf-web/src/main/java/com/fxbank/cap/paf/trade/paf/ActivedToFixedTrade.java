@@ -251,9 +251,9 @@ public class ActivedToFixedTrade implements TradeExecutionStrategy {
 		int1.setIntClass("WYINT");
 		int2.setIntClass("PDUE");
 		//唯一识别码
-		String IDCode = bodyMap.get(IDCODE).toString();
+		String IDCode = null==bodyMap.get(IDCODE)?"":bodyMap.get(IDCODE).toString();
 		List<ESB_REQ_30012000102.Int> intList = new ArrayList<ESB_REQ_30012000102.Int>();
-		String interestRate = bodyMap.get(INTERESTRATE).toString();
+		String interestRate = null==bodyMap.get(INTERESTRATE)?"":bodyMap.get(INTERESTRATE).toString();
 		if(!"".equals(interestRate)) {
 			int0.setAcctFixedRate(interestRate);
 			int0.setRealRate(interestRate);
@@ -268,15 +268,15 @@ public class ActivedToFixedTrade implements TradeExecutionStrategy {
 		String int1_realRate = null;
 		String int2_acctFixedRate = null;
 		String int2_realRate = null;
-		 try(Jedis jedis = myJedis.connect()){
-			 int0_acctFixedRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_INT");
-			 int0_realRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_INT");
-			 int1_acctFixedRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_WYINT");
-			 int1_realRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_WYINT");
-			 int2_acctFixedRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_PDUE");
-			 int2_realRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_PDUE");
-	        }
 		if(!"".equals(IDCode)) {
+			try(Jedis jedis = myJedis.connect()){
+				 int0_acctFixedRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_INT");
+				 int0_realRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_INT");
+				 int1_acctFixedRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_WYINT");
+				 int1_realRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_WYINT");
+				 int2_acctFixedRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_PDUE");
+				 int2_realRate = jedis.get(BRTEL_PREFIX+txUnitNo+"_"+IDCode+"_PDUE");
+		        }
 			int0.setAcctFixedRate(int0_acctFixedRate);
 			int0.setRealRate(int0_realRate);
 			int1.setAcctFixedRate(int1_acctFixedRate);

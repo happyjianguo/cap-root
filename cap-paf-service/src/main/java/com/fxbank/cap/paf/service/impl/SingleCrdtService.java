@@ -53,7 +53,7 @@ public class SingleCrdtService implements ISingleCrdtService{
 		pafSingleCrdt.setDeIntacctname(record.getDe_intacctname());//'付息户户名 ',
 		pafSingleCrdt.setDeIntacctclass(record.getDe_intacctclass());//'付息户类别:1、对私；2、对公',
 		pafSingleCrdt.setDeIntcracct(record.getDe_intcracct());//'利息收方账号',
-		pafSingleCrdt.setIntAmt(new BigDecimal("".equals(record.getInt_amt())?"0":record.getInt_amt()));//'利息发生额',
+		pafSingleCrdt.setIntAmt(new BigDecimal(record.getInt_amt().trim().length()==0?"0":record.getInt_amt()));//'利息发生额',
 		pafSingleCrdt.setCrAcctno(record.getCr_acctno());//'收方账号',
 		pafSingleCrdt.setCrAcctname(record.getCr_acctname());//'收方户名 ',
 		pafSingleCrdt.setCrAcctclass(record.getCr_acctclass());//'收方账户类别:1、对私；2、对公',

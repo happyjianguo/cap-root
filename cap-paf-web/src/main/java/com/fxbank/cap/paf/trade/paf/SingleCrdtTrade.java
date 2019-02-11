@@ -1,5 +1,6 @@
 package com.fxbank.cap.paf.trade.paf;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -132,7 +133,7 @@ public class SingleCrdtTrade implements TradeExecutionStrategy {
 	private static final String SUMMARY = "Summary";
 	// 备注
 	private static final String REMARK = "Remark";
-
+	
 	@Override
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
@@ -143,13 +144,21 @@ public class SingleCrdtTrade implements TradeExecutionStrategy {
 		// 业务类型 仅是账务操作，不控制业务种类
 		String busType = reqDto.getBody().get(BUSTYPE).toString();
 		// 如果利息有值抛出异常
-		String intAmt = reqDto.getBody().get(INTAMT).toString();
-		myLog.info(logger, "利息值" + intAmt);
-		/*
-		 * if(!"".equals(intAmt) ) { PafTradeExecuteException e = new
-		 * PafTradeExecuteException( PafTradeExecuteException.PAF_E_10016);
-		 * myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg()); throw e; }
-		 */
+		String intAmt = null == reqDto.getBody().get(INTAMT)?"0":reqDto.getBody().get(INTAMT).toString();
+		try{
+		BigDecimal intAmtNum = new BigDecimal(intAmt);
+			if(intAmtNum.compareTo(new BigDecimal("0"))>0) {
+				PafTradeExecuteException e1 = new PafTradeExecuteException( PafTradeExecuteException.PAF_E_10016);
+				myLog.error(logger, e1.getRspCode() + " | " + e1.getRspMsg()); 
+				throw e1;
+		} 
+		}catch(Exception e) {
+			if(intAmt.trim().length()>0) {
+				PafTradeExecuteException e1 = new PafTradeExecuteException( PafTradeExecuteException.PAF_E_10024);
+				myLog.error(logger, e1.getRspCode() + " | " + e1.getRspMsg()); 
+				throw e1;
+			}
+		}
 		// 交易登记
 		initRecord(reqDto);
 		myLog.info(logger, "初始化交易记录成功");
@@ -414,7 +423,7 @@ public class SingleCrdtTrade implements TradeExecutionStrategy {
 		record.setDe_intacctname(bodyMap.get(DEINTACCTNAME).toString());// '付息户户名 ',
 		record.setDe_intacctclass(bodyMap.get(DEINTACCTCLASS).toString());// '付息户类别:1、对私；2、对公',
 		record.setDe_intcracct(bodyMap.get(DEINTCRACCT).toString());// '利息收方账号',
-		record.setInt_amt(bodyMap.get(INTAMT).toString());// '利息发生额',
+		record.setInt_amt(null == bodyMap.get(INTAMT)?"0":bodyMap.get(INTAMT).toString());// '利息发生额',
 		record.setCr_acctno(bodyMap.get(CRACCTNO).toString());// '收方账号',
 		record.setCr_acctname(bodyMap.get(CRACCTNAME).toString());// '收方户名 ',
 		record.setCr_acctclass(bodyMap.get(CRACCTCLASS).toString());// '收方账户类别:1、对私；2、对公',
