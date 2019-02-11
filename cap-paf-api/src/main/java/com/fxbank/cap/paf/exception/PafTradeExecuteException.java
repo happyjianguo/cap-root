@@ -40,6 +40,7 @@ public class PafTradeExecuteException extends SysTradeExecuteException {
 	public final static String PAF_E_10021 = PAF.BANK_CODE+"10021";
 	public final static String PAF_E_10022 = PAF.BANK_CODE+"10022";
 	public final static String PAF_E_10023 = PAF.BANK_CODE+"10023";
+	public final static String PAF_E_10024 = PAF.BANK_CODE+"10024";
 
 	public final static Map<String, String> PAFERRCODECONV = new HashMap<String, String>() {
 		private static final long serialVersionUID = -8667135437237760216L;
@@ -68,6 +69,7 @@ public class PafTradeExecuteException extends SysTradeExecuteException {
 			put(PAF_E_10021, "查询没有返回结果");
 			put(PAF_E_10022, "批量编号格式不正确");
 			put(PAF_E_10023, "批量交易正在处理中");
+			put(PAF_E_10024, "利息格式不正确");
 		}
 	};
 
