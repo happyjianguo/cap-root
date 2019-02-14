@@ -25,8 +25,6 @@ import com.fxbank.cip.base.common.MyJedis;
 
 import org.springframework.web.bind.annotation.ResponseBody;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisSentinelPool;
 
 /**
  * @ClassName: ConfigDispatcherController

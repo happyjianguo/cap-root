@@ -19,11 +19,11 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.manager.constant.CAP_MANAGER;
+import com.fxbank.cip.base.common.MyJedis;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.pub.service.IPublicService;
 
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisSentinelPool;
 
 @Configuration
 @Component
@@ -37,7 +37,7 @@ public class EndOfDayTask {
 	private IPublicService publicService;
 
 	@Resource
-	private JedisSentinelPool jedisPool;
+	private MyJedis myJedis;
 
 	public void exec() {
 		logger.info("日切");
@@ -64,7 +64,7 @@ public class EndOfDayTask {
 		CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
 		tigger.setJobDetail(jobDetail.getObject());
 		String exp = null;
-		try (Jedis jedis = jedisPool.getResource()) {
+		try (Jedis jedis = myJedis.connect()) {
 			exp = jedis.get(QuartzJobConfigration.PAF_CRON + JOBNAME);
 		}
 		if (exp == null) {
