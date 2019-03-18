@@ -44,7 +44,7 @@ public class ClientSyncSocket {
 
 		String isLogin = null;
 		if ("BDC001".equals(txCode)) {
-			isLogin = "1"; // 签到交易的
+			isLogin = "1"; // 签到交易
 		} else {
 			isLogin = "0"; // 业务交易
 		}
