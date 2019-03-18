@@ -41,5 +41,8 @@
 		<module>cap-esb-api</module>
 		<module>cap-esb-service</module>
 		<module>cap-manager</module>
+		<module>cap-batf-service</module>
+		<module>cap-batf-web</module>
+		<module>cap-batf-api</module>
 	</modules>
 </project>
