@@ -249,9 +249,9 @@ public class BatchLoanTask {
 					master.setSuccNum(detailSum.getSuccNum());
 					ESB_REP_30011000101 esbRep_30011000101 = null;
 					try {
-					    if(null !=master.getSuccAmt() && master.getSuccAmt().compareTo(new BigDecimal(0))>0) {	
-						esbRep_30011000101 = innerCapCharge(master, myLog);
-					    }
+						if (null != master.getSuccAmt() && master.getSuccAmt().compareTo(new BigDecimal(0)) > 0) {
+							esbRep_30011000101 = innerCapCharge(master, myLog);
+						} 
 					} catch (Exception e) {
 						record.setTxStatus("2");
 						record.setTxMsg("转入公积金账户失败");
@@ -260,11 +260,13 @@ public class BatchLoanTask {
 						return;
 					}
 						record.setTxStatus("4");
-						record.setSuccHostSeqNo(esbRep_30011000101.getRepBody().getReference());
-						record.setSuccHostRspCode(esbRep_30011000101.getRepSysHead().getRet().get(0).getRetCode());
-						record.setSuccHostRspMsg(esbRep_30011000101.getRepSysHead().getRet().get(0).getRetMsg());
-						record.setTxMsg("贷款扣款处理完成，转入公积金账户成功"+detailSum.getSuccNum()+"笔，失败"+detailSum.getFailNum()+"笔");
-						myLog.info(logger, "贷款扣款处理完成，转入公积金账户成功"+detailSum.getSuccNum()+"笔，失败"+detailSum.getFailNum()+"笔");
+						record.setSuccHostSeqNo(null!=esbRep_30011000101?esbRep_30011000101.getRepBody().getReference():"");
+						record.setSuccHostRspCode(null!=esbRep_30011000101?esbRep_30011000101.getRepSysHead().getRet().get(0).getRetCode():"99999");
+						record.setSuccHostRspMsg(null!=esbRep_30011000101?esbRep_30011000101.getRepSysHead().getRet().get(0).getRetMsg():"转入公积金账号失败");
+						record.setTxMsg("贷款扣款处理完成，转入公积金账户成功"+detailSum.getSuccNum()!=null?detailSum.getSuccNum().toString():"0"+"笔，"
+								+ "失败"+detailSum.getFailNum()!=null?detailSum.getFailNum().toString():"0"+"笔");
+						myLog.info(logger, "贷款扣款处理完成，转入公积金账户成功"+detailSum.getSuccNum()!=null?detailSum.getSuccNum().toString():"0"+"笔，"
+								+ "失败"+detailSum.getFailNum()!=null?detailSum.getFailNum().toString():"0"+"笔");
 						batchLoanService.updateMaster(record);
 				}
 				long endTime = System.currentTimeMillis();
