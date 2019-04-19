@@ -249,7 +249,7 @@ public class BatchLoanTask {
 					master.setSuccNum(detailSum.getSuccNum());
 					ESB_REP_30011000101 esbRep_30011000101 = null;
 					try {
-					    if(master.getSuccAmt().compareTo(new BigDecimal(0))>0) {	
+					    if(null !=master.getSuccAmt() && master.getSuccAmt().compareTo(new BigDecimal(0))>0) {	
 						esbRep_30011000101 = innerCapCharge(master, myLog);
 					    }
 					} catch (Exception e) {
