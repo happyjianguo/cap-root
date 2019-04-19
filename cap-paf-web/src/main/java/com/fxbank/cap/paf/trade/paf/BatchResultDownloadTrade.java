@@ -293,7 +293,7 @@ public class BatchResultDownloadTrade implements TradeExecutionStrategy {
 		} catch (IOException e) {
 			throw new RuntimeException("文件加密失败");
 		}
-		inner.getField().add(new FIELD("Name",fileName));
+		inner.getField().add(new FIELD("NAME",fileName));
 		inner.getField().add(new FIELD("DATA",bcdString));
 		innerList.add(inner);
 		myLog.info(logger,"发送文件名称["+fileName+"]");
