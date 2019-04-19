@@ -177,6 +177,12 @@ public class AccMstTracePushTask {
 		try {
 			rf = new RandomAccessFile(localFile, "r");
 	        long fileLength = rf.length();
+	        //判断文件内容长度不够返回null不进行推送操作
+	        if(fileLength<10){ 
+	        	myLog.info(logger, "账户变动文件内容为空,不进行后续处理");
+	        	rf.close();
+	        	return null;
+	        }        	
 	        long start = rf.getFilePointer();// 返回此文件中的当前偏移量
 	        long readIndex = start + fileLength -1;
 	        
