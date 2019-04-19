@@ -104,25 +104,31 @@ public class BatchCrdtTaskExecutor implements Runnable {
 									updModel.setBatchNo(masterModel.getBatchNo());
 									updModel.setSeqNo(str);
 									updModel.setTxStatus("3");
+									updModel.setHostRspCode(e.getRspCode());
+									updModel.setHostRspMsg(e.getRspMsg());
 									batchCrdtService.updateDetail(updModel);
 									continue;
 								}
-							} catch (Exception e) {
+							} catch (SysTradeExecuteException e) {
 								myLog.error(logger, "批量交易单笔记账验证收款账户失败，批量编号" + masterModel.getBatchNo() + "序号" + str);
 								updModel.setBatchNo(masterModel.getBatchNo());
 								updModel.setSeqNo(str);
 								updModel.setTxStatus("3");
+								updModel.setHostRspCode(e.getRspCode());
+								updModel.setHostRspMsg(e.getRspMsg());
 								batchCrdtService.updateDetail(updModel);
 								continue;
 							}
 							ESB_REP_30011000101 esbRep_30011000101 = null;
 							try {
 								esbRep_30011000101 = innerCapCharge(record);
-							} catch (Exception e) {
+							} catch (SysTradeExecuteException e) {
 								myLog.error(logger, "批量交易单笔记账失败，批量编号" + masterModel.getBatchNo() + "序号" + str, e);
 								updModel.setBatchNo(masterModel.getBatchNo());
 								updModel.setSeqNo(str);
 								updModel.setTxStatus("3");
+								updModel.setHostRspCode(e.getRspCode());
+								updModel.setHostRspMsg(e.getRspMsg());
 								batchCrdtService.updateDetail(updModel);
 								continue;
 							}
@@ -134,11 +140,13 @@ public class BatchCrdtTaskExecutor implements Runnable {
 							ESB_REP_30041000406 esbRep_30041000406 = null;
 							try {
 								esbRep_30041000406 = outerCapCharge(record);
-							} catch (Exception e) {
+							} catch (SysTradeExecuteException e) {
 								myLog.error(logger, "批量交易单笔记账失败，批量编号" + masterModel.getBatchNo() + "序号" + str);
 								updModel.setBatchNo(masterModel.getBatchNo());
 								updModel.setSeqNo(str);
 								updModel.setTxStatus("3");
+								updModel.setHostRspCode(e.getRspCode());
+								updModel.setHostRspMsg(e.getRspMsg());
 								batchCrdtService.updateDetail(updModel);
 								continue;
 							}
@@ -158,6 +166,8 @@ public class BatchCrdtTaskExecutor implements Runnable {
 					updModel.setBatchNo(masterModel.getBatchNo());
 					updModel.setSeqNo(str);
 					updModel.setTxStatus("3");
+					updModel.setHostRspCode(e.getRspCode());
+					updModel.setHostRspMsg(e.getRspMsg());
 					try {
 						batchCrdtService.updateDetail(updModel);
 						myLog.error(logger, "批量处理单笔付款异常，批量编号" + masterModel.getBatchNo() + "序号" + str, e);
