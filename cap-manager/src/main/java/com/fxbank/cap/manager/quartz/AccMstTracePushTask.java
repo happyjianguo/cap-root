@@ -131,14 +131,7 @@ public class AccMstTracePushTask {
 				throw new RuntimeException("核心返回数据异常[" + esb_rep_30015700901.getRepBody().getQueryArray().size() + "]");
 			}
 			String refMax = esb_rep_30015700901.getRepBody().getQueryArray().get(0).getRefMax();
-
-			// 3、判断核心返回当前最大流水与上送流水是否相同，如相同，则无数据，不取文件
-			if (refMax.equals(reference)) {
-				myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]无流水返回[" + reference + "]");
-				continue;
-			}
-
-			// 4、从文件传输平台获取核心文件
+			// 3、从文件传输平台获取核心文件
 			String remoteFile = esb_rep_30015700901.getRepSysHead().getFilePath();
 			String fileName = "BDC_BAL_NTF" + "SBDC201" + String.format("%08d", sysDate)
 					+ String.format("%06d", sysTime) + String.format("%08d", sysTraceno) + ".act";
@@ -149,7 +142,11 @@ public class AccMstTracePushTask {
 			String buffer = InsertPafAccMst(myLog,fileName,centerNo,departCode,String.format("%08d", sysDate)
 					+ String.format("%06d", sysTime),localFile,pafAcNoInfo);
 			setMaxRef(myLog, centerNo, pafAcNoInfo.getAcNo(), refMax);
-			
+			//4、判断是否核心返回账户变动信息，如果有则推送变动通知，如果没有跳出处理
+			if(buffer==null||buffer.length()==0){
+				myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]无流水返回[" + reference + "]");
+				continue;
+			}
 			// 5、推送从核心获取的文件，推送至公积金系统
 			CLI_REP_DATA pack = pushTraceLogFile(myLog, buffer, fileName, sysDate, sysTime, sysTraceno);
 			if (pack.getHead().get("TxStatus").equals("0") && pack.getHead().get("RtnCode").equals("00000")) {
@@ -180,6 +177,12 @@ public class AccMstTracePushTask {
 		try {
 			rf = new RandomAccessFile(localFile, "r");
 	        long fileLength = rf.length();
+	        //判断文件内容长度不够返回null不进行推送操作
+	        if(fileLength==0){ 
+	        	myLog.info(logger, "账户变动文件内容为空,不进行后续处理");
+	        	rf.close();
+	        	return null;
+	        }        	
 	        long start = rf.getFilePointer();// 返回此文件中的当前偏移量
 	        long readIndex = start + fileLength -1;
 	        
