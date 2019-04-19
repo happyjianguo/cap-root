@@ -263,10 +263,10 @@ public class BatchLoanTask {
 						record.setSuccHostSeqNo(null!=esbRep_30011000101?esbRep_30011000101.getRepBody().getReference():"");
 						record.setSuccHostRspCode(null!=esbRep_30011000101?esbRep_30011000101.getRepSysHead().getRet().get(0).getRetCode():"99999");
 						record.setSuccHostRspMsg(null!=esbRep_30011000101?esbRep_30011000101.getRepSysHead().getRet().get(0).getRetMsg():"转入公积金账号失败");
-						record.setTxMsg("贷款扣款处理完成，转入公积金账户成功"+detailSum.getSuccNum()!=null?detailSum.getSuccNum().toString():"0"+"笔，"
-								+ "失败"+detailSum.getFailNum()!=null?detailSum.getFailNum().toString():"0"+"笔");
-						myLog.info(logger, "贷款扣款处理完成，转入公积金账户成功"+detailSum.getSuccNum()!=null?detailSum.getSuccNum().toString():"0"+"笔，"
-								+ "失败"+detailSum.getFailNum()!=null?detailSum.getFailNum().toString():"0"+"笔");
+						if(null==detailSum.getSuccNum())detailSum.setSuccNum(0);
+						if(null==detailSum.getFailNum())detailSum.setFailNum(0);
+						record.setTxMsg("贷款扣款处理完成，转入公积金账户成功"+detailSum.getSuccNum()+"笔，失败"+detailSum.getFailNum()+"笔");
+						myLog.info(logger, "贷款扣款处理完成，转入公积金账户成功"+detailSum.getSuccNum()+"笔，失败"+detailSum.getFailNum()+"笔");
 						batchLoanService.updateMaster(record);
 				}
 				long endTime = System.currentTimeMillis();
