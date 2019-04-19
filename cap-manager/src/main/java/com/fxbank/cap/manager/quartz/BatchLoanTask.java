@@ -249,7 +249,9 @@ public class BatchLoanTask {
 					master.setSuccNum(detailSum.getSuccNum());
 					ESB_REP_30011000101 esbRep_30011000101 = null;
 					try {
+					    if(master.getSuccAmt().compareTo(new BigDecimal(0))>0) {	
 						esbRep_30011000101 = innerCapCharge(master, myLog);
+					    }
 					} catch (Exception e) {
 						record.setTxStatus("2");
 						record.setTxMsg("转入公积金账户失败");
