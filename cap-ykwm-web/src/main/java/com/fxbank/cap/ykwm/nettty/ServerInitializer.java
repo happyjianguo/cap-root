@@ -2,6 +2,7 @@ package com.fxbank.cap.ykwm.nettty;
 
 import java.util.concurrent.TimeUnit;
 
+import com.fxbank.cap.ykwm.common.ScrtUtil;
 import com.fxbank.cap.ykwm.controller.TradeDispatcherHandler;
 import com.fxbank.cip.base.common.LogPool;
 
@@ -38,10 +39,13 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 	@Autowired
 	private LogPool logPool;
 	
+	@Autowired
+	private ScrtUtil scrtUtil;
+	
 	@Override
 	public void initChannel(SocketChannel ch) {
 		ChannelPipeline p = ch.pipeline();
-		p.addLast(new YkwmLenghtDecoder(logPool));
+		p.addLast(new YkwmLenghtDecoder(logPool,scrtUtil));
 		p.addLast(new ReadTimeoutHandler(10000,TimeUnit.MILLISECONDS));
 		p.addLast(this.ykwmLengthEncoder);
 		p.addLast(this.ykwmPackConvOutHandler);

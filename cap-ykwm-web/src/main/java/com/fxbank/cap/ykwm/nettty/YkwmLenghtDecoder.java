@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
+
+import com.fxbank.cap.ykwm.common.ScrtUtil;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.log.MyLog;
 
@@ -19,12 +22,14 @@ import io.netty.util.ReferenceCountUtil;
 public class YkwmLenghtDecoder extends ByteToMessageDecoder {
 
 	private static Logger logger = LoggerFactory.getLogger(YkwmLenghtDecoder.class);
-	private final Integer DATALENGTH = 1;
+	private final Integer DATALENGTH = 4;
 	private LogPool logPool;
 	private MyLog myLog;
+	private ScrtUtil scrtUtil;
 
-	public YkwmLenghtDecoder(LogPool logPool) {
+	public YkwmLenghtDecoder(LogPool logPool,ScrtUtil scrtUtil) {
 		this.logPool = logPool;
+		this.scrtUtil = scrtUtil;
 	}
 
 	protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
@@ -43,7 +48,7 @@ public class YkwmLenghtDecoder extends ByteToMessageDecoder {
 		}
 		in.markReaderIndex();
 		
-		Integer len = new Integer(readableLen);
+		Integer len = in.readInt();
 		// 判断是否分包,数据长度大于等于总长度或者本次读取数据长度与上次相同认为分包结束
 		int readLength = in.readableBytes();
 		if (readLength < len) {
@@ -77,7 +82,7 @@ public class YkwmLenghtDecoder extends ByteToMessageDecoder {
 			ReferenceCountUtil.release(buf);
 		}
 
-		String body = msgbuf.toString();
+		String body = scrtUtil.decrypt3DES(scrtUtil.hexStringToBytes(msgbuf.toString()));
 
 		this.myLog.info(logger, "接收到客户端请求["+body+"]");
 

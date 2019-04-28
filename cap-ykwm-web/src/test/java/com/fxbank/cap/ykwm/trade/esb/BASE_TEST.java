@@ -2,16 +2,17 @@ package com.fxbank.cap.ykwm.trade.esb;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fxbank.cap.ykwm.common.ScrtUtil;
 import com.fxbank.cap.ykwm.model.REQ_HEADER;
 
 public class BASE_TEST {
@@ -19,7 +20,10 @@ public class BASE_TEST {
 
     private static final String IP = "127.0.0.1";
     private static final Integer PORT = 6006;
-    private static final String CODING = "UTF-8";
+    private static final String CODING = "GBK";
+    
+	@Resource
+    private ScrtUtil scrtUtil;
 
     public String comm(String reqData) throws Exception {
         Socket socket = new Socket(BASE_TEST.IP, BASE_TEST.PORT);
@@ -28,22 +32,25 @@ public class BASE_TEST {
         String repData = null;
         try {
             os = socket.getOutputStream();
-            String reqLen = String.format("%08d", reqData.getBytes(BASE_TEST.CODING).length);
-            this.logger.info("发送请求报文[" + reqData + "]");
+            byte[] encryptMsg = scrtUtil.encrypt3DES(reqData.getBytes(BASE_TEST.CODING)).getBytes(BASE_TEST.CODING);
+            int len = encryptMsg.length;
+            logger.info("发送请求报文长度["+len+"]");
+            String reqLen = String.format("%04d", len);
+            logger.info("发送请求报文密文十六进制[" + reqData + "]");
             os.write(reqLen.getBytes(BASE_TEST.CODING));
-            os.write(reqData.getBytes(BASE_TEST.CODING));
+            os.write(encryptMsg);
 
             is = socket.getInputStream();
-            byte[] lenByte = new byte[8];
+            byte[] lenByte = new byte[4];
             is.read(lenByte);
             String slen = new String(lenByte);
-            int len = Integer.valueOf(slen);
-            byte[] dataByte = new byte[len];
+            int retLen = Integer.valueOf(slen);
+            byte[] dataByte = new byte[retLen];
             is.read(dataByte);
-            repData = new String(dataByte, BASE_TEST.CODING);
-            this.logger.info("接收应答报文[" + repData + "]");
+            repData = scrtUtil.decrypt3DES(dataByte);
+            logger.info("接收应答报文[" + repData + "]");
         } catch (Exception e) {
-            this.logger.error("处理连接异常", e);
+           logger.error("处理连接异常", e);
             throw new RuntimeException(e);
         } finally {
             try {

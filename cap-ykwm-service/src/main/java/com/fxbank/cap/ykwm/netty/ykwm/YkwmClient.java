@@ -2,6 +2,7 @@ package com.fxbank.cap.ykwm.netty.ykwm;
 
 import javax.annotation.Resource;
 
+import com.fxbank.cap.ykwm.common.ScrtUtil;
 import com.fxbank.cip.base.common.MyJedis;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
@@ -27,7 +28,10 @@ public class YkwmClient {
 
     @Resource
 	private MyJedis myJedis;
-
+    
+    @Resource
+	private ScrtUtil scrtUtil;
+    
     public <T> T comm(MyLog myLog,Object req,Class<T> clazz) throws SysTradeExecuteException {
         String ip = null;
         Integer port =0;
@@ -51,7 +55,7 @@ public class YkwmClient {
         }
         myLog.info(logger, "连接信息：IP["+ip+"],PORT["+port+"],TIMEOUT["+timeOut+"]");
 
-        YkwmInitializer<T> initializer = new YkwmInitializer<T>(myLog, req,clazz);
+        YkwmInitializer<T> initializer = new YkwmInitializer<T>(myLog, req,clazz,scrtUtil);
         NettySyncClient<T> clientSync = new NettySyncClient<T>(myLog, initializer);        
         T repData = clientSync.comm(ip,port,timeOut);
         return repData;

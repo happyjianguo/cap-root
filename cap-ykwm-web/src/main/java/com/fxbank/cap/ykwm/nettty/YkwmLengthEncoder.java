@@ -2,6 +2,7 @@ package com.fxbank.cap.ykwm.nettty;
 
 import javax.annotation.Resource;
 
+import com.fxbank.cap.ykwm.common.ScrtUtil;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.log.MyLog;
 
@@ -22,6 +23,9 @@ public class YkwmLengthEncoder extends MessageToByteEncoder<Object> {
 
 	@Resource
 	private LogPool logPool;
+	
+	@Resource
+	private ScrtUtil scrtUtil;
 
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
@@ -29,9 +33,11 @@ public class YkwmLengthEncoder extends MessageToByteEncoder<Object> {
 		String msgStr = (String) msg;
 		StringBuffer sb = new StringBuffer();
 		sb.append(msgStr);
-		String reqPack = sb.toString();
-		myLog.info(logger, "发送应答报文=[" + reqPack + "]");
-		out.writeBytes(reqPack.getBytes(ServerInitializer.CODING));
+		String reqPack = scrtUtil.encrypt3DES(sb.toString().getBytes(ServerInitializer.CODING));
+		myLog.info(logger, "发送应答报文=[" + String.format("%04d", reqPack.length()) + reqPack + "]");
+		byte[] data=reqPack.getBytes(ServerInitializer.CODING);
+		out.writeInt(data.length);
+		out.writeBytes(data);
 	}
 
 	@Override

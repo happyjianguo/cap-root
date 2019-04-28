@@ -1,13 +1,20 @@
 package com.fxbank.cap.ykwm.netty.ykwm;
 
+import java.net.InetAddress;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
+import javax.annotation.Resource;
+
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.fxbank.cap.ykwm.common.ScrtUtil;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.netty.NettySyncSlot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,15 +25,18 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 
 	private static Logger logger = LoggerFactory.getLogger(YkwmLenghtDecoder.class);
 	private MyLog myLog;
-	private final Integer DATALENGTH = 1;
+	private final Integer DATALENGTH = 4;
 	private NettySyncSlot<T> slot;
+	private ScrtUtil scrtUtil;
 
-	public YkwmLenghtDecoder(MyLog myLog, NettySyncSlot<T> slot) {
+	public YkwmLenghtDecoder(MyLog myLog, NettySyncSlot<T> slot,ScrtUtil scrtUtil) {
 		this.myLog = myLog;
 		this.slot = slot;
+		this.scrtUtil = scrtUtil;
 	}
 
 	protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+		this.myLog = new MyLog(UUID.randomUUID().toString(), InetAddress.getLocalHost().getHostAddress().toString());
 		if (in == null) {
 			return null;
 		}
@@ -40,8 +50,7 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 		}
 		in.markReaderIndex();
 		
-		
-		Integer len = new Integer(readableLen);
+		Integer len = in.readInt();
 		// 判断是否分包,数据长度大于等于总长度或者本次读取数据长度与上次相同认为分包结束
 		int readLength = in.readableBytes();
 		if (readLength < len) {
@@ -75,9 +84,9 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 			ReferenceCountUtil.release(buf);
 		}
 
-		String body = msgbuf.toString();
+		String body = scrtUtil.decrypt3DES(scrtUtil.hexStringToBytes(msgbuf.toString()));
 
-		this.myLog.info(logger, "接收到服务端应答["+body+"]");
+		this.myLog.info(logger, "接收到客户端请求["+body+"]");
 
 		return body;
 	}
