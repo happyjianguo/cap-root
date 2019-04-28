@@ -22,9 +22,7 @@ public class YkwmLengthEncoder extends MessageToByteEncoder<Object> {
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
 		String msgStr = (String) msg;
-		Integer msgStrLen = msgStr.getBytes(YkwmClient.CODING).length;
 		StringBuffer sb = new StringBuffer();
-		sb.append(String.format("%08d", msgStrLen));
 		sb.append(msgStr);
 		String reqPack = sb.toString();
 		this.myLog.info(logger, "发送请求报文=[" + reqPack);

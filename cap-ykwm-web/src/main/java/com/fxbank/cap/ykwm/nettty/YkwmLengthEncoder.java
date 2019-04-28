@@ -30,7 +30,7 @@ public class YkwmLengthEncoder extends MessageToByteEncoder<Object> {
 		StringBuffer sb = new StringBuffer();
 		sb.append(msgStr);
 		String reqPack = sb.toString();
-		myLog.info(logger, "发送应答报文=[" + reqPack);
+		myLog.info(logger, "发送应答报文=[" + reqPack + "]");
 		out.writeBytes(reqPack.getBytes(ServerInitializer.CODING));
 	}
 

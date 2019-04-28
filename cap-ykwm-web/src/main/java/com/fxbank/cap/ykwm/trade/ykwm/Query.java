@@ -53,7 +53,7 @@ public class Query implements TradeExecutionStrategy {
 		accountDetail.setChargeYear("2015-2016");
 		accountDetail.setItemName("ds");
 		accountDetail.setArea(new BigDecimal(120));
-		accountDetail.setPrice(new BigDecimal(1.2));
+		accountDetail.setPrice(new BigDecimal(1.2).setScale(2, BigDecimal.ROUND_HALF_UP));
 		accountDetail.setAccount(new BigDecimal(200));
 		accountDetail.setAgio(new BigDecimal(0));
         accountDetail.setLateFee(new BigDecimal(23));

@@ -29,9 +29,9 @@ public class YkwmPackConvInHandler extends ChannelInboundHandlerAdapter {
 		MyLog myLog = logPool.get();
 		try {
 			StringBuffer pack = new StringBuffer((String) msg);
-			String fixPack = pack.substring(0, pack.length() - 16);
-			String mac = pack.substring(pack.length() - 16);
-			myLog.info(logger, "mac=[" + mac + "]");
+			String fixPack = pack.substring(0, pack.length() );
+			//String mac = pack.substring(pack.length() - 16);
+			//myLog.info(logger, "mac=[" + mac + "]");
 			// 校验MAC TODO
 			String txCode = "REQ_" + pack.substring(0, 5);
 			myLog.info(logger, "交易代码=[" + txCode + "]");

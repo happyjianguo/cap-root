@@ -18,7 +18,7 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 
 	private static Logger logger = LoggerFactory.getLogger(YkwmLenghtDecoder.class);
 	private MyLog myLog;
-	private final Integer DATALENGTH = 8;
+	private final Integer DATALENGTH = 1;
 	private NettySyncSlot<T> slot;
 
 	public YkwmLenghtDecoder(MyLog myLog, NettySyncSlot<T> slot) {
@@ -39,17 +39,9 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 			return null;
 		}
 		in.markReaderIndex();
-		ByteBuf lenbuf = in.readBytes(DATALENGTH);
-		byte[] lenbyte = new byte[DATALENGTH];
-		lenbuf.readBytes(lenbyte); 
-		ReferenceCountUtil.release(lenbuf);
-		String lenStr = new String(lenbyte,YkwmClient.CODING);
-		if (!isInteger(lenStr)) {
-			Exception e = new RuntimeException("报文长度不合法");
-			this.myLog.error(logger, "报文长度不合法"+lenStr, e);
-			throw e;
-		}
-		Integer len = new Integer(lenStr);
+		
+		
+		Integer len = new Integer(readableLen);
 		// 判断是否分包,数据长度大于等于总长度或者本次读取数据长度与上次相同认为分包结束
 		int readLength = in.readableBytes();
 		if (readLength < len) {
