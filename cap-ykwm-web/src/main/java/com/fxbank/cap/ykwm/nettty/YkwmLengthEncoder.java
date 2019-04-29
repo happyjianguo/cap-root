@@ -18,7 +18,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
 /** 
 * @ClassName: YkwmLengthEncoder 
 * @Description: 来账应答发送
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:06:43 
 *  
 */

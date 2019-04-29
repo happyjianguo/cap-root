@@ -1,8 +1,6 @@
 package com.fxbank.cap.ykwm.trade.ykwm;
 
 
-import static org.junit.Assert.assertNotNull;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +9,7 @@ import javax.annotation.Resource;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.esb.service.IForwardToESBService;
+import com.fxbank.cap.ykwm.dto.ykwm.REP_ERROR;
 import com.fxbank.cap.ykwm.dto.ykwm.REP_Query;
 import com.fxbank.cap.ykwm.dto.ykwm.REP_Query.AccountDetail;
 import com.fxbank.cap.ykwm.dto.ykwm.REP_Query.Express;
@@ -28,7 +27,7 @@ import org.springframework.stereotype.Service;
 /** 
 * @ClassName: Query 
 * @Description: 欠费查询仿真
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:11:41 
 *  
 */
@@ -37,6 +36,8 @@ public class Query implements TradeExecutionStrategy {
 
 	private static Logger logger = LoggerFactory.getLogger(Query.class);
 
+	private static final String NUM_REG = "[1-9]{1}\\d*$|[0-9]{1}$";
+	
 	@Reference(version = "1.0.0")
 	private IForwardToESBService forwardToESBService;
 
@@ -47,6 +48,12 @@ public class Query implements TradeExecutionStrategy {
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
 		REQ_Query req = (REQ_Query) dto;
+		if(!req.getCardNum().matches(NUM_REG)) {
+			REP_ERROR repErr = new REP_ERROR();
+			repErr.getHeader().setResult("1");
+			repErr.setRepMsg("用户卡号错误");
+			return repErr;
+		}
 		REP_Query rep = new REP_Query();
 		rep.getHeader().setResult("0");
 		rep.setOwnerName("张三");

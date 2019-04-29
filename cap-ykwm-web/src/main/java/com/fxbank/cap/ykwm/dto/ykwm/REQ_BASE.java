@@ -7,7 +7,7 @@ import com.fxbank.cip.base.model.FIXP_SERIAL;
 /** 
 * @ClassName: REQ_BASE 
 * @Description: 请求报文基类 
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:02:48 
 *  
 */

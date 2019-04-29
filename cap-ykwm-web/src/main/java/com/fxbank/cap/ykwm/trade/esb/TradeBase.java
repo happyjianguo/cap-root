@@ -10,7 +10,7 @@ import com.fxbank.cap.esb.service.IForwardToESBService;
 /** 
 * @ClassName: TradeBase 
 * @Description: 交易程序基础公共类
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:11:15 
 *  
 */

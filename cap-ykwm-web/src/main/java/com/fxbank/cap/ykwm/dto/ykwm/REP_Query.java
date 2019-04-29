@@ -8,7 +8,7 @@ import java.util.List;
 /** 
 * @ClassName: REP_Query 
 * @Description: 欠费查询应答报文
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:02:16 
 *  
 */
@@ -77,8 +77,8 @@ public class REP_Query extends REP_BASE {
     @Override
     public void chanFixPack(String pack) {
     	String[] array = pack.split("\\|");
-    	int i = 0;
-		super.getHeader().chanFixPack(array[i++]);
+    	int i = 1;
+		super.getHeader().chanFixPack(pack);
 		this.ownerName = array[i++].trim();
 		this.address = array[i++].trim();
 		this.minPayment = new BigDecimal(array[i++].trim());

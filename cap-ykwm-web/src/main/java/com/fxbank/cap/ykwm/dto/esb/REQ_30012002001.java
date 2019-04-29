@@ -9,7 +9,7 @@ import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 /** 
 * @ClassName: REQ_30012002001 
 * @Description: 柜面欠费查询请求
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午1:56:39 
 *  
 */

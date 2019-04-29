@@ -3,7 +3,7 @@ package com.fxbank.cap.ykwm.dto.ykwm;
 /** 
 * @ClassName: REP_ERROR 
 * @Description: 错误应答报文
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:00:57 
 *  
 */

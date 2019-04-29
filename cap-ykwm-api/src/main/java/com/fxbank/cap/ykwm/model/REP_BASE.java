@@ -9,7 +9,7 @@ import com.fxbank.cip.base.model.ModelBase;
 /** 
 * @ClassName: REP_BASE 
 * @Description: 响应报文基类 
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午3:01:38 
 *  
 */

@@ -34,7 +34,7 @@ import com.fxbank.cip.base.util.JsonUtil;
 /** 
 * @ClassName: QR_AccountTest 
 * @Description: 柜面欠费查询模拟
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:14:18 
 *  
 */
@@ -91,7 +91,8 @@ public class QR_AccountTest {
 		logger.info("查询欠费测试");
 		
 		reqBody.setCompanyID("2323");
-		reqBody.setCardNum("23333333");
+		//用户卡号必须为数字，否则报错
+		reqBody.setCardNum("12345a");
 		reqBody.setBatchNum("354542332");
 		
 		String reqContent = JSON.toJSONString(req);

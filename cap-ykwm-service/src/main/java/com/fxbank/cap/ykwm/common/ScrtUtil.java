@@ -14,7 +14,7 @@ import redis.clients.jedis.Jedis;
 /** 
 * @ClassName: ScrtUtil 
 * @Description: DES加密
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:17:32 
 *  
 */

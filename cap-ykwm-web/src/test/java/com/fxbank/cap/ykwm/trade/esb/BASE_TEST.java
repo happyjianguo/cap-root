@@ -18,7 +18,7 @@ import com.fxbank.cap.ykwm.model.REQ_HEADER;
 /** 
 * @ClassName: BASE_TEST 
 * @Description: 报文测试 
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:15:34 
 *  
 */

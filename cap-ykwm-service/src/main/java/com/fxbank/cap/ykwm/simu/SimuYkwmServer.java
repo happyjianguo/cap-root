@@ -2,12 +2,10 @@ package com.fxbank.cap.ykwm.simu;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +18,7 @@ import org.slf4j.LoggerFactory;
 /** 
 * @ClassName: SimuYkwmServer 
 * @Description: 营口热电仿真
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:26:15 
 *  
 */

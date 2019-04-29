@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /** 
 * @ClassName: ForwardToYkwmService 
 * @Description: 营口热电接口请求服务
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:22:19 
 *  
 */

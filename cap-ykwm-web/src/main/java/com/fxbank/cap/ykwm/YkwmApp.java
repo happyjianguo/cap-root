@@ -6,11 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 
+
+
 /** 
 * @ClassName: YkwmApp 
 * @Description: 启动器
-* @author Duzhenduo
-* @date 2019年4月29日 下午1:36:06 
+* @作者 杜振铎
+* @date 2019年4月29日 下午4:29:17 
 *  
 */
 @ServletComponentScan

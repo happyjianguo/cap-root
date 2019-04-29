@@ -24,7 +24,7 @@ import io.netty.util.ReferenceCountUtil;
 /** 
 * @ClassName: YkwmLenghtDecoder 
 * @Description: 客户端接收程序
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:20:13 
 * 
 * @param <T> 

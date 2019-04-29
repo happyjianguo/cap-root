@@ -7,7 +7,7 @@ import com.fxbank.cip.base.exception.SysTradeExecuteException;
 /** 
 * @ClassName: IForwardToYkwmService 
 * @Description: 营口热电接口服务
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午3:04:56 
 *  
 */

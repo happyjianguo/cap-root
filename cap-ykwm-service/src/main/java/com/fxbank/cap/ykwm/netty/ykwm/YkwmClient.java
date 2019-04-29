@@ -18,7 +18,7 @@ import redis.clients.jedis.Jedis;
 /** 
 * @ClassName: YkwmClient 
 * @Description: 客户端通讯主程序
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:19:21 
 *  
 */

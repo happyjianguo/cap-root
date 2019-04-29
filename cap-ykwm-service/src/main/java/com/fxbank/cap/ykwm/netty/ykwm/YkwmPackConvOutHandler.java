@@ -13,7 +13,7 @@ import io.netty.channel.ChannelPromise;
 /** 
 * @ClassName: YkwmPackConvOutHandler 
 * @Description: 客户端请求组包 
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:21:46 
 *  
 */

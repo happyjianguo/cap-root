@@ -7,7 +7,7 @@ import com.fxbank.cip.base.model.FIXP_SERIAL;
 /** 
 * @ClassName: REP_HEADER 
 * @Description: 响应报文头 
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午3:01:56 
 *  
 */

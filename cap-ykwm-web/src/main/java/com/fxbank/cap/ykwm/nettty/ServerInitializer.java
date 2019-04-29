@@ -16,7 +16,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 
 /**
  * @Description: netty服务端处理初始化
- * @Author: 周勇沩
+* @作者 杜振铎
  * @Date: 2019-04-15 11:16:32
  */
 @Component("serverInitializer")

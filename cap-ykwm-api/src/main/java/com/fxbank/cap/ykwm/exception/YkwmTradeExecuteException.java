@@ -8,7 +8,7 @@ import com.fxbank.cip.base.exception.SysTradeExecuteException;
 /** 
 * @ClassName: YkwmTradeExecuteException 
 * @Description: 异常类及响应码、响应信息定义
-* @author ZhouYongwei
+* @作者 杜振铎
 * @date 2018年4月3日 下午3:40:26 
 *  
 */

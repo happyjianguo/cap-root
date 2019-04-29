@@ -22,7 +22,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 /** 
 * @ClassName: TradeDispatcherHandler 
 * @Description: 交易处理入口类 
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午1:44:54 
 *  
 */

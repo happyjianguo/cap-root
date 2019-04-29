@@ -6,7 +6,7 @@ import com.fxbank.cip.base.log.MyLog;
 /** 
 * @ClassName: REQ_Query 
 * @Description: 欠费查询请求
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午3:02:57 
 *  
 */

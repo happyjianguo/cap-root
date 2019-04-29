@@ -11,7 +11,7 @@ import com.fxbank.cip.base.log.MyLog;
 /** 
 * @ClassName: REP_Query 
 * @Description: 欠费查询响应报文
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午3:02:09 
 *  
 */
@@ -184,8 +184,8 @@ public class REP_Query extends REP_BASE {
     @Override
     public void chanFixPack(String pack) {
     	String[] array = pack.split("\\|");
-    	int i = 0;
-		super.getHeader().chanFixPack(array[i++]);
+    	int i = 1;
+		super.getHeader().chanFixPack(pack);
 		if(!RESULT.equals(super.getHeader().getResult())) {
         	return;
         }

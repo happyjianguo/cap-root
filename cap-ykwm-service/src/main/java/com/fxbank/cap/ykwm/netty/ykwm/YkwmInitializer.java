@@ -13,7 +13,7 @@ import io.netty.channel.socket.SocketChannel;
 /** 
 * @ClassName: YkwmInitializer 
 * @Description: 客户端通讯初始化 
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:19:49 
 * 
 * @param <T> 

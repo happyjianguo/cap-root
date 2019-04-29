@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 /** 
 * @ClassName: QR_Account 
 * @Description: 柜面欠费查询交易 
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:10:52 
 *  
 */

@@ -23,7 +23,7 @@ import io.netty.channel.ChannelPromise;
 /** 
 * @ClassName: YkwmPackConvOutHandler 
 * @Description: 来账应答组包
-* @author Duzhenduo
+* @作者 杜振铎
 * @date 2019年4月29日 下午2:07:19 
 *  
 */
@@ -51,7 +51,7 @@ public class YkwmPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		if (dto.getStatus().equals(DataTransObject.SUCCESS)) { 
 			myLog.error(logger, "生成成功应答报文");
 			repDto = (REP_BASE) dtoMap.get("repDto");
-			rspCode = "0";
+			rspCode = repDto.getHeader().getResult();
 		} else { 
 			// 交易失败
 			myLog.error(logger, "生成错误应答报文");
