@@ -15,6 +15,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 
+/** 
+* @ClassName: YkwmPackConvInHandler 
+* @Description: 来账请求拆包
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:06:54 
+*  
+*/
 @Component("ykwmPackConvInHandler")
 @Sharable
 public class YkwmPackConvInHandler extends ChannelInboundHandlerAdapter {
@@ -30,9 +37,6 @@ public class YkwmPackConvInHandler extends ChannelInboundHandlerAdapter {
 		try {
 			StringBuffer pack = new StringBuffer((String) msg);
 			String fixPack = pack.substring(0, pack.length() );
-			//String mac = pack.substring(pack.length() - 16);
-			//myLog.info(logger, "mac=[" + mac + "]");
-			// 校验MAC TODO
 			String txCode = "REQ_" + pack.substring(0, 5);
 			myLog.info(logger, "交易代码=[" + txCode + "]");
 			REQ_BASE reqBase = null;
@@ -49,8 +53,6 @@ public class YkwmPackConvInHandler extends ChannelInboundHandlerAdapter {
 			reqBase.chanFixPack(fixPack);
 			reqBase.setTxCode(txCode);
 			reqBase.setSourceType("JH");
-			//reqBase.setOthDate(reqBase.getHeader().gettTxnDat());
-			//reqBase.setOthTraceno(reqBase.getHeader().getsLogNo());
 			ctx.fireChannelRead(reqBase);
 		} finally {
 			ReferenceCountUtil.release(msg);

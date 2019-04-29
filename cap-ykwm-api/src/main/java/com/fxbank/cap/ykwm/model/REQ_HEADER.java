@@ -4,6 +4,13 @@ import java.io.Serializable;
 
 import com.fxbank.cip.base.model.FIXP_SERIAL;
 
+/** 
+* @ClassName: REQ_HEADER 
+* @Description: 请求报文头 
+* @author Duzhenduo
+* @date 2019年4月29日 下午3:02:43 
+*  
+*/
 public class REQ_HEADER implements Serializable,FIXP_SERIAL{
 
 	private static final long serialVersionUID = -4254351009472258829L;

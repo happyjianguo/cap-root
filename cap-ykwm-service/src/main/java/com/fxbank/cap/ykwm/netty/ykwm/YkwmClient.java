@@ -15,6 +15,13 @@ import org.springframework.stereotype.Component;
 
 import redis.clients.jedis.Jedis;
 
+/** 
+* @ClassName: YkwmClient 
+* @Description: 客户端通讯主程序
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:19:21 
+*  
+*/
 @Component
 public class YkwmClient {
 

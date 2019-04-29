@@ -1,10 +1,15 @@
 package com.fxbank.cap.ykwm.model;
 
-import java.math.BigDecimal;
-
 import com.fxbank.cip.base.log.MyLog;
 
 
+/** 
+* @ClassName: REQ_Query 
+* @Description: 欠费查询请求
+* @author Duzhenduo
+* @date 2019年4月29日 下午3:02:57 
+*  
+*/
 public class REQ_Query extends REQ_BASE {
 
 	private static final long serialVersionUID = 4990422436703924474L;

@@ -25,6 +25,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/** 
+* @ClassName: Query 
+* @Description: 欠费查询仿真
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:11:41 
+*  
+*/
 @Service("REQ_Query")
 public class Query implements TradeExecutionStrategy {
 

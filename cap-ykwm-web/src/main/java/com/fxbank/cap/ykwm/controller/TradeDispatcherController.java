@@ -14,6 +14,13 @@ import com.fxbank.cip.base.controller.TradeDispatcherBase;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.log.MyLog;
 
+/** 
+* @ClassName: TradeDispatcherController 
+* @Description: 交易处理控制器 
+* @author Duzhenduo
+* @date 2019年4月29日 下午1:44:13 
+*  
+*/
 @Controller
 public class TradeDispatcherController {
 

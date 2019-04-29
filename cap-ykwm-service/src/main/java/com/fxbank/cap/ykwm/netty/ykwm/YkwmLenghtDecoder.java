@@ -21,6 +21,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.util.ReferenceCountUtil;
 
+/** 
+* @ClassName: YkwmLenghtDecoder 
+* @Description: 客户端接收程序
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:20:13 
+* 
+* @param <T> 
+*/
 public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 
 	private static Logger logger = LoggerFactory.getLogger(YkwmLenghtDecoder.class);
@@ -28,6 +36,7 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 	private final Integer DATALENGTH = 4;
 	private NettySyncSlot<T> slot;
 	private ScrtUtil scrtUtil;
+	Pattern pattern = Pattern.compile("^[\\d]*$");
 
 	public YkwmLenghtDecoder(MyLog myLog, NettySyncSlot<T> slot,ScrtUtil scrtUtil) {
 		this.myLog = myLog;
@@ -84,7 +93,7 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 			ReferenceCountUtil.release(buf);
 		}
 
-		String body = scrtUtil.decrypt3DES(scrtUtil.hexStringToBytes(msgbuf.toString()));
+		String body = scrtUtil.decrypt3DES(ScrtUtil.hexStringToBytes(msgbuf.toString()));
 
 		this.myLog.info(logger, "接收到客户端请求["+body+"]");
 
@@ -92,7 +101,6 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 	}
 
 	public boolean isInteger(String str) {
-		Pattern pattern = Pattern.compile("^[\\d]*$");
 		return pattern.matcher(str).matches();
 	}
 

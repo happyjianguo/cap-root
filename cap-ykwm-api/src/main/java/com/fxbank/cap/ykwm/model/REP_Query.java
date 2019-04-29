@@ -8,10 +8,19 @@ import java.util.List;
 import com.fxbank.cip.base.log.MyLog;
 
 
+/** 
+* @ClassName: REP_Query 
+* @Description: 欠费查询响应报文
+* @author Duzhenduo
+* @date 2019年4月29日 下午3:02:09 
+*  
+*/
 public class REP_Query extends REP_BASE {
 
 	private static final long serialVersionUID = -5008748819109644373L;
 
+	private static final String RESULT = "0";
+	
 	   private String ownerName;
 
 	    private String address;
@@ -135,7 +144,7 @@ public class REP_Query extends REP_BASE {
     public String creaFixPack() {
         StringBuffer sb = new StringBuffer();
         sb.append(super.getHeader().creaFixPack());
-        if(!"0".equals(super.getHeader().getResult())) {
+        if(!RESULT.equals(super.getHeader().getResult())) {
         	return sb.toString();
         }
         sb.append(this.ownerName==null?"":this.ownerName).append("|");
@@ -177,7 +186,7 @@ public class REP_Query extends REP_BASE {
     	String[] array = pack.split("\\|");
     	int i = 0;
 		super.getHeader().chanFixPack(array[i++]);
-		if(!"0".equals(super.getHeader().getResult())) {
+		if(!RESULT.equals(super.getHeader().getResult())) {
         	return;
         }
 		this.ownerName = array[i++].trim();

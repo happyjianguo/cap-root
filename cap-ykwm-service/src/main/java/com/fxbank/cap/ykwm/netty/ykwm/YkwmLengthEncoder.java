@@ -7,12 +7,18 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
+/** 
+* @ClassName: YkwmLengthEncoder 
+* @Description: 客户端发送程序
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:21:00 
+*  
+*/
 public class YkwmLengthEncoder extends MessageToByteEncoder<Object> {
 
 	private static Logger logger = LoggerFactory.getLogger(YkwmLengthEncoder.class);

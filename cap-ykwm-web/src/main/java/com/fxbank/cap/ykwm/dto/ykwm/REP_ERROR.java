@@ -1,5 +1,12 @@
 package com.fxbank.cap.ykwm.dto.ykwm;
 
+/** 
+* @ClassName: REP_ERROR 
+* @Description: 错误应答报文
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:00:57 
+*  
+*/
 public class REP_ERROR extends REP_BASE {
 	
 	private String repMsg;

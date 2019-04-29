@@ -13,11 +13,20 @@ import com.fxbank.cip.base.log.MyLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** 
+* @ClassName: ForwardToYkwmService 
+* @Description: 营口热电接口请求服务
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:22:19 
+*  
+*/
 @Service(version = "1.0.0")
 public class ForwardToYkwmService implements IForwardToYkwmService {
 
 	private static Logger logger = LoggerFactory.getLogger(ForwardToYkwmService.class);
-
+    
+	private static final String RSP_CODE = "0"; 
+	
 	@Resource
 	private YkwmClient ykwmClient;
 
@@ -44,7 +53,8 @@ public class ForwardToYkwmService implements IForwardToYkwmService {
 			throw e;
 		} else {
 			String rspCode = repBase.getHeader().getResult();
-			if (!rspCode.equals("0")) { // 返回失败
+			// 返回失败
+			if (!RSP_CODE.equals(rspCode)) { 
 				String rspMsg = repBase.getHeader().getErrorMsg();
 				SysTradeExecuteException e = new SysTradeExecuteException(rspCode, rspMsg);
 				myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());

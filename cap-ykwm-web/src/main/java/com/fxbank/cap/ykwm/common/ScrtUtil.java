@@ -11,6 +11,13 @@ import org.springframework.stereotype.Component;
 import com.fxbank.cip.base.common.MyJedis;
 import redis.clients.jedis.Jedis;
 
+/** 
+* @ClassName: ScrtUtil 
+* @Description: DES加密
+* @author Duzhenduo
+* @date 2019年4月29日 下午1:39:40 
+*  
+*/
 @Component
 public class ScrtUtil {
 	private static Logger logger = LoggerFactory.getLogger(ScrtUtil.class);
@@ -18,6 +25,9 @@ public class ScrtUtil {
 	private static final String COMMON_PREFIX = "ykwm.";
 	private static final String DES3 = "DESede";
 	private static final String DES = "DES";
+	private static final int DES_LEN = 8;
+	private static final int DES3_LEN = 24;
+	
 	
 	@Resource
 	private MyJedis myJedis;
@@ -70,12 +80,12 @@ public class ScrtUtil {
 	 */
 	public static byte[] get3DesKey(String key) {
 		byte[] keyBytes = new byte[24];
-		if (key.getBytes().length > 24) {
-			for (int i = 0; i < 24; i++) {
+		if (key.getBytes().length > DES3_LEN) {
+			for (int i = 0; i < DES3_LEN; i++) {
 				keyBytes[i] = key.getBytes()[i];
 			}
 		} else {
-			for (int i = 0; i < 24; i++) {
+			for (int i = 0; i < DES3_LEN; i++) {
 				if (i < key.getBytes().length) {
 					keyBytes[i] = key.getBytes()[i];
 				} else {
@@ -94,12 +104,12 @@ public class ScrtUtil {
 	 */
 	public static byte[] getDesKey(String key) {
 		byte[] keyBytes = new byte[8];
-		if (key.getBytes().length > 8) {
-			for (int i = 0; i < 8; i++) {
+		if (key.getBytes().length > DES_LEN) {
+			for (int i = 0; i < DES_LEN; i++) {
 				keyBytes[i] = key.getBytes()[i];
 			}
 		} else {
-			for (int i = 0; i < 8; i++) {
+			for (int i = 0; i < DES_LEN; i++) {
 				if (i < key.getBytes().length) {
 					keyBytes[i] = key.getBytes()[i];
 				} else {
@@ -143,21 +153,24 @@ public class ScrtUtil {
 		}
 		return new String(retValue);
 	}
-	/*
-	 * 转换为16进制数
-	 * 
-	 * @param data
-	 * 
-	 * @return 16进制数
-	 */
+	
+	/** 
+	* @Title: getHexString 
+	* @Description: 转换为16进制数
+	* @param @param data
+	* @param @return    设定文件 
+	* @return String    返回类型 
+	* @throws 
+	*/
 	public static String getHexString(byte[] data) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < data.length; ++i) {
 			String ch = Integer.toHexString(data[i] & 0xFF).toUpperCase();
-			if (ch.length() == 2)
+			if (ch.length() == 2) {
 				sb.append(ch);
-			else
+			} else {
 				sb.append("0").append(ch);
+			}
 		}
 		return sb.toString();
 	}

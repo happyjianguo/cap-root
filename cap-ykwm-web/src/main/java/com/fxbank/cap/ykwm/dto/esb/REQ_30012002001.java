@@ -6,6 +6,13 @@ import com.fxbank.cip.base.dto.REQ_BASE;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 
 
+/** 
+* @ClassName: REQ_30012002001 
+* @Description: 柜面欠费查询请求
+* @author Duzhenduo
+* @date 2019年4月29日 下午1:56:39 
+*  
+*/
 public class REQ_30012002001 extends REQ_BASE {
 	
 	@JSONField(name = "APP_HEAD")
@@ -29,12 +36,12 @@ public class REQ_30012002001 extends REQ_BASE {
 		this.reqAppHead = reqAppHead;
 	}
 
-
+    @Override
 	public REQ_SYS_HEAD getReqSysHead() {
 		return reqSysHead;
 	}
 
-
+    @Override
 	public void setReqSysHead(REQ_SYS_HEAD reqSysHead) {
 		this.reqSysHead = reqSysHead;
 	}
@@ -51,14 +58,23 @@ public class REQ_30012002001 extends REQ_BASE {
 
 	public class REQ_BODY {
 
+		/** 
+		* @Fields companyID : 公司ID
+		*/ 
 		@JSONField(name = "CompanyID")
-		private String companyID;	//公司ID
+		private String companyID;	
 
+		/** 
+		* @Fields cardNum : 用户卡号
+		*/ 
 		@JSONField(name = "CardNum")
-		private String cardNum;	//用户卡号
+		private String cardNum;	
 		
+		/** 
+		* @Fields batchNum : 批次号
+		*/ 
 		@JSONField(name = "BatchNum")
-		private String batchNum;		//批次号
+		private String batchNum;		
 
 		public String getCompanyID() {
 			return companyID;

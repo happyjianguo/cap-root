@@ -15,6 +15,13 @@ import org.slf4j.LoggerFactory;
 import com.fxbank.cap.ykwm.common.ScrtUtil;
 import com.fxbank.cap.ykwm.model.REQ_HEADER;
 
+/** 
+* @ClassName: BASE_TEST 
+* @Description: 报文测试 
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:15:34 
+*  
+*/
 public class BASE_TEST {
     private static Logger logger = LoggerFactory.getLogger(BASE_TEST.class);
 
@@ -25,6 +32,15 @@ public class BASE_TEST {
 	@Resource
     private ScrtUtil scrtUtil;
 
+    /** 
+    * @Title: comm 
+    * @Description: 模拟报文
+    * @param @param reqData
+    * @param @return
+    * @param @throws Exception    设定文件 
+    * @return String    返回类型 
+    * @throws 
+    */
     public String comm(String reqData) throws Exception {
         Socket socket = new Socket(BASE_TEST.IP, BASE_TEST.PORT);
         InputStream is = null;
@@ -54,12 +70,15 @@ public class BASE_TEST {
             throw new RuntimeException(e);
         } finally {
             try {
-                if (os != null)
-                    os.close();
-                if (is != null)
-                    is.close();
-                if (socket != null)
-                    socket.close();
+				if (os != null) {
+					os.close();
+				}
+				if (is != null) {
+					is.close();
+				}
+				if (socket != null) {
+					socket.close();
+				}
             } catch (Exception e) {
                 this.logger.error("关闭连接异常", e);
             } finally {

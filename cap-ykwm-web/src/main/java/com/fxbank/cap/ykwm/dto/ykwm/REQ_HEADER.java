@@ -2,6 +2,13 @@ package com.fxbank.cap.ykwm.dto.ykwm;
 
 import com.fxbank.cip.base.model.FIXP_SERIAL;
 
+/** 
+* @ClassName: REQ_HEADER 
+* @Description: 请求报文头
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:03:13 
+*  
+*/
 public class REQ_HEADER implements FIXP_SERIAL {
 
 	private String tTxnNm;

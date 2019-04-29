@@ -7,6 +7,13 @@ import com.fxbank.cip.base.model.FIXP_SERIAL;
 import com.fxbank.cip.base.model.ModelBase;
 
 
+/** 
+* @ClassName: REQ_BASE 
+* @Description: 请求报文基类 
+* @author Duzhenduo
+* @date 2019年4月29日 下午3:02:25 
+*  
+*/
 public abstract class REQ_BASE extends ModelBase implements Serializable,FIXP_SERIAL{
 	
 	private static final long serialVersionUID = -6652288226005628489L;

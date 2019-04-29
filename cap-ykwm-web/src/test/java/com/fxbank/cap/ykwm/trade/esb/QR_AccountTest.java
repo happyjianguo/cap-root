@@ -31,6 +31,13 @@ import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
 
 
+/** 
+* @ClassName: QR_AccountTest 
+* @Description: 柜面欠费查询模拟
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:14:18 
+*  
+*/
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc	
@@ -58,15 +65,16 @@ public class QR_AccountTest {
 		reqSysHead.setSceneId("01");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
-		reqSysHead.setSourceType("YKWM");	//网联
-//		reqSysHead.setSourceType("302200");	//银联
+		//网联
+		reqSysHead.setSourceType("YKWM");	
 		reqSysHead.setBranchId("02002");
 		reqSysHead.setUserId("002241");
 		reqSysHead.setTranDate(String.valueOf(new SimpleDateFormat("yyyyMMdd").format(new Date())));
 		reqSysHead.setTranTimestamp(String.valueOf(new SimpleDateFormat("HHmmss").format(new Date())));		
 		reqSysHead.setUserLang("CHINESE");
 		reqSysHead.setSeqNo(String.valueOf(Math.abs(new Random().nextInt())));
-		reqSysHead.setSystemId("301907");	//网联
+		//网联
+		reqSysHead.setSystemId("301907");	
 		reqSysHead.setCompany("COMPANY");
 		reqSysHead.setSourceBranchNo("SOURCE_BRANCH_NO");
 		reqSysHead.setDestBranchNo("DEST_BRANCH_NO");

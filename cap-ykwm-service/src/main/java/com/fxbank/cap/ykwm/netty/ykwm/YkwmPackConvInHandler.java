@@ -11,6 +11,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 
+/** 
+* @ClassName: YkwmPackConvInHandler 
+* @Description: 客户端应答拆包
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:21:20 
+* 
+* @param <T> 
+*/
 public class YkwmPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 
 	private static Logger logger = LoggerFactory.getLogger(YkwmPackConvInHandler.class);
@@ -31,10 +39,6 @@ public class YkwmPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		try {
 			StringBuffer pack = new StringBuffer((String) msg);
-			//String mac = pack.substring(pack.length() - 16);
-			//this.myLog.info(logger, "mac=[" + mac + "]");
-			// TODO 校验MAC
-			
 			String fixPack = pack.substring(0, pack.length());
 			REP_BASE repBase = (REP_BASE) this.clazz.newInstance();
 			repBase.chanFixPack(fixPack);

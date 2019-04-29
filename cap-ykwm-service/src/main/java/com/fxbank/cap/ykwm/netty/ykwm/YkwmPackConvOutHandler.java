@@ -10,6 +10,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 
+/** 
+* @ClassName: YkwmPackConvOutHandler 
+* @Description: 客户端请求组包 
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:21:46 
+*  
+*/
 public class YkwmPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 
 	private static Logger logger = LoggerFactory.getLogger(YkwmPackConvOutHandler.class);

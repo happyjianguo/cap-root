@@ -10,6 +10,14 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 
+/** 
+* @ClassName: YkwmInitializer 
+* @Description: 客户端通讯初始化 
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:19:49 
+* 
+* @param <T> 
+*/
 public class YkwmInitializer<T> extends ChannelInitializer<SocketChannel> {
 
     private MyLog myLog;

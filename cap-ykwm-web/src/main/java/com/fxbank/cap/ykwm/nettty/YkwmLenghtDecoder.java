@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
-
 import com.fxbank.cap.ykwm.common.ScrtUtil;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.log.MyLog;
@@ -19,6 +17,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.util.ReferenceCountUtil;
 
+/** 
+* @ClassName: YkwmLenghtDecoder 
+* @Description: 来账请求接收
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:05:37 
+*  
+*/
 public class YkwmLenghtDecoder extends ByteToMessageDecoder {
 
 	private static Logger logger = LoggerFactory.getLogger(YkwmLenghtDecoder.class);
@@ -26,6 +31,8 @@ public class YkwmLenghtDecoder extends ByteToMessageDecoder {
 	private LogPool logPool;
 	private MyLog myLog;
 	private ScrtUtil scrtUtil;
+	Pattern pattern = Pattern.compile("^[\\d]*$");
+	
 
 	public YkwmLenghtDecoder(LogPool logPool,ScrtUtil scrtUtil) {
 		this.logPool = logPool;
@@ -82,7 +89,7 @@ public class YkwmLenghtDecoder extends ByteToMessageDecoder {
 			ReferenceCountUtil.release(buf);
 		}
 
-		String body = scrtUtil.decrypt3DES(scrtUtil.hexStringToBytes(msgbuf.toString()));
+		String body = scrtUtil.decrypt3DES(ScrtUtil.hexStringToBytes(msgbuf.toString()));
 
 		this.myLog.info(logger, "接收到客户端请求["+body+"]");
 
@@ -90,7 +97,6 @@ public class YkwmLenghtDecoder extends ByteToMessageDecoder {
 	}
 
 	public boolean isInteger(String str) {
-		Pattern pattern = Pattern.compile("^[\\d]*$");
 		return pattern.matcher(str).matches();
 	}
 

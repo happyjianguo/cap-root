@@ -5,7 +5,11 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.fxbank.cap.ykwm.model.REP_Query;
 import com.fxbank.cip.base.log.MyLog;
@@ -13,6 +17,13 @@ import com.fxbank.cip.base.log.MyLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** 
+* @ClassName: SimuYkwmServer 
+* @Description: 营口热电仿真
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:26:15 
+*  
+*/
 public class SimuYkwmServer {
 
     public static final String CODING = "UTF-8";
@@ -29,10 +40,13 @@ class Work {
     private static Logger logger = LoggerFactory.getLogger(Work.class);
 
     public String listen(Integer port) throws Exception {
-        ServerSocket ss = new ServerSocket(port);
-        while (true) {
-            this.logger.info("监听端口" + port + "，等待连接...");
-            Executors.newSingleThreadExecutor().execute(new Run(ss.accept()));
+		ServerSocket ss = new ServerSocket(port);
+		while (true) {
+			this.logger.info("监听端口" + port + "，等待连接...");
+			ThreadPoolExecutor pool = new ThreadPoolExecutor(1, 2, 60, TimeUnit.SECONDS,
+					new ArrayBlockingQueue<Runnable>(3) 
+					, Executors.defaultThreadFactory());
+			pool.execute(new Run(ss.accept()));
         }
     }
 }
@@ -76,12 +90,15 @@ class Run implements Runnable {
             // throw new RuntimeException(e);
         } finally {
             try {
-                if (os != null)
-                    os.close();
-                if (is != null)
-                    is.close();
-                if (this.socket != null)
-                    this.socket.close();
+				if (os != null) {
+					os.close();
+				}
+				if (is != null) {
+					is.close();
+				}
+				if (this.socket != null) {
+					this.socket.close();
+				}
             } catch (Exception e) {
                 this.logger.error("关闭连接异常", e);
             } finally {

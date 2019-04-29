@@ -5,6 +5,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/** 
+* @ClassName: REP_Query 
+* @Description: 欠费查询应答报文
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:02:16 
+*  
+*/
 public class REP_Query extends REP_BASE {
 
     private String ownerName;

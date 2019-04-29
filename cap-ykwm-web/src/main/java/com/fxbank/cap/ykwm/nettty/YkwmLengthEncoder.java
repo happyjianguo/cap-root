@@ -15,6 +15,13 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 
+/** 
+* @ClassName: YkwmLengthEncoder 
+* @Description: 来账应答发送
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:06:43 
+*  
+*/
 @Component("ykwmLengthEncoder")
 @Sharable
 public class YkwmLengthEncoder extends MessageToByteEncoder<Object> {

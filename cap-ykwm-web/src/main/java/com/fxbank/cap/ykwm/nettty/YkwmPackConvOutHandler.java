@@ -20,6 +20,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 
+/** 
+* @ClassName: YkwmPackConvOutHandler 
+* @Description: 来账应答组包
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:07:19 
+*  
+*/
 @Component("ykwmPackConvOutHandler")
 @Sharable
 public class YkwmPackConvOutHandler extends ChannelOutboundHandlerAdapter {
@@ -40,18 +47,21 @@ public class YkwmPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		String rspTyp = null;
 		String rspCode = null;
 		String rspMsg = null;
-		if (dto.getStatus().equals(DataTransObject.SUCCESS)) { // 交易成功
+		// 交易成功
+		if (dto.getStatus().equals(DataTransObject.SUCCESS)) { 
 			myLog.error(logger, "生成成功应答报文");
 			repDto = (REP_BASE) dtoMap.get("repDto");
 			rspCode = "0";
-		} else { // 交易失败
+		} else { 
+			// 交易失败
 			myLog.error(logger, "生成错误应答报文");
 			if (dto instanceof REP_BASE) {
 				repDto = (REP_BASE) dto;
 			} else {
 				repDto = new REP_ERROR();
 			}
-			rspTyp = "E";	//失败
+			//失败
+			rspTyp = "E";	
 			rspCode = (dto.getRspCode().equals("000000")||dto.getRspCode().equals(SysTradeExecuteException.CIP_E_999999)) ? "FX9999" : dto.getRspCode();
 			rspMsg = dto.getRspMsg();
 		}

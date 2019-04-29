@@ -32,22 +32,22 @@ public class SingleCrdtTradeTest {
     	params.append("211100000000000");
     	params.append(",");
     	//付款账号
-    	params.append("1200100003301583");
+    	params.append("1200100005501650");
     	params.append(",");
     	//付款户名
-    	params.append("盘锦市公积金");
+    	params.append("账户许可1");
     	params.append(",");
     	//收款账号
-    	params.append("1200100003301617");
+    	params.append("1200100005701570");
     	params.append(",");
     	//收款户名
-    	params.append("无用");
+    	params.append("账户许可");
     	params.append(",");
     	//交易金额
     	params.append("1000.00");
     	params.append(",");
     	//结算模式1：同行2：跨行实时3：跨行非实时
-    	params.append("3");
+    	params.append("1");
     	params.append(",");
     	//业务类型  02 部分提取 03销户提取 18 资金划转
     	params.append("02");

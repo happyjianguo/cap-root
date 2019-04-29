@@ -1,5 +1,12 @@
 package com.fxbank.cap.ykwm.dto.ykwm;
 
+/** 
+* @ClassName: REQ_Query 
+* @Description: 欠费查询请求
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:03:30 
+*  
+*/
 public class REQ_Query extends REQ_BASE {
 
 	private String companyID;

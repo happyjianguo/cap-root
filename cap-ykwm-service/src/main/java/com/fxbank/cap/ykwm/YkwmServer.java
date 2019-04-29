@@ -7,6 +7,13 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+/** 
+* @ClassName: YkwmServer 
+* @Description: 启动器
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:17:02 
+*  
+*/
 @ServletComponentScan
 @SpringBootApplication
 @EnableScheduling

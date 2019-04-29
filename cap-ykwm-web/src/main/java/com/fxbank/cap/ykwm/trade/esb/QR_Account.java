@@ -27,6 +27,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
+/** 
+* @ClassName: QR_Account 
+* @Description: 柜面欠费查询交易 
+* @author Duzhenduo
+* @date 2019年4月29日 下午2:10:52 
+*  
+*/
 @Service("REQ_30012002001")
 public class QR_Account extends TradeBase implements TradeExecutionStrategy {
 	private static Logger logger = LoggerFactory.getLogger(QR_Account.class);
