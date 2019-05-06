@@ -267,8 +267,12 @@ public class BatchResultDownloadTrade implements TradeExecutionStrategy {
 					acDataBuf.append(detailRecord.getHostRspMsg()).append("|");
 					//主机日期
 					acDataBuf.append(batchNo.substring(4,12)).append("|");
-					//主机流水号
-					acDataBuf.append(record.getSuccHostSeqNo()).append("|");
+					//主机流水号,失败置空
+				    if ("2".equals(detailRecord.getTxStatus())) {
+					   acDataBuf.append(record.getSuccHostSeqNo()).append("|");
+				    } else {
+					   acDataBuf.append("|");
+				    }
 					//回执编号
 					acDataBuf.append("").append("|");
 					//备用扩展

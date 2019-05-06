@@ -1,6 +1,5 @@
 package com.fxbank.cap.manager.quartz;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import org.slf4j.Logger;
@@ -45,7 +44,6 @@ public class BatchLoanTaskExecutor implements Runnable {
 	private MyJedis myJedis;
 
 	private static final String BRTEL_PREFIX = "paf_branch.";
-	private final static String COMMON_PREFIX = "paf_common.";
 
 	public BatchLoanTaskExecutor(MyLog myLog, Integer num, CountDownLatch latch, List<String> dataIndex,
 			IForwardToESBService forwardToESBService, IBatchLoanService batchLoanService, IPublicService publicService,
@@ -103,20 +101,24 @@ public class BatchLoanTaskExecutor implements Runnable {
 								// 验证付款户名与账号是否一致
 								if (!deAccountName.equals(record.getDeAcctName())) {
 									PafTradeExecuteException e = new PafTradeExecuteException(
-											PafTradeExecuteException.PAF_E_10008);
+											PafTradeExecuteException.PAF_E_10007);
 									myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg() + "批量编号"
 											+ masterModel.getBatchNo() + "序号" + str, e);
 									updModel.setBatchNo(masterModel.getBatchNo());
 									updModel.setSeqNo(str);
 									updModel.setTxStatus("3");
+									updModel.setHostRspCode(e.getRspCode());
+									updModel.setHostRspMsg(e.getRspMsg());
 									batchLoanService.updateDetail(updModel);
 									continue;
 								}
-							} catch (Exception e) {
+							} catch (SysTradeExecuteException e) {
 								myLog.error(logger, "批量交易单笔记账验证收款账户失败，批量编号" + masterModel.getBatchNo() + "序号" + str);
 								updModel.setBatchNo(masterModel.getBatchNo());
 								updModel.setSeqNo(str);
 								updModel.setTxStatus("3");
+								updModel.setHostRspCode(e.getRspCode());
+								updModel.setHostRspMsg(e.getRspMsg());
 								batchLoanService.updateDetail(updModel);
 								continue;
 							}
@@ -146,11 +148,13 @@ public class BatchLoanTaskExecutor implements Runnable {
 							//}
 							try {
 								esbRep_30011000101 = innerCapCharge(record);
-							} catch (Exception e) {
+							} catch (SysTradeExecuteException e) {
 								myLog.error(logger, "批量交易单笔记账失败，批量编号" + masterModel.getBatchNo() + "序号" + str, e);
 								updModel.setBatchNo(masterModel.getBatchNo());
 								updModel.setSeqNo(str);
 								updModel.setTxStatus("3");
+								updModel.setHostRspCode(e.getRspCode());
+								updModel.setHostRspMsg(e.getRspMsg());
 								batchLoanService.updateDetail(updModel);
 								continue;
 							}
@@ -161,15 +165,17 @@ public class BatchLoanTaskExecutor implements Runnable {
 						} else {
 							try {
 								ESB_REP_30041000801 esbRep_30041000801 = outerCapCharge(record);
-							} catch (Exception e) {
+							} catch (SysTradeExecuteException e) {
 								myLog.error(logger, "批量交易单笔记账失败，批量编号" + masterModel.getBatchNo() + "序号" + str);
 								updModel.setBatchNo(masterModel.getBatchNo());
 								updModel.setSeqNo(str);
 								updModel.setTxStatus("3");
+								updModel.setHostRspCode(e.getRspCode());
+								updModel.setHostRspMsg(e.getRspMsg());
 								batchLoanService.updateDetail(updModel);
 								continue;
 							}
-							myLog.info(logger, "批量付款跨行付款成功，批量编号" + masterModel.getBatchNo() + "序号" + str);
+							myLog.info(logger, "批量付款跨行扣款成功，批量编号" + masterModel.getBatchNo() + "序号" + str);
 						}
 						updModel.setTxStatus("2");
 						updModel.setHostSeqNo(hostSeqNo);
@@ -181,12 +187,14 @@ public class BatchLoanTaskExecutor implements Runnable {
 					updModel.setBatchNo(masterModel.getBatchNo());
 					updModel.setSeqNo(str);
 					updModel.setTxStatus("3");
+					updModel.setHostRspCode(e.getRspCode());
+					updModel.setHostRspMsg(e.getRspMsg());
 					try {
 						batchLoanService.updateDetail(updModel);
-						myLog.error(logger, "批量处理单笔付款异常，批量编号" + masterModel.getBatchNo() + "序号" + str, e);
+						myLog.error(logger, "批量处理单笔收款异常，批量编号" + masterModel.getBatchNo() + "序号" + str, e);
 					} catch (SysTradeExecuteException e1) {
-						myLog.error(logger, "批量处理单笔付款异常保存失败，批量编号" + masterModel.getBatchNo() + "序号" + str, e1);
-						throw new RuntimeException("批量处理单笔付款异常保存失败");
+						myLog.error(logger, "批量处理单笔收款异常保存失败，批量编号" + masterModel.getBatchNo() + "序号" + str, e1);
+						throw new RuntimeException("批量处理单笔收款异常保存失败");
 					}
 				}
 
