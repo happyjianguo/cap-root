@@ -42,10 +42,8 @@ public class TestUtils {
    // private static Integer PORT=6000;
    // private static String HOST="57.25.3.166";								//目标地址
    // private static Integer PORT=6000;
-	private static String HOST="57.25.3.118";								//目标地址
-    private static Integer PORT=10032;
-   // private static String HOST="57.25.8.121";								//目标地址
-   // private static Integer PORT=10032;
+   private static String HOST="57.25.8.121";								//目标地址
+   private static Integer PORT=10032;
 
 	private Socket socket;
     private OutputStream os;
