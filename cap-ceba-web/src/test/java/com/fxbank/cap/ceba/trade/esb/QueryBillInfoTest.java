@@ -89,7 +89,8 @@ public class QueryBillInfoTest {
 	@Test
 	public void payOk() throws Exception {
 		logger.info("查询缴费单信息测试");
-		reqBody.setBillKey("123456");
+		//billKey等于12345时，报错
+		reqBody.setBillKey("12345");
 		reqBody.setCompanyId("654321");
 		reqBody.setBeginNum("1");
 		reqBody.setQueryNum("1");

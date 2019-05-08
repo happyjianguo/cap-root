@@ -3,7 +3,10 @@ package com.fxbank.cap.ceba.dto.ceba;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.fxbank.cap.ceba.util.CebaXmlUtil;
 
 
 /** 
@@ -13,6 +16,7 @@ import javax.xml.bind.annotation.XmlType;
 * @date 2019年5月7日 下午5:04:13 
 *  
 */
+@XmlRootElement(name = "out")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class REP_ERROR extends REP_BASE{
 
@@ -31,9 +35,9 @@ public class REP_ERROR extends REP_BASE{
 	public static class Tout implements Serializable {
 
 		private static final long serialVersionUID = -5869723667927581751L;
-		private String errorCode;
-		private String errorMessage;
-		private String errorDetail;
+		private String errorCode = null;
+		private String errorMessage = "";
+		private String errorDetail = "";
 		public String getErrorCode() {
 			return errorCode;
 		}
@@ -64,7 +68,9 @@ public class REP_ERROR extends REP_BASE{
 	*/
 	@Override
 	public void chanFixPack(String pack) {
-		// TODO Auto-generated method stub
+		REP_ERROR res = (REP_ERROR) CebaXmlUtil.xmlToObject(this.getClass(), pack);
+		this.setHead(res.getHead());
+		this.setTout(res.getTout());
 		
 	}
 
@@ -76,8 +82,7 @@ public class REP_ERROR extends REP_BASE{
 	*/
 	@Override
 	public String creaFixPack() {
-		// TODO Auto-generated method stub
-		return null;
+		return CebaXmlUtil.objectToXml(this);
 	}
 
 }

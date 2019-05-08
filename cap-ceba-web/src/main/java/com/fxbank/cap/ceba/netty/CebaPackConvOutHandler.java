@@ -5,10 +5,12 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.fxbank.cap.ceba.dto.ceba.REP_BASE;
+import com.fxbank.cap.ceba.dto.ceba.REP_ERROR;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
+import com.fxbank.cip.base.model.FIXP_SERIAL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,21 +44,29 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		Map<String, DataTransObject> dtoMap = (Map<String, DataTransObject>) msg;
 		DataTransObject dto = dtoMap.get("repDto");
 		DataTransObject reqDto = dtoMap.get("reqDto");
-		REP_BASE repDto = null;
 		String rspTyp = null;
 		String rspCode = null;
 		String rspMsg = null;
+		REP_BASE repDto = null;
+		REP_ERROR repErr = null;
 		if (dto.getStatus().equals(DataTransObject.SUCCESS)) { 
-			myLog.error(logger, "生成成功应答报文");
-			repDto = (REP_BASE) dtoMap.get("repDto");
-			rspTyp = "N";	
-			rspCode = "FX0000";
-			rspMsg = "交易成功";
+			if (dto instanceof REP_ERROR) {
+				repErr = (REP_ERROR) dto;
+				rspTyp = "E";
+				rspCode = repErr.getTout().getErrorCode();
+				rspMsg = repErr.getTout().getErrorMessage();
+			} else {
+				myLog.error(logger, "生成成功应答报文");
+				repDto = (REP_BASE) dtoMap.get("repDto");
+				rspTyp = "N";
+				rspCode = "FX0000";
+				rspMsg = "交易成功";
+			}
 		} else { 
 			myLog.error(logger, "生成错误应答报文");
-			if (dto instanceof REP_BASE) {
-				repDto = (REP_BASE) dto;
-			} 
+			if (dto instanceof REP_ERROR) {
+				repErr = (REP_ERROR) dto;
+			}
 			rspTyp = "E";	
 			rspCode = (dto.getRspCode().equals("000000")||dto.getRspCode().equals(SysTradeExecuteException.CIP_E_999999)) ? "FX9999" : dto.getRspCode();
 			rspMsg = dto.getRspMsg();
@@ -66,7 +76,7 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		//生成MAC TODO
 		String mac = "FFFFFFFFFFFFFFFF";
 
-		StringBuffer fixPack = new StringBuffer(repDto.creaFixPack());
+		StringBuffer fixPack = new StringBuffer(dto instanceof REP_ERROR?repErr.creaFixPack():repDto.creaFixPack());
 		fixPack.append(mac);
 
 		ctx.writeAndFlush(fixPack.toString(),promise);

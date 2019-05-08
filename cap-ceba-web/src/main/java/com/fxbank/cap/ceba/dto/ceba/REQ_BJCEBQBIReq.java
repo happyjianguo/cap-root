@@ -14,6 +14,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fxbank.cap.ceba.model.QBIRRes;
+import com.fxbank.cap.ceba.util.CebaXmlUtil;
+
 /** 
 * @ClassName: REQ_BJCEBQBIReq 
 * @Description: 查询缴费单信息请求
@@ -108,7 +111,9 @@ public class REQ_BJCEBQBIReq extends REQ_BASE2 {
 	*/
 	@Override
 	public void chanFixPack(String pack) {
-		
+		REQ_BJCEBQBIReq res = (REQ_BJCEBQBIReq) CebaXmlUtil.xmlToObject(this.getClass(), pack);
+		this.setHead(res.getHead());
+		this.setTin(res.getTin());
 		
 	}
 
@@ -120,8 +125,7 @@ public class REQ_BJCEBQBIReq extends REQ_BASE2 {
 	*/
 	@Override
 	public String creaFixPack() {
-		// TODO Auto-generated method stub
-		return null;
+		return CebaXmlUtil.objectToXml(this);
 	}
 
 }

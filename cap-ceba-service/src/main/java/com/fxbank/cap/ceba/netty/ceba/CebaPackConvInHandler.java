@@ -1,6 +1,7 @@
 package com.fxbank.cap.ceba.netty.ceba;
 
 import com.fxbank.cap.ceba.model.REP_BASE;
+import com.fxbank.cap.ceba.model.REP_ERROR;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.netty.NettySyncClient;
 import com.fxbank.cip.base.netty.NettySyncSlot;
@@ -14,14 +15,14 @@ import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
 
-/** 
-* @ClassName: CebaPackConvInHandler 
-* @Description: 客户端应答拆包 
-* @作者 杜振铎
-* @date 2019年5月7日 下午5:13:11 
-* 
-* @param <T> 
-*/
+/**
+ * @ClassName: CebaPackConvInHandler
+ * @Description: 客户端应答拆包
+ * @作者 杜振铎
+ * @date 2019年5月7日 下午5:13:11
+ * 
+ * @param <T>
+ */
 public class CebaPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 
 	private static Logger logger = LoggerFactory.getLogger(CebaPackConvInHandler.class);
@@ -29,6 +30,8 @@ public class CebaPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 	private MyLog myLog;
 
 	private Class<T> clazz;
+
+	private static final String ERRORCODE = "Error";
 
 	public CebaPackConvInHandler(MyLog myLog, Class<T> clazz) {
 		this.myLog = myLog;
@@ -42,11 +45,17 @@ public class CebaPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 			String mac = pack.substring(pack.length() - 16);
 			this.myLog.info(logger, "mac=[" + mac + "]");
 			// TODO 校验MAC
-			
+
 			String fixPack = pack.substring(0, pack.length() - 16);
 			REP_BASE repBase = (REP_BASE) this.clazz.newInstance();
 			repBase.chanFixPack(fixPack);
-			ctx.fireChannelRead(repBase);
+			if (ERRORCODE.equals(repBase.getHead().getAnsTranCode())) {
+				REP_ERROR repErr = new REP_ERROR();
+				repErr.chanFixPack(fixPack);
+				ctx.fireChannelRead(repErr);
+			} else {
+				ctx.fireChannelRead(repBase);
+			}
 		} finally {
 			ReferenceCountUtil.release(msg);
 		}

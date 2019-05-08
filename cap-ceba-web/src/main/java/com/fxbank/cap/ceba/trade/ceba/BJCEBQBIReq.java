@@ -60,7 +60,8 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 			repError.getHead().setInstId("100000000000001");
 			repError.getHead().setAnsTranCode("Error");
 			repError.getHead().setTrmSeqNum("2010051000013010");
-			repError.getTout().setErrorCode("");
+			repError.getTout().setErrorCode("DEF0002");
+			return repError;
 		}
 		REP_BJCEBQBIRes rep = new REP_BJCEBQBIRes();
 		rep.getHead().setInstId("100000000000001");
