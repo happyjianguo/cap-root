@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBQBIRes;
 import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBQBIRes.Tout.Data;
+import com.fxbank.cap.ceba.dto.ceba.REP_ERROR;
 import com.fxbank.cap.ceba.dto.ceba.REQ_BJCEBQBIReq;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cip.base.common.LogPool;
@@ -46,13 +47,22 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 	private final static String COMMON_PREFIX = "ceba.";
 	
 	private static final Integer COUNT = 2;
+	
+	private static final String ERR_BILLKEY = "12345";
 
 	@Override
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
 		REQ_BJCEBQBIReq req = (REQ_BJCEBQBIReq) dto;
-		REP_BJCEBQBIRes rep = new REP_BJCEBQBIRes();
 		
+		if(ERR_BILLKEY.equals(req.getTin().getBillKey())) {
+			REP_ERROR repError = new REP_ERROR();
+			repError.getHead().setInstId("100000000000001");
+			repError.getHead().setAnsTranCode("Error");
+			repError.getHead().setTrmSeqNum("2010051000013010");
+			repError.getTout().setErrorCode("");
+		}
+		REP_BJCEBQBIRes rep = new REP_BJCEBQBIRes();
 		rep.getHead().setInstId("100000000000001");
 		rep.getHead().setAnsTranCode("BJCEBQBIRes");
 		rep.getHead().setTrmSeqNum("2010051000013010");

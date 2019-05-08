@@ -29,7 +29,7 @@ public class CebaLenghtDecoder<T> extends ByteToMessageDecoder {
 
 	private static Logger logger = LoggerFactory.getLogger(CebaLenghtDecoder.class);
 	private MyLog myLog;
-	private final Integer DATALENGTH = 8;
+	private final Integer DATALENGTH = 6;
 	Pattern pattern = Pattern.compile("^[\\d]*$");
 
 	public CebaLenghtDecoder(MyLog myLog) {

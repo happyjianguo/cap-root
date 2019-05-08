@@ -26,7 +26,7 @@ import io.netty.util.ReferenceCountUtil;
 public class CebaLenghtDecoder extends ByteToMessageDecoder {
 
 	private static Logger logger = LoggerFactory.getLogger(CebaLenghtDecoder.class);
-	private final Integer DATALENGTH = 8;
+	private final Integer DATALENGTH = 6;
 	private LogPool logPool;
 	private MyLog myLog;
 	

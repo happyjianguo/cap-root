@@ -31,7 +31,7 @@ public class CebaLengthEncoder extends MessageToByteEncoder<Object> {
 		String msgStr = (String) msg;
 		Integer msgStrLen = msgStr.getBytes(CebaClient.CODING).length;
 		StringBuffer sb = new StringBuffer();
-		sb.append(String.format("%08d", msgStrLen));
+		sb.append(String.format("%06d", msgStrLen));
 		sb.append(msgStr);
 		String reqPack = sb.toString();
 		this.myLog.info(logger, "发送请求报文=[" + reqPack);
