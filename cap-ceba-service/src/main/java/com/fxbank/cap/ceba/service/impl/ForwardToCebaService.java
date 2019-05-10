@@ -79,10 +79,10 @@ public class ForwardToCebaService implements IForwardToCebaService {
 		        String errorMsg = null;
 				for(ErrorInfo errorInfo:errorList.getData()){
 					if(errorInfo.getErrorCode().equals(errorCode)) {
-						if(reqBase.getHead().getAnsTranCode().startsWith("BJCEBQ")) {
-							errorMsg = errorInfo.getQrErrorMsg();
-						}else {
+						if(reqBase.getHead().getAnsTranCode().startsWith("BJCEBBC")) {
 							errorMsg = errorInfo.getCgErrorMsg();
+						}else {
+							errorMsg = errorInfo.getQrErrorMsg();
 						}
 					}
 				}

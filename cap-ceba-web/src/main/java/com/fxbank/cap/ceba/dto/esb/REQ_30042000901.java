@@ -57,16 +57,16 @@ public class REQ_30042000901 extends REQ_BASE {
 
 	public class REQ_BODY {
 
-		@JSONField(name = "billKey")
+		@JSONField(name = "BILL_KEY")
 		private String billKey;		
 
-		@JSONField(name = "companyId")
-		private String companyId;
+		@JSONField(name = "CITY_CODE")
+		private String cityCode;
 		
-		@JSONField(name = "beginNum")
-		private String beginNum;
+		@JSONField(name = "PROJ_CODE")
+		private String projCode;
 		
-		@JSONField(name = "queryNum")
+		@JSONField(name = "QUERY_NUM")
 		private String queryNum;
 
 		public String getBillKey() {
@@ -77,22 +77,6 @@ public class REQ_30042000901 extends REQ_BASE {
 			this.billKey = billKey;
 		}
 
-		public String getCompanyId() {
-			return companyId;
-		}
-
-		public void setCompanyId(String companyId) {
-			this.companyId = companyId;
-		}
-
-		public String getBeginNum() {
-			return beginNum;
-		}
-
-		public void setBeginNum(String beginNum) {
-			this.beginNum = beginNum;
-		}
-
 		public String getQueryNum() {
 			return queryNum;
 		}
@@ -100,8 +84,22 @@ public class REQ_30042000901 extends REQ_BASE {
 		public void setQueryNum(String queryNum) {
 			this.queryNum = queryNum;
 		}
-		
-	
+
+		public String getCityCode() {
+			return cityCode;
+		}
+
+		public void setCityCode(String cityCode) {
+			this.cityCode = cityCode;
+		}
+
+		public String getProjCode() {
+			return projCode;
+		}
+
+		public void setProjCode(String projCode) {
+			this.projCode = projCode;
+		}
 		
 	}
 }

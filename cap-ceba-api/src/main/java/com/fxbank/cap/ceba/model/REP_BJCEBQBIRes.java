@@ -11,16 +11,17 @@ import javax.xml.bind.annotation.XmlType;
 import com.fxbank.cap.ceba.util.CebaXmlUtil;
 import com.fxbank.cip.base.log.MyLog;
 
+
 /** 
-* @ClassName: QBIRRes 
-* @Description: 查询缴费单信息应答
+* @ClassName: REP_BJCEBQBIRes 
+* @Description: 缴费单信息查询应答
 * @作者 杜振铎
-* @date 2019年5月7日 下午5:00:06 
+* @date 2019年5月10日 下午4:58:52 
 *  
 */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "out")
-public class QBIRRes extends REP_BASE {
+public class REP_BJCEBQBIRes extends REP_BASE {
 
 	private static final long serialVersionUID = -5970071351047001526L;
 
@@ -34,11 +35,11 @@ public class QBIRRes extends REP_BASE {
 		this.tout = tout;
 	}
 
-	public QBIRRes() {
+	public REP_BJCEBQBIRes() {
 		super(null, 0, 0, 0);
 	}
 
-	public QBIRRes(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
+	public REP_BJCEBQBIRes(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
 		super(mylog, sysDate, sysTime, sysTraceno);
 	}
 
@@ -263,7 +264,7 @@ public class QBIRRes extends REP_BASE {
 	 */
 	@Override
 	public void chanFixPack(String pack) {
-		QBIRRes res = (QBIRRes) CebaXmlUtil.xmlToObject(this.getClass(), pack);
+		REP_BJCEBQBIRes res = (REP_BJCEBQBIRes) CebaXmlUtil.xmlToObject(this.getClass(), pack);
 		this.setHead(res.getHead());
 		this.setTout(res.getTout());
 	}

@@ -11,15 +11,15 @@ import com.fxbank.cap.ceba.util.CebaXmlUtil;
 import com.fxbank.cip.base.log.MyLog;
 
 /** 
-* @ClassName: QBIRReq 
-* @Description: 查询缴费单信息请求
+* @ClassName: REQ_BJCEBQBIRReq 
+* @Description: 查询缴费单信息请求 
 * @作者 杜振铎
-* @date 2019年5月7日 下午4:59:22 
+* @date 2019年5月10日 下午2:06:10 
 *  
 */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "in")
-public class QBIRReq extends REQ_BASE2 {
+public class REQ_BJCEBQBIReq extends REQ_BASE2 {
 
 	private static final long serialVersionUID = -5970071351047001526L;
 
@@ -33,11 +33,11 @@ public class QBIRReq extends REQ_BASE2 {
 		this.tin = tin;
 	}
 
-	public QBIRReq() {
+	public REQ_BJCEBQBIReq() {
 		super(null, 0, 0, 0);
 	}
 
-	public QBIRReq(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
+	public REQ_BJCEBQBIReq(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
 		super(mylog, sysDate, sysTime, sysTraceno);
 	}
 
@@ -47,8 +47,8 @@ public class QBIRReq extends REQ_BASE2 {
 		private static final long serialVersionUID = -581103924009687799L;
 		private String billKey = null;
 		private String companyId = null;
-		private String beginNum = null;
-		private String queryNum = null;
+		private String beginNum = "1";
+		private String queryNum = "";
 		private String filed1 = "";
 		private String filed2 = "";
 		private String filed3 = "";
@@ -125,7 +125,9 @@ public class QBIRReq extends REQ_BASE2 {
 	 */
 	@Override
 	public void chanFixPack(String pack) {
-
+		REQ_BJCEBQBIReq req = (REQ_BJCEBQBIReq) CebaXmlUtil.xmlToObject(this.getClass(), pack);
+		this.setHead(req.getHead());
+		this.setTin(req.getTin());
 	}
 
 	/**

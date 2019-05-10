@@ -13,9 +13,9 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.ceba.dto.esb.REP_30042000901;
 import com.fxbank.cap.ceba.dto.esb.REP_30042000901.DataInfo;
 import com.fxbank.cap.ceba.dto.esb.REQ_30042000901;
-import com.fxbank.cap.ceba.model.QBIRReq;
-import com.fxbank.cap.ceba.model.QBIRRes;
-import com.fxbank.cap.ceba.model.QBIRRes.Tout.Data;
+import com.fxbank.cap.ceba.model.REP_BJCEBQBIRes;
+import com.fxbank.cap.ceba.model.REP_BJCEBQBIRes.Tout.Data;
+import com.fxbank.cap.ceba.model.REQ_BJCEBQBIReq;
 import com.fxbank.cap.ceba.service.IForwardToCebaService;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cip.base.common.LogPool;
@@ -34,8 +34,8 @@ import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
 *  
 */
 @Service("REQ_30042000901")
-public class QueryBillInfo extends TradeBase implements TradeExecutionStrategy {
-	private static Logger logger = LoggerFactory.getLogger(QueryBillInfo.class);
+public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
+	private static Logger logger = LoggerFactory.getLogger(QR_BillInfo.class);
 
 	@Resource
 	private LogPool logPool;
@@ -57,16 +57,15 @@ public class QueryBillInfo extends TradeBase implements TradeExecutionStrategy {
 		REQ_30042000901 reqDto = (REQ_30042000901) dto;
 		REQ_30042000901.REQ_BODY reqBody = reqDto.getReqBody();
 		REP_30042000901 rep = new REP_30042000901();		
-		QBIRReq req = new QBIRReq(myLog, reqDto.getSysDate(), reqDto.getSysTime(), reqDto.getSysTraceno());
+		REQ_BJCEBQBIReq req = new REQ_BJCEBQBIReq(myLog, reqDto.getSysDate(), reqDto.getSysTime(), reqDto.getSysTraceno());
 		req.getHead().setInstId("100000000000001");
 		req.getHead().setAnsTranCode("BJCEBQBIReq");
 		req.getHead().setTrmSeqNum("2010051000013010");
-		req.getTin().setBillKey(reqDto.getReqBody().getBillKey());
-		req.getTin().setCompanyId(reqDto.getReqBody().getCompanyId());
-		req.getTin().setBeginNum(reqDto.getReqBody().getBeginNum());
-		req.getTin().setQueryNum(reqDto.getReqBody().getQueryNum());
-		QBIRRes res = forwardToCebaService.sendToCeba(req, 
-				QBIRRes.class);
+		req.getTin().setBillKey(reqBody.getBillKey());
+		req.getTin().setCompanyId(reqBody.getProjCode()+reqBody.getProjCode());
+		req.getTin().setQueryNum(reqBody.getQueryNum());
+		REP_BJCEBQBIRes res = forwardToCebaService.sendToCeba(req, 
+				REP_BJCEBQBIRes.class);
 		rep.getRepBody().setBillKey(res.getTout().getBillKey());
 		rep.getRepBody().setCompanyId(res.getTout().getCompanyId());
 		rep.getRepBody().setTotalNum(res.getTout().getTotalNum());

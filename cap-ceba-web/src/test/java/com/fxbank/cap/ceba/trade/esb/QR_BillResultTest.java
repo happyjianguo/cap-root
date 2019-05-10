@@ -24,28 +24,30 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ceba.dto.esb.REP_30042000901;
-import com.fxbank.cap.ceba.dto.esb.REQ_30042000901;
+import com.fxbank.cap.ceba.dto.esb.REP_30042000903;
+import com.fxbank.cap.ceba.dto.esb.REQ_30042000903;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
 
 
+
+
 /** 
-* @ClassName: QueryBillInfoTest 
-* @Description: 柜面查询缴费单信息测试
+* @ClassName: QR_BillResultTest 
+* @Description: 销账结果查询测试
 * @作者 杜振铎
-* @date 2019年5月7日 下午5:21:41 
+* @date 2019年5月10日 下午4:53:38 
 *  
 */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc	
-public class QueryBillInfoTest {
+public class QR_BillResultTest {
 	
-	private static Logger logger = LoggerFactory.getLogger(QueryBillInfoTest.class);
+	private static Logger logger = LoggerFactory.getLogger(QR_BillResultTest.class);
 	
-    private static final String URL="http://127.0.0.1:7000/esb/ceba.do";
+    private static final String URL="http://127.0.0.1:7012/esb/ceba.do";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -54,16 +56,16 @@ public class QueryBillInfoTest {
 	private LogPool logPool;
 	
 	
-	private REQ_30042000901 req ;
+	private REQ_30042000903 req ;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30042000901.REQ_BODY reqBody ;
+	private REQ_30042000903.REQ_BODY reqBody ;
 	
 	@Before
 	public void init(){
-		req = new REQ_30042000901();
+		req = new REQ_30042000903();
 		reqSysHead = new REQ_SYS_HEAD();
 		reqSysHead.setServiceId("300420009");
-		reqSysHead.setSceneId("01");
+		reqSysHead.setSceneId("03");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
 		reqSysHead.setSourceType("CEBA");	
@@ -88,23 +90,21 @@ public class QueryBillInfoTest {
 	
 	@Test
 	public void payOk() throws Exception {
-		logger.info("查询缴费单信息测试");
-		//billKey等于12345时，报错
-		reqBody.setBillKey("12345");
-		reqBody.setCompanyId("654321");
-		reqBody.setBeginNum("1");
-		reqBody.setQueryNum("1");
+		logger.info("销账结果查询测试");
+		//billNo等于12345时，报错
+		reqBody.setBillNo("123456");
+		reqBody.setPayDate("20190510160223");
 		
 		String reqContent = JSON.toJSONString(req);
-		logger.info("查询缴费单信息测试请求");
+		logger.info("销账结果查询测试请求");
 		RequestBuilder request = MockMvcRequestBuilders.post(URL)
 				.contentType(MediaType.APPLICATION_JSON_UTF8).content(reqContent);
 		MvcResult mvcResult = mockMvc.perform(request).andReturn();
-		logger.info("查询缴费单信息测试请求完毕");
+		logger.info("销账结果查询测试请求完毕");
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30042000901 rep = JsonUtil.toBean(repContent, REP_30042000901.class);
+		REP_30042000903 rep = JsonUtil.toBean(repContent, REP_30042000903.class);
 		System.out.println(rep);
 	}
 

@@ -7,16 +7,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import com.fxbank.cap.ceba.util.CebaXmlUtil;
 
+
 /** 
-* @ClassName: REQ_BJCEBQBIReq 
-* @Description: 查询缴费单信息请求
+* @ClassName: REQ_BJCEBBCReq 
+* @Description: 缴费单销账
 * @作者 杜振铎
-* @date 2019年5月7日 下午5:17:13 
+* @date 2019年5月9日 下午4:56:21 
 *  
 */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "in")
-public class REQ_BJCEBQBIReq extends REQ_BASE2 {
+public class REQ_BJCEBBCReq extends REQ_BASE2 {
 
 	private Tin tin = new Tin();
 
@@ -29,17 +30,24 @@ public class REQ_BJCEBQBIReq extends REQ_BASE2 {
 	}
 
 	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(propOrder = { "billKey", "companyId","beginNum","queryNum","filed1","filed2","filed3","filed4" })
+	@XmlType(propOrder = { "billKey", "companyId","billNo","payDate","filed1","filed2","filed3","filed4",
+			"customerName","payAccount","pin","payAmount","acType","contractNo"})
 	public static class Tin implements Serializable {
 		private static final long serialVersionUID = -581103924009687799L;
 		private String billKey = null;
 		private String companyId = null;
-		private String beginNum = "1";
-		private String queryNum = "";
+		private String billNo = null;
+		private String payDate = null;
 		private String filed1 = "";
 		private String filed2 = "";
 		private String filed3 = "";
 		private String filed4 = "";
+		private String customerName = null;
+		private String payAccount = null;
+		private String pin = null;
+		private String payAmount = null;
+		private String acType = null;
+		private String contractNo = null;
 		public String getBillKey() {
 			return billKey;
 		}
@@ -51,18 +59,6 @@ public class REQ_BJCEBQBIReq extends REQ_BASE2 {
 		}
 		public void setCompanyId(String companyId) {
 			this.companyId = companyId;
-		}
-		public String getBeginNum() {
-			return beginNum;
-		}
-		public void setBeginNum(String beginNum) {
-			this.beginNum = beginNum;
-		}
-		public String getQueryNum() {
-			return queryNum;
-		}
-		public void setQueryNum(String queryNum) {
-			this.queryNum = queryNum;
 		}
 		public String getFiled1() {
 			return filed1;
@@ -88,8 +84,54 @@ public class REQ_BJCEBQBIReq extends REQ_BASE2 {
 		public void setFiled4(String filed4) {
 			this.filed4 = filed4;
 		}
-
-		
+		public String getBillNo() {
+			return billNo;
+		}
+		public void setBillNo(String billNo) {
+			this.billNo = billNo;
+		}
+		public String getPayDate() {
+			return payDate;
+		}
+		public void setPayDate(String payDate) {
+			this.payDate = payDate;
+		}
+		public String getCustomerName() {
+			return customerName;
+		}
+		public void setCustomerName(String customerName) {
+			this.customerName = customerName;
+		}
+		public String getPayAccount() {
+			return payAccount;
+		}
+		public void setPayAccount(String payAccount) {
+			this.payAccount = payAccount;
+		}
+		public String getPin() {
+			return pin;
+		}
+		public void setPin(String pin) {
+			this.pin = pin;
+		}
+		public String getPayAmount() {
+			return payAmount;
+		}
+		public void setPayAmount(String payAmount) {
+			this.payAmount = payAmount;
+		}
+		public String getAcType() {
+			return acType;
+		}
+		public void setAcType(String acType) {
+			this.acType = acType;
+		}
+		public String getContractNo() {
+			return contractNo;
+		}
+		public void setContractNo(String contractNo) {
+			this.contractNo = contractNo;
+		}
 
 	}
 
@@ -101,7 +143,7 @@ public class REQ_BJCEBQBIReq extends REQ_BASE2 {
 	*/
 	@Override
 	public void chanFixPack(String pack) {
-		REQ_BJCEBQBIReq res = (REQ_BJCEBQBIReq) CebaXmlUtil.xmlToObject(this.getClass(), pack);
+		REQ_BJCEBBCReq res = (REQ_BJCEBBCReq) CebaXmlUtil.xmlToObject(this.getClass(), pack);
 		this.setHead(res.getHead());
 		this.setTin(res.getTin());
 		
