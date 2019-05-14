@@ -24,6 +24,9 @@ import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
+import com.fxbank.cip.pub.service.IPublicService;
+
+import redis.clients.jedis.Jedis;
 
 
 /** 
@@ -45,6 +48,9 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 
 	@Reference(version = "1.0.0")
 	private IForwardToCebaService forwardToCebaService;
+	
+	@Reference(version = "1.0.0")
+	private IPublicService publicService;
 
 	@Resource
 	private MyJedis myJedis;
@@ -58,9 +64,13 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		REQ_30042000901.REQ_BODY reqBody = reqDto.getReqBody();
 		REP_30042000901 rep = new REP_30042000901();		
 		REQ_BJCEBQBIReq req = new REQ_BJCEBQBIReq(myLog, reqDto.getSysDate(), reqDto.getSysTime(), reqDto.getSysTraceno());
-		req.getHead().setInstId("100000000000001");
+		String instld = null;
+		try (Jedis jedis = myJedis.connect()) {
+			instld = jedis.get(COMMON_PREFIX + "ceba_instld");
+		}
+		req.getHead().setInstId(instld);
 		req.getHead().setAnsTranCode("BJCEBQBIReq");
-		req.getHead().setTrmSeqNum("2010051000013010");
+		req.getHead().setTrmSeqNum(publicService.getSysDate("CIP").toString()+publicService.getSysTraceno());
 		req.getTin().setBillKey(reqBody.getBillKey());
 		req.getTin().setCompanyId(reqBody.getProjCode()+reqBody.getProjCode());
 		req.getTin().setQueryNum(reqBody.getQueryNum());
@@ -70,6 +80,7 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		rep.getRepBody().setCompanyId(res.getTout().getCompanyId());
 		rep.getRepBody().setTotalNum(res.getTout().getTotalNum());
 		List<DataInfo> dataList = new ArrayList<DataInfo>();
+		if(dataList != null) {
 		for(Data data:res.getTout().getData()) {
 			DataInfo temp = new DataInfo();
 			temp.setContractNo(data.getContractNo());
@@ -81,6 +92,8 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 			dataList.add(temp);
 		}
 		rep.getRepBody().setDataArray(dataList);
+		}
+		myLog.info(logger, "查询缴费单信息成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
 		return rep;
 	}
 

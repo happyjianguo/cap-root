@@ -17,6 +17,9 @@ import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
+import com.fxbank.cip.pub.service.IPublicService;
+
+import redis.clients.jedis.Jedis;
 
 
 
@@ -39,6 +42,9 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 
 	@Reference(version = "1.0.0")
 	private IForwardToCebaService forwardToCebaService;
+	
+	@Reference(version = "1.0.0")
+	private IPublicService publicService;
 
 	@Resource
 	private MyJedis myJedis;
@@ -52,9 +58,13 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 		REQ_30042000903.REQ_BODY reqBody = reqDto.getReqBody();
 		REP_30042000903 rep = new REP_30042000903();		
 		REQ_BJCEBBRQReq req = new REQ_BJCEBBRQReq(myLog, reqDto.getSysDate(), reqDto.getSysTime(), reqDto.getSysTraceno());
-		req.getHead().setInstId("100000000000001");
+		String instld = null;
+		try (Jedis jedis = myJedis.connect()) {
+			instld = jedis.get(COMMON_PREFIX + "ceba_instld");
+		}
+		req.getHead().setInstId(instld);
 		req.getHead().setAnsTranCode("BJCEBBRQReq");
-		req.getHead().setTrmSeqNum("2010051000013010");
+		req.getHead().setTrmSeqNum(publicService.getSysDate("CIP").toString()+publicService.getSysTraceno());
 		REQ_BJCEBBRQReq.Tin tin = req.getTin();
 		tin.setBillNo(reqBody.getBillNo());
 		tin.setPayDate(reqBody.getPayDate());
@@ -66,6 +76,7 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 		repBody.setBankBillNo(tout.getBankBillNo());
 		repBody.setPayAmount(tout.getPayAmount());
 		repBody.setPayState(tout.getPayState());
+		myLog.info(logger, "查询缴费单销账结果成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
 		return rep;
 	}
 }

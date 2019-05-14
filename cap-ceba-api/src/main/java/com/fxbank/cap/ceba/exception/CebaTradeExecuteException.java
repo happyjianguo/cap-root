@@ -18,6 +18,7 @@ public class CebaTradeExecuteException extends SysTradeExecuteException {
 	private static final long serialVersionUID = 1767308581692333362L;
 
 	public final static String CEBA_E_10001 = "FX0001";
+	public final static String CEBA_E_10002 = "FX0002";
 
 	public final static Map<String, String> TCEXERRCODECONV = new HashMap<String, String>() {
 
@@ -25,6 +26,7 @@ public class CebaTradeExecuteException extends SysTradeExecuteException {
 
 		{
 			put(CEBA_E_10001, "业务不支持");
+			put(CEBA_E_10002, "光大银行受理失败");
 		}
 	};
 

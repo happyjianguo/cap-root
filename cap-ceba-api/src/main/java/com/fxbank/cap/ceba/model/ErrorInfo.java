@@ -20,6 +20,9 @@ public class ErrorInfo {
 
 	@JSONField(name = "CG_ERROR_MSG")
 	private String cgErrorMsg;
+	
+	@JSONField(name = "CG_ERROR_TYPE")
+	private String cgErrorType;
 
 	public String getErrorCode() {
 		return errorCode;
@@ -43,6 +46,14 @@ public class ErrorInfo {
 
 	public void setCgErrorMsg(String cgErrorMsg) {
 		this.cgErrorMsg = cgErrorMsg;
+	}
+
+	public String getCgErrorType() {
+		return cgErrorType;
+	}
+
+	public void setCgErrorType(String cgErrorType) {
+		this.cgErrorType = cgErrorType;
 	}
 	
 	

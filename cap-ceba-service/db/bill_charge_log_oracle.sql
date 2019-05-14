@@ -17,7 +17,14 @@ receipt_no NVARCHAR2(30) NULL ,
 acct_date NVARCHAR2(8) NULL ,
 pay_state NVARCHAR2(10) NULL,
 error_code NVARCHAR2(7) NULL,
-check_state NVARCHAR2(1) NULL
+check_state NVARCHAR2(1) NULL,
+bill_no NVARCHAR2(30) NOT NULL,
+pay_date NUMBER(14) NOT NULL,
+host_date NUMBER(11) NULL,
+host_traceno NVARCHAR2(20) NULL,
+host_state NVARCHAR2(10) NULL,
+host_ret_code NVARCHAR2(20) NULL,
+host_ret_msg NVARCHAR2(200) NULL
 )
 
 ;
@@ -37,8 +44,15 @@ COMMENT ON COLUMN bill_charge_log.contract_no IS '合同号';
 COMMENT ON COLUMN bill_charge_log.bank_bill_no IS '光大银行处理流水';
 COMMENT ON COLUMN bill_charge_log.receipt_no IS '打印凭证号码';
 COMMENT ON COLUMN bill_charge_log.acct_date IS '光大银行账务日期';
-COMMENT ON COLUMN bill_charge_log.pay_state IS '订单状态,0-登记，1-超时，2-处理成功，3-处理失败';
+COMMENT ON COLUMN bill_charge_log.pay_state IS '光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败';
 COMMENT ON COLUMN bill_charge_log.error_code IS '光大银行处理失败时返回的错误代码';
 COMMENT ON COLUMN bill_charge_log.check_state IS '对账状态：0-未对账，1-已对账';
+COMMENT ON COLUMN bill_charge_log.bill_no IS '本行业务流水号';
+COMMENT ON COLUMN bill_charge_log.pay_date IS 'YYYYMMDDHHMMSS(缴费时送上的缴费单支付日期)';
+COMMENT ON COLUMN bill_charge_log.host_date IS '核心记账日期';
+COMMENT ON COLUMN bill_charge_log.host_traceno IS '核心记账流水号';
+COMMENT ON COLUMN bill_charge_log.host_state IS '核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时';
+COMMENT ON COLUMN bill_charge_log.host_ret_code IS '核心反馈响应码';
+COMMENT ON COLUMN bill_charge_log.host_ret_msg IS '核心反馈响应信息';
 
 ALTER TABLE bill_charge_log ADD PRIMARY KEY (plat_date, plat_trace);

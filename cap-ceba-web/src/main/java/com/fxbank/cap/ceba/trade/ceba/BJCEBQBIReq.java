@@ -57,16 +57,16 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 		
 		if(ERR_BILLKEY.equals(req.getTin().getBillKey())) {
 			REP_ERROR repError = new REP_ERROR();
-			repError.getHead().setInstId("100000000000001");
+			repError.getHead().setInstId(req.getHead().getInstId());
 			repError.getHead().setAnsTranCode("Error");
-			repError.getHead().setTrmSeqNum("2010051000013010");
+			repError.getHead().setTrmSeqNum(req.getHead().getTrmSeqNum());
 			repError.getTout().setErrorCode("DEF0002");
 			return repError;
 		}
 		REP_BJCEBQBIRes rep = new REP_BJCEBQBIRes();
-		rep.getHead().setInstId("100000000000001");
+		rep.getHead().setInstId(req.getHead().getInstId());
 		rep.getHead().setAnsTranCode("BJCEBQBIRes");
-		rep.getHead().setTrmSeqNum("2010051000013010");
+		rep.getHead().setTrmSeqNum(req.getHead().getTrmSeqNum());
 		rep.getTout().setBillKey("123456");
 		rep.getTout().setCompanyId("654321");
 		rep.getTout().setTotalNum("2");
