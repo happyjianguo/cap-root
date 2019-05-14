@@ -24,8 +24,8 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ceba.dto.esb.REP_30042000903;
-import com.fxbank.cap.ceba.dto.esb.REQ_30042000903;
+import com.fxbank.cap.ceba.dto.esb.REP_30063001402;
+import com.fxbank.cap.ceba.dto.esb.REQ_30063001402;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
@@ -56,16 +56,16 @@ public class QR_BillResultTest {
 	private LogPool logPool;
 	
 	
-	private REQ_30042000903 req ;
+	private REQ_30063001402 req ;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30042000903.REQ_BODY reqBody ;
+	private REQ_30063001402.REQ_BODY reqBody ;
 	
 	@Before
 	public void init(){
-		req = new REQ_30042000903();
+		req = new REQ_30063001402();
 		reqSysHead = new REQ_SYS_HEAD();
-		reqSysHead.setServiceId("300420009");
-		reqSysHead.setSceneId("03");
+		reqSysHead.setServiceId("300630014");
+		reqSysHead.setSceneId("02");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
 		reqSysHead.setSourceType("CEBA");	
@@ -91,8 +91,8 @@ public class QR_BillResultTest {
 	@Test
 	public void payOk() throws Exception {
 		logger.info("销账结果查询测试");
-		//billNo等于12345时，报错
-		reqBody.setBillNo("123456");
+		//pltfrmSeqNo等于12345时，报错
+		reqBody.setPltfrmSeqNo("123456");
 		reqBody.setPayDate("20190510160223");
 		
 		String reqContent = JSON.toJSONString(req);
@@ -104,7 +104,7 @@ public class QR_BillResultTest {
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30042000903 rep = JsonUtil.toBean(repContent, REP_30042000903.class);
+		REP_30063001402 rep = JsonUtil.toBean(repContent, REP_30063001402.class);
 		System.out.println(rep);
 	}
 

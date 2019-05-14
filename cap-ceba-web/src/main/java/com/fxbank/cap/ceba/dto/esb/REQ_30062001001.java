@@ -7,13 +7,13 @@ import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 
 
 /** 
-* @ClassName: REQ_30042000902 
+* @ClassName: REQ_30062001001 
 * @Description: 缴费单销账请求
 * @作者 杜振铎
 * @date 2019年5月10日 下午1:29:04 
 *  
 */
-public class REQ_30042000902 extends REQ_BASE {
+public class REQ_30062001001 extends REQ_BASE {
 	
 	@JSONField(name = "APP_HEAD")
 	private REQ_APP_HEAD reqAppHead;
@@ -24,7 +24,7 @@ public class REQ_30042000902 extends REQ_BASE {
 	@JSONField(name = "BODY")
 	private REQ_BODY reqBody;
 	
-	public REQ_30042000902(){
+	public REQ_30062001001(){
 		super.txDesc = "缴费单销账";
 	}
 
@@ -61,29 +61,29 @@ public class REQ_30042000902 extends REQ_BASE {
 		@JSONField(name = "BILL_KEY")
 		private String billKey;		
 
-		@JSONField(name = "CITY_CODE")
-		private String cityCode;
+		@JSONField(name = "PY_CITY_CODE")
+		private String pyCityCode;
 		
-		@JSONField(name = "PROJ_CODE")
-		private String projCode;
+		@JSONField(name = "PY_CREDIT_NO")
+		private String pyCreditNo;
 		
-		@JSONField(name = "CUSTOMER_NAME")
-		private String customerName;
+		@JSONField(name = "CLIENT_NNAE")
+		private String clientNnae;
 
-		@JSONField(name = "PAY_ACCOUNT")
-		private String payAccount;
+		@JSONField(name = "PAY_ACCT_NO")
+		private String payAcctNo;
 		
-		@JSONField(name = "PIN")
-		private String pin;
+		@JSONField(name = "PASSWORD")
+		private String password;
 		
-		@JSONField(name = "PAY_AMOUNT")
-		private String payAmount;
+		@JSONField(name = "UNPAID_AMT")
+		private String unpaidAmt;
 		
-		@JSONField(name = "AC_TYPE")
-		private String acType;
+		@JSONField(name = "ACCT_TYPE")
+		private String acctType;
 		
-		@JSONField(name = "BILL_NO")
-		private String billNo;
+		@JSONField(name = "PLTFRM_SEQ_NO")
+		private String pltfrmSeqNo;
 		
 		@JSONField(name = "PAY_DATE")
 		private String payDate;
@@ -99,68 +99,68 @@ public class REQ_30042000902 extends REQ_BASE {
 			this.billKey = billKey;
 		}
 
-		public String getCityCode() {
-			return cityCode;
+		public String getPyCityCode() {
+			return pyCityCode;
 		}
 
-		public void setCityCode(String cityCode) {
-			this.cityCode = cityCode;
+		public void setPyCityCode(String pyCityCode) {
+			this.pyCityCode = pyCityCode;
 		}
 
-		public String getProjCode() {
-			return projCode;
+		public String getPyCreditNo() {
+			return pyCreditNo;
 		}
 
-		public void setProjCode(String projCode) {
-			this.projCode = projCode;
+		public void setPyCreditNo(String pyCreditNo) {
+			this.pyCreditNo = pyCreditNo;
 		}
 
-		public String getCustomerName() {
-			return customerName;
+		public String getClientNnae() {
+			return clientNnae;
 		}
 
-		public void setCustomerName(String customerName) {
-			this.customerName = customerName;
+		public void setClientNnae(String clientNnae) {
+			this.clientNnae = clientNnae;
 		}
 
-		public String getPayAccount() {
-			return payAccount;
+		public String getPayAcctNo() {
+			return payAcctNo;
 		}
 
-		public void setPayAccount(String payAccount) {
-			this.payAccount = payAccount;
+		public void setPayAcctNo(String payAcctNo) {
+			this.payAcctNo = payAcctNo;
 		}
 
-		public String getPin() {
-			return pin;
+		public String getPassword() {
+			return password;
 		}
 
-		public void setPin(String pin) {
-			this.pin = pin;
+		public void setPassword(String password) {
+			this.password = password;
 		}
 
-		public String getPayAmount() {
-			return payAmount;
+		public String getUnpaidAmt() {
+			return unpaidAmt;
 		}
 
-		public void setPayAmount(String payAmount) {
-			this.payAmount = payAmount;
+		public void setUnpaidAmt(String unpaidAmt) {
+			this.unpaidAmt = unpaidAmt;
 		}
 
-		public String getAcType() {
-			return acType;
+		public String getAcctType() {
+			return acctType;
 		}
 
-		public void setAcType(String acType) {
-			this.acType = acType;
+		public void setAcctType(String acctType) {
+			this.acctType = acctType;
 		}
 
-		public String getBillNo() {
-			return billNo;
+		public String getPltfrmSeqNo() {
+			return pltfrmSeqNo;
 		}
 
-		public void setBillNo(String billNo) {
-			this.billNo = billNo;
+		public void setPltfrmSeqNo(String pltfrmSeqNo) {
+			this.pltfrmSeqNo = pltfrmSeqNo;
 		}
 
 		public String getPayDate() {
@@ -178,7 +178,6 @@ public class REQ_30042000902 extends REQ_BASE {
 		public void setContractNo(String contractNo) {
 			this.contractNo = contractNo;
 		}
-		
-		
+
 	}
 }

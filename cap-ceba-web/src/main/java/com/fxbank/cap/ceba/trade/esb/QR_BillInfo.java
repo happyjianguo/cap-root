@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.fxbank.cap.ceba.dto.esb.REP_30042000901;
-import com.fxbank.cap.ceba.dto.esb.REP_30042000901.DataInfo;
-import com.fxbank.cap.ceba.dto.esb.REQ_30042000901;
+import com.fxbank.cap.ceba.dto.esb.REP_30063001401;
+import com.fxbank.cap.ceba.dto.esb.REP_30063001401.DataInfo;
+import com.fxbank.cap.ceba.dto.esb.REQ_30063001401;
 import com.fxbank.cap.ceba.model.REP_BJCEBQBIRes;
 import com.fxbank.cap.ceba.model.REP_BJCEBQBIRes.Tout.Data;
 import com.fxbank.cap.ceba.model.REQ_BJCEBQBIReq;
@@ -31,12 +31,12 @@ import redis.clients.jedis.Jedis;
 
 /** 
 * @ClassName: QueryBillInfo 
-* @Description: 柜面查询缴费单信息 
+* @Description: 查询缴费单信息 
 * @作者 杜振铎
 * @date 2019年5月7日 下午5:21:07 
 *  
 */
-@Service("REQ_30042000901")
+@Service("REQ_30063001401")
 public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 	private static Logger logger = LoggerFactory.getLogger(QR_BillInfo.class);
 
@@ -60,9 +60,9 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 	@Override
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30042000901 reqDto = (REQ_30042000901) dto;
-		REQ_30042000901.REQ_BODY reqBody = reqDto.getReqBody();
-		REP_30042000901 rep = new REP_30042000901();		
+		REQ_30063001401 reqDto = (REQ_30063001401) dto;
+		REQ_30063001401.REQ_BODY reqBody = reqDto.getReqBody();
+		REP_30063001401 rep = new REP_30063001401();		
 		REQ_BJCEBQBIReq req = new REQ_BJCEBQBIReq(myLog, reqDto.getSysDate(), reqDto.getSysTime(), reqDto.getSysTraceno());
 		String instld = null;
 		try (Jedis jedis = myJedis.connect()) {
@@ -72,26 +72,24 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		req.getHead().setAnsTranCode("BJCEBQBIReq");
 		req.getHead().setTrmSeqNum(publicService.getSysDate("CIP").toString()+publicService.getSysTraceno());
 		req.getTin().setBillKey(reqBody.getBillKey());
-		req.getTin().setCompanyId(reqBody.getProjCode()+reqBody.getProjCode());
+		req.getTin().setCompanyId(reqBody.getPyCityCode()+reqBody.getPyCreditNo());
 		req.getTin().setQueryNum(reqBody.getQueryNum());
 		REP_BJCEBQBIRes res = forwardToCebaService.sendToCeba(req, 
 				REP_BJCEBQBIRes.class);
-		rep.getRepBody().setBillKey(res.getTout().getBillKey());
-		rep.getRepBody().setCompanyId(res.getTout().getCompanyId());
 		rep.getRepBody().setTotalNum(res.getTout().getTotalNum());
 		List<DataInfo> dataList = new ArrayList<DataInfo>();
 		if(dataList != null) {
 		for(Data data:res.getTout().getData()) {
 			DataInfo temp = new DataInfo();
 			temp.setContractNo(data.getContractNo());
-			temp.setCustomerName(data.getCustomerName());
+			temp.setClientNnae(data.getCustomerName());
 			temp.setBalance(data.getBalance());
-			temp.setPayAmount(data.getPayAmount());
-			temp.setBeginDate(data.getBeginDate());
+			temp.setUnpaidAmt(data.getPayAmount());
+			temp.setStartDate(data.getBeginDate());
 			temp.setEndDate(data.getEndDate());
 			dataList.add(temp);
 		}
-		rep.getRepBody().setDataArray(dataList);
+		rep.getRepBody().setPyInfoArray(dataList);
 		}
 		myLog.info(logger, "查询缴费单信息成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
 		return rep;

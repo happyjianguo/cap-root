@@ -69,11 +69,11 @@ public class ForwardToCebaService implements IForwardToCebaService {
 				String errorCode = repError.getTout().getErrorCode();
 				String jsonStrErrorList = null;
 				try(Jedis jedis = myJedis.connect()){
-					jsonStrErrorList = jedis.get(COMMON_PREFIX+"error_list");
+					jsonStrErrorList = jedis.get(COMMON_PREFIX+"ceba_error_list");
 		        }
 				if(jsonStrErrorList==null||jsonStrErrorList.length()==0){
-					logger.error("渠道未配置["+COMMON_PREFIX + "error_list"+"]");
-					throw new RuntimeException("渠道未配置["+COMMON_PREFIX + "error_list"+"]");
+					logger.error("渠道未配置["+COMMON_PREFIX + "ceba_error_list"+"]");
+					throw new RuntimeException("渠道未配置["+COMMON_PREFIX + "ceba_error_list"+"]");
 				}
 				ErrorList errorList = JsonUtil.toBean(jsonStrErrorList, ErrorList.class);
 		        String errorMsg = null;

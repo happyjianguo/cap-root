@@ -24,8 +24,8 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ceba.dto.esb.REP_30042000901;
-import com.fxbank.cap.ceba.dto.esb.REQ_30042000901;
+import com.fxbank.cap.ceba.dto.esb.REP_30063001401;
+import com.fxbank.cap.ceba.dto.esb.REQ_30063001401;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
@@ -33,7 +33,7 @@ import com.fxbank.cip.base.util.JsonUtil;
 
 /** 
 * @ClassName: QR_BillInfoTest 
-* @Description: 柜面查询缴费单信息测试
+* @Description: 查询缴费单信息测试
 * @作者 杜振铎
 * @date 2019年5月7日 下午5:21:41 
 *  
@@ -54,15 +54,15 @@ public class QR_BillInfoTest {
 	private LogPool logPool;
 	
 	
-	private REQ_30042000901 req ;
+	private REQ_30063001401 req ;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30042000901.REQ_BODY reqBody ;
+	private REQ_30063001401.REQ_BODY reqBody ;
 	
 	@Before
 	public void init(){
-		req = new REQ_30042000901();
+		req = new REQ_30063001401();
 		reqSysHead = new REQ_SYS_HEAD();
-		reqSysHead.setServiceId("300420009");
+		reqSysHead.setServiceId("300630014");
 		reqSysHead.setSceneId("01");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
@@ -91,8 +91,8 @@ public class QR_BillInfoTest {
 		logger.info("查询缴费单信息测试");
 		//billKey等于12345时，报错
 		reqBody.setBillKey("123456");
-		reqBody.setCityCode("001");
-		reqBody.setProjCode("001");
+		reqBody.setPyCityCode("001");
+		reqBody.setPyCreditNo("001");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("查询缴费单信息测试请求");
@@ -103,7 +103,7 @@ public class QR_BillInfoTest {
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30042000901 rep = JsonUtil.toBean(repContent, REP_30042000901.class);
+		REP_30063001401 rep = JsonUtil.toBean(repContent, REP_30063001401.class);
 		System.out.println(rep);
 	}
 

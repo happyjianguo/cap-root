@@ -1,8 +1,6 @@
 package com.fxbank.cap.ceba.dto.esb;
 
-import java.io.Serializable;
 import java.util.List;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fxbank.cip.base.dto.REP_APP_HEAD;
 import com.fxbank.cip.base.dto.REP_BASE;
@@ -10,13 +8,13 @@ import com.fxbank.cip.base.dto.REP_SYS_HEAD;
 
 
 /** 
-* @ClassName: REP_30042000901 
-* @Description: 柜面查询缴费单应答 
+* @ClassName: REP_30063001401 
+* @Description: 查询缴费单应答 
 * @作者 杜振铎
 * @date 2019年5月7日 下午5:18:11 
 *  
 */
-public class REP_30042000901 extends REP_BASE {
+public class REP_30063001401 extends REP_BASE {
 
 	@JSONField(name = "APP_HEAD")
 	private REP_APP_HEAD repAppHead = new REP_APP_HEAD();
@@ -62,33 +60,11 @@ public class REP_30042000901 extends REP_BASE {
 
 
 	public class REP_BODY {
-		 @JSONField(name = "billKey")
-	     private String billKey;
-		 
-		 @JSONField(name = "companyId")
-	     private String companyId;
-		 
-		 @JSONField(name = "totalNum")
+		 @JSONField(name = "TOTAL_NUM")
 	     private String totalNum;
 		 
-		 @JSONField(name = "Data")
-	     private List<DataInfo> dataArray;
-
-		public String getBillKey() {
-			return billKey;
-		}
-
-		public void setBillKey(String billKey) {
-			this.billKey = billKey;
-		}
-
-		public String getCompanyId() {
-			return companyId;
-		}
-
-		public void setCompanyId(String companyId) {
-			this.companyId = companyId;
-		}
+		 @JSONField(name = "PY_INFO_ARRAY")
+	     private List<DataInfo> pyInfoArray;
 
 		public String getTotalNum() {
 			return totalNum;
@@ -98,24 +74,27 @@ public class REP_30042000901 extends REP_BASE {
 			this.totalNum = totalNum;
 		}
 
-		public List<DataInfo> getDataArray() {
-			return dataArray;
+		public List<DataInfo> getPyInfoArray() {
+			return pyInfoArray;
 		}
 
-		public void setDataArray(List<DataInfo> dataArray) {
-			this.dataArray = dataArray;
+		public void setPyInfoArray(List<DataInfo> pyInfoArray) {
+			this.pyInfoArray = pyInfoArray;
 		}
-		 
-	     
+
 	}
-	public static class DataInfo implements Serializable{
-
-		private static final long serialVersionUID = 4092345989534005224L;
+	public static class DataInfo {
+		@JSONField(name = "CONTRACT_NO")
 		private String contractNo;
-		private String customerName;
+		@JSONField(name = "CLIENT_NNAE")
+		private String clientNnae;
+		@JSONField(name = "BALANCE")
 		private String balance;
-		private String payAmount;
-		private String beginDate;
+		@JSONField(name = "UNPAID_AMT")
+		private String unpaidAmt;
+		@JSONField(name = "START_DATE")
+		private String startDate;
+		@JSONField(name = "END_DATE")
 		private String endDate;
 		public String getContractNo() {
 			return contractNo;
@@ -123,11 +102,11 @@ public class REP_30042000901 extends REP_BASE {
 		public void setContractNo(String contractNo) {
 			this.contractNo = contractNo;
 		}
-		public String getCustomerName() {
-			return customerName;
+		public String getClientNnae() {
+			return clientNnae;
 		}
-		public void setCustomerName(String customerName) {
-			this.customerName = customerName;
+		public void setClientNnae(String clientNnae) {
+			this.clientNnae = clientNnae;
 		}
 		public String getBalance() {
 			return balance;
@@ -135,17 +114,17 @@ public class REP_30042000901 extends REP_BASE {
 		public void setBalance(String balance) {
 			this.balance = balance;
 		}
-		public String getPayAmount() {
-			return payAmount;
+		public String getUnpaidAmt() {
+			return unpaidAmt;
 		}
-		public void setPayAmount(String payAmount) {
-			this.payAmount = payAmount;
+		public void setUnpaidAmt(String unpaidAmt) {
+			this.unpaidAmt = unpaidAmt;
 		}
-		public String getBeginDate() {
-			return beginDate;
+		public String getStartDate() {
+			return startDate;
 		}
-		public void setBeginDate(String beginDate) {
-			this.beginDate = beginDate;
+		public void setStartDate(String startDate) {
+			this.startDate = startDate;
 		}
 		public String getEndDate() {
 			return endDate;
@@ -154,6 +133,5 @@ public class REP_30042000901 extends REP_BASE {
 			this.endDate = endDate;
 		}
 		
-		 
 	 }
 }

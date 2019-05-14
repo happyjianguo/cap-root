@@ -24,8 +24,8 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ceba.dto.esb.REP_30042000902;
-import com.fxbank.cap.ceba.dto.esb.REQ_30042000902;
+import com.fxbank.cap.ceba.dto.esb.REP_30062001001;
+import com.fxbank.cap.ceba.dto.esb.REQ_30062001001;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
@@ -55,16 +55,16 @@ public class CG_BillInfoTest {
 	private LogPool logPool;
 	
 	
-	private REQ_30042000902 req ;
+	private REQ_30062001001 req ;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30042000902.REQ_BODY reqBody ;
+	private REQ_30062001001.REQ_BODY reqBody ;
 	
 	@Before
 	public void init(){
-		req = new REQ_30042000902();
+		req = new REQ_30062001001();
 		reqSysHead = new REQ_SYS_HEAD();
-		reqSysHead.setServiceId("300420009");
-		reqSysHead.setSceneId("02");
+		reqSysHead.setServiceId("300620010");
+		reqSysHead.setSceneId("01");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
 		reqSysHead.setSourceType("CEBA");	
@@ -92,11 +92,11 @@ public class CG_BillInfoTest {
 		logger.info("缴费单销账测试");
 		//billKey等于12345时，报错
 		reqBody.setBillKey("123456");
-		reqBody.setCityCode("001");
-		reqBody.setProjCode("001");
-		reqBody.setCustomerName("张三");
-		reqBody.setPayAmount("5555");
-		reqBody.setBillNo("0079200000036834");
+		reqBody.setPyCityCode("001");
+		reqBody.setPyCreditNo("001");
+		reqBody.setClientNnae("张三");
+		reqBody.setUnpaidAmt("5555");
+		reqBody.setPltfrmSeqNo("0079200000036834");
 		reqBody.setPayDate("20190510160223");
 		
 		String reqContent = JSON.toJSONString(req);
@@ -108,7 +108,7 @@ public class CG_BillInfoTest {
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30042000902 rep = JsonUtil.toBean(repContent, REP_30042000902.class);
+		REP_30062001001 rep = JsonUtil.toBean(repContent, REP_30062001001.class);
 		System.out.println(rep);
 	}
 
