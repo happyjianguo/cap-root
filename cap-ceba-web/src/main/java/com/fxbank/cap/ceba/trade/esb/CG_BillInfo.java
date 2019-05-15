@@ -122,6 +122,7 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 					receiptNo = tout.getReceiptNo();
 					acctDate = tout.getAcctDate();
 				} catch (SysTradeExecuteException e1) {
+					//缴费成功
                     if(e1.getRspCode().equals(SUCCESS_FLAG)) {
                     	REP_BJCEBBRQRes res = queryCebaResult(reqDto);
                     	bankBillNo = res.getTout().getBankBillNo();
@@ -129,71 +130,14 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
                     	//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
                     	record.setPayState("2");
                     	billChargeLogService.logUpd(record);
+                    }else {
+                    	//缴费失败
+                    	cebaChargeFail(reqDto,hostTraceNo,record,e1);
                     }
 				}
 			}else {
-			//光大银行核心记账失败，错误码为退款时核心冲正，错误码为暂不退款直接报错	
-
-			ErrorList errorList = getErrorList();
-	        String errorMsg = null;
-			for(ErrorInfo errorInfo:errorList.getData()){
-				if(errorInfo.getErrorCode().equals(e.getRspCode())) {
-					//cgErrorType 0 退款 1暂不退款
-					if (errorInfo.getCgErrorType().equals("0")) {
-							try {
-								ESB_REP_30014000101 res = hostReversal(reqDto, hostTraceNo);
-								hostDate = res.getRepSysHead().getTranDate();
-								hostTraceNo = res.getRepSysHead().getReference();
-								hostRetCode = res.getRepSysHead().getRet().get(0).getRetCode();
-								hostRetMsg = res.getRepSysHead().getRet().get(0).getRetMsg();
-							} catch (SysTradeExecuteException e2) {
-								if("CIP_E_000004".equals(e2.getRspCode())) {
-									//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时
-									record.setHostState("3");
-									//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
-									record.setPayState("3");
-									myLog.error(logger, "缴费单销账核心冲正超时，渠道日期" + reqDto.getSysDate() + 
-											"渠道流水号" + reqDto.getSysTraceno(), e2);
-									billChargeLogService.logUpd(record);
-									CebaTradeExecuteException e3 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10002,e.getRspMsg()+"(退款成功)");
-									throw e3;
-								}else {
-									//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时
-									record.setHostState("2");
-									//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
-									record.setPayState("3");
-									myLog.error(logger, "缴费单销账核心冲正失败，渠道日期" + reqDto.getSysDate() + 
-											"渠道流水号" + reqDto.getSysTraceno(), e2);
-									billChargeLogService.logUpd(record);
-									CebaTradeExecuteException e3 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10002,e.getRspMsg()+"(退款失败)");
-									throw e3;
-								}
-							}
-						myLog.info(logger, "缴费单销账核心冲正成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
-						//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时
-						record.setHostState("1");
-						//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
-						record.setPayState("3");
-						record.setHostDate(Integer.parseInt(hostDate));
-						record.setHostTraceNo(hostTraceNo);
-						record.setHostRetCode(hostRetCode);
-						record.setHostRetMsg(hostRetMsg);
-						//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
-						record.setPayState("3");
-						billChargeLogService.logUpd(record);
-						CebaTradeExecuteException e3 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10002,e.getRspMsg()+"(退款成功)");
-						throw e3;
-					} else {
-						//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
-						record.setPayState("3");
-						billChargeLogService.logUpd(record);
-						errorMsg = errorInfo.getCgErrorMsg();
-						SysTradeExecuteException e1 = new SysTradeExecuteException(e.getRspCode(), errorMsg);
-						myLog.error(logger, e1.getRspCode() + " | " + e1.getRspMsg());
-						throw e1;
-					}
-				}
-			}
+				//缴费失败
+				cebaChargeFail(reqDto,hostTraceNo,record,e);
 		}
 		}
 		myLog.info(logger, "缴费单销账成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
@@ -207,6 +151,81 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		rep.getRepBody().setPrintVoucherNo(receiptNo);
 		rep.getRepBody().setPostDate(acctDate);
 		return rep;
+	}
+	/** 
+	* @Title: cebaChargeFail 
+	* @Description: 光大银行核心记账失败处理
+	* @param @param reqDto
+	* @param @param hostTraceNo
+	* @param @param record
+	* @param @param e
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @return void    返回类型 
+	* @throws 
+	*/
+	private void cebaChargeFail(REQ_30062001001 reqDto,String hostTraceNo,BillChargeLogModel record,SysTradeExecuteException e) throws SysTradeExecuteException {
+		MyLog myLog = logPool.get();
+		//光大银行核心记账失败，错误码为退款时核心冲正，错误码为暂不退款直接报错	
+		ErrorList errorList = getErrorList();
+        String errorMsg = null, hostDate = null,hostRetCode = null,hostRetMsg = null;
+		for(ErrorInfo errorInfo:errorList.getData()){
+			if(errorInfo.getErrorCode().equals(e.getRspCode())) {
+				//cgErrorType 0 退款 1暂不退款
+				if (errorInfo.getCgErrorType().equals("0")) {
+						try {
+							ESB_REP_30014000101 res = hostReversal(reqDto, hostTraceNo);
+							hostDate = res.getRepSysHead().getTranDate();
+							hostTraceNo = res.getRepSysHead().getReference();
+							hostRetCode = res.getRepSysHead().getRet().get(0).getRetCode();
+							hostRetMsg = res.getRepSysHead().getRet().get(0).getRetMsg();
+						} catch (SysTradeExecuteException e2) {
+							if("CIP_E_000004".equals(e2.getRspCode())) {
+								//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时
+								record.setHostState("3");
+								//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
+								record.setPayState("3");
+								myLog.error(logger, "缴费单销账核心冲正超时，渠道日期" + reqDto.getSysDate() + 
+										"渠道流水号" + reqDto.getSysTraceno(), e2);
+								billChargeLogService.logUpd(record);
+								CebaTradeExecuteException e3 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10002,e.getRspMsg()+"(退款成功)");
+								throw e3;
+							}else {
+								//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时
+								record.setHostState("2");
+								//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
+								record.setPayState("3");
+								myLog.error(logger, "缴费单销账核心冲正失败，渠道日期" + reqDto.getSysDate() + 
+										"渠道流水号" + reqDto.getSysTraceno(), e2);
+								billChargeLogService.logUpd(record);
+								CebaTradeExecuteException e3 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10002,e.getRspMsg()+"(退款失败)");
+								throw e3;
+							}
+						}
+					myLog.info(logger, "缴费单销账核心冲正成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
+					//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时
+					record.setHostState("1");
+					//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
+					record.setPayState("3");
+					record.setHostDate(Integer.parseInt(hostDate));
+					record.setHostTraceNo(hostTraceNo);
+					record.setHostRetCode(hostRetCode);
+					record.setHostRetMsg(hostRetMsg);
+					//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
+					record.setPayState("3");
+					billChargeLogService.logUpd(record);
+					CebaTradeExecuteException e3 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10002,e.getRspMsg()+"(退款成功)");
+					throw e3;
+				} else {
+					//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
+					record.setPayState("3");
+					billChargeLogService.logUpd(record);
+					errorMsg = errorInfo.getCgErrorMsg();
+					SysTradeExecuteException e1 = new SysTradeExecuteException(e.getRspCode(), errorMsg);
+					myLog.error(logger, e1.getRspCode() + " | " + e1.getRspMsg());
+					throw e1;
+				}
+			}
+		}
 	}
 	/** 
 	* @Title: hostCharge 
