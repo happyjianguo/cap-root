@@ -1,10 +1,13 @@
 package com.fxbank.cap.ceba.service.impl;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fxbank.cap.ceba.model.ErrorInfo;
-import com.fxbank.cap.ceba.model.ErrorList;
 import com.fxbank.cap.ceba.model.REP_BASE;
 import com.fxbank.cap.ceba.model.REP_ERROR;
 import com.fxbank.cap.ceba.model.REQ_BASE2;
@@ -33,6 +36,8 @@ public class ForwardToCebaService implements IForwardToCebaService {
 	private static Logger logger = LoggerFactory.getLogger(ForwardToCebaService.class);
 
 	private static final String ERROR = "Error";
+	
+	private static final String CHARGE_PREFIX = "BJCEBBC";
 	
 	@Resource
 	private CebaClient cebaClient;
@@ -67,25 +72,24 @@ public class ForwardToCebaService implements IForwardToCebaService {
 			if (ERROR.equals(rspCode)) { 
 				REP_ERROR repError = (REP_ERROR)repBase;
 				String errorCode = repError.getTout().getErrorCode();
-				String jsonStrErrorList = null;
+				String jsonStr = null;
 				try(Jedis jedis = myJedis.connect()){
-					jsonStrErrorList = jedis.get(COMMON_PREFIX+"ceba_error_list");
+					jsonStr = jedis.get(COMMON_PREFIX+"ceba_error_list");
 		        }
-				if(jsonStrErrorList==null||jsonStrErrorList.length()==0){
+				if(jsonStr==null||jsonStr.length()==0){
 					logger.error("渠道未配置["+COMMON_PREFIX + "ceba_error_list"+"]");
 					throw new RuntimeException("渠道未配置["+COMMON_PREFIX + "ceba_error_list"+"]");
 				}
-				ErrorList errorList = JsonUtil.toBean(jsonStrErrorList, ErrorList.class);
+				Map<String,ErrorInfo> map = (Map)JSONObject.parse(jsonStr);
+				ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(map.get(errorCode)),ErrorInfo.class);
 		        String errorMsg = null;
-				for(ErrorInfo errorInfo:errorList.getData()){
-					if(errorInfo.getErrorCode().equals(errorCode)) {
-						if(reqBase.getHead().getAnsTranCode().startsWith("BJCEBBC")) {
+						if(reqBase.getHead().getAnsTranCode().startsWith(CHARGE_PREFIX)) {
 							errorMsg = errorInfo.getCgErrorMsg();
 						}else {
 							errorMsg = errorInfo.getQrErrorMsg();
 						}
-					}
-				}
+					
+				
 				SysTradeExecuteException e = new SysTradeExecuteException(errorCode,errorMsg);
 				myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
 				throw e;

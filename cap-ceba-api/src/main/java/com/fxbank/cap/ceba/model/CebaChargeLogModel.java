@@ -7,22 +7,23 @@ import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.model.ModelBase;
 
 /** 
-* @ClassName: BillChargeLogModel 
+* @ClassName: CebaChargeLogModel 
 * @Description: 缴费单销账日志模型
 * @作者 杜振铎
 * @date 2019年5月14日 下午2:10:15 
 *  
 */
-public class BillChargeLogModel extends ModelBase implements Serializable{
+public class CebaChargeLogModel extends ModelBase implements Serializable{
 	
 	private static final long serialVersionUID = 4985529026950360461L;
 	
-	public BillChargeLogModel(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
+	public CebaChargeLogModel(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
 		super(mylog, sysDate, sysTime, sysTraceno);
 	}
 	
 	private String sourceType;
 	private String txBranch;
+	private String txTel;
 	private String billKey;
 	private String companyId;
 	private String customerName;
@@ -36,8 +37,7 @@ public class BillChargeLogModel extends ModelBase implements Serializable{
 	private String payState;
 	private String errorCode;
 	private String checkState;
-	private String billNo;
-	private Integer payDate;
+	private String seqNo;
 	private Integer hostDate;
 	private String hostTraceNo;
 	private String hostState;
@@ -134,17 +134,18 @@ public class BillChargeLogModel extends ModelBase implements Serializable{
 	public void setCheckState(String checkState) {
 		this.checkState = checkState;
 	}
-	public String getBillNo() {
-		return billNo;
+	
+	public String getTxTel() {
+		return txTel;
 	}
-	public void setBillNo(String billNo) {
-		this.billNo = billNo;
+	public void setTxTel(String txTel) {
+		this.txTel = txTel;
 	}
-	public Integer getPayDate() {
-		return payDate;
+	public String getSeqNo() {
+		return seqNo;
 	}
-	public void setPayDate(Integer payDate) {
-		this.payDate = payDate;
+	public void setSeqNo(String seqNo) {
+		this.seqNo = seqNo;
 	}
 	public Integer getHostDate() {
 		return hostDate;

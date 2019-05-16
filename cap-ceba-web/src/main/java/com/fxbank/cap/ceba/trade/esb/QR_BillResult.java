@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.ceba.dto.esb.REP_30063001402;
 import com.fxbank.cap.ceba.dto.esb.REQ_30063001402;
+import com.fxbank.cap.ceba.exception.CebaTradeExecuteException;
+import com.fxbank.cap.ceba.model.CebaChargeLogModel;
 import com.fxbank.cap.ceba.model.REP_BJCEBBRQRes;
 import com.fxbank.cap.ceba.model.REQ_BJCEBBRQReq;
+import com.fxbank.cap.ceba.service.ICebaChargeLogService;
 import com.fxbank.cap.ceba.service.IForwardToCebaService;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cip.base.common.LogPool;
@@ -45,6 +48,9 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 	
 	@Reference(version = "1.0.0")
 	private IPublicService publicService;
+	
+	@Reference(version = "1.0.0")
+	private ICebaChargeLogService cebaChargeLogService;
 
 	@Resource
 	private MyJedis myJedis;
@@ -66,8 +72,13 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 		req.getHead().setAnsTranCode("BJCEBBRQReq");
 		req.getHead().setTrmSeqNum(publicService.getSysDate("CIP").toString()+publicService.getSysTraceno());
 		REQ_BJCEBBRQReq.Tin tin = req.getTin();
-		tin.setBillNo(reqBody.getPltfrmSeqNo());
-		tin.setPayDate(reqBody.getPayDate());
+		CebaChargeLogModel logModel = cebaChargeLogService.queryLogBySeqNo(myLog, reqBody.getChannelSeqNo());
+		if(logModel==null) {
+			CebaTradeExecuteException e = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10005);
+			throw e;
+		}
+		tin.setBillNo(logModel.getSysTraceno().toString());
+		tin.setPayDate(logModel.getSysDate().toString()+logModel.getSysTime().toString());
 		REP_BJCEBBRQRes res = forwardToCebaService.sendToCeba(req, 
 				REP_BJCEBBRQRes.class);
 		REP_BJCEBBRQRes.Tout tout = res.getTout();

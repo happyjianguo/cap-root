@@ -92,8 +92,7 @@ public class QR_BillResultTest {
 	public void payOk() throws Exception {
 		logger.info("销账结果查询测试");
 		//pltfrmSeqNo等于12345时，报错
-		reqBody.setPltfrmSeqNo("123456");
-		reqBody.setPayDate("20190510160223");
+		reqBody.setChannelSeqNo("123456");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("销账结果查询测试请求");

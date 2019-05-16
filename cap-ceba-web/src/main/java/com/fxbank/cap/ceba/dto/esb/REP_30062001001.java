@@ -50,37 +50,26 @@ public class REP_30062001001 extends REP_BASE {
 	}
 
 	public class REP_BODY {
-		@JSONField(name = "PLTF_SEQ_NO")
-		private String pltfSeqNo;
+		@JSONField(name = "CHANNEL_DATE")
+		private String channelDate;
 
-		@JSONField(name = "PRINT_VOUCHER_NO")
-		private String printVoucherNo;
+		@JSONField(name = "CHANNEL_SEQ_NO")
+		private String channelSeqNo;
 
-		@JSONField(name = "POST_DATE")
-		private String postDate;
-
-		public String getPltfSeqNo() {
-			return pltfSeqNo;
+		public String getChannelDate() {
+			return channelDate;
 		}
 
-		public void setPltfSeqNo(String pltfSeqNo) {
-			this.pltfSeqNo = pltfSeqNo;
+		public void setChannelDate(String channelDate) {
+			this.channelDate = channelDate;
 		}
 
-		public String getPrintVoucherNo() {
-			return printVoucherNo;
+		public String getChannelSeqNo() {
+			return channelSeqNo;
 		}
 
-		public void setPrintVoucherNo(String printVoucherNo) {
-			this.printVoucherNo = printVoucherNo;
-		}
-
-		public String getPostDate() {
-			return postDate;
-		}
-
-		public void setPostDate(String postDate) {
-			this.postDate = postDate;
+		public void setChannelSeqNo(String channelSeqNo) {
+			this.channelSeqNo = channelSeqNo;
 		}
 
 	}

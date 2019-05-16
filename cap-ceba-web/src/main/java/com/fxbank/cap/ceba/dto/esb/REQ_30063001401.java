@@ -66,6 +66,9 @@ public class REQ_30063001401 extends REQ_BASE {
 		@JSONField(name = "PY_CREDIT_NO")
 		private String pyCreditNo;
 		
+		@JSONField(name = "START_NUM")
+		private String startNum;
+		
 		@JSONField(name = "QUERY_NUM")
 		private String queryNum;
 
@@ -99,6 +102,14 @@ public class REQ_30063001401 extends REQ_BASE {
 
 		public void setPyCreditNo(String pyCreditNo) {
 			this.pyCreditNo = pyCreditNo;
+		}
+
+		public String getStartNum() {
+			return startNum;
+		}
+
+		public void setStartNum(String startNum) {
+			this.startNum = startNum;
 		}
 		
 	}

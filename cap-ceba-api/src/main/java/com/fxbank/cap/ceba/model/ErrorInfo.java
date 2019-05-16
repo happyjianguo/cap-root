@@ -11,10 +11,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 *  
 */
 public class ErrorInfo {
-	
-	@JSONField(name = "ERROR_CODE")
-	private String errorCode;
-	
+
 	@JSONField(name = "QR_ERROR_MSG")
 	private String qrErrorMsg;
 
@@ -23,14 +20,6 @@ public class ErrorInfo {
 	
 	@JSONField(name = "CG_ERROR_TYPE")
 	private String cgErrorType;
-
-	public String getErrorCode() {
-		return errorCode;
-	}
-
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
-	}
 
 	public String getQrErrorMsg() {
 		return qrErrorMsg;

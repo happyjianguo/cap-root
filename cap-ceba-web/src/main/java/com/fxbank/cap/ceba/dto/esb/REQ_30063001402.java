@@ -58,27 +58,16 @@ public class REQ_30063001402 extends REQ_BASE {
 
 	public class REQ_BODY {
 
-		@JSONField(name = "PLTFRM_SEQ_NO")
-		private String pltfrmSeqNo;		
+		@JSONField(name = "CHANNEL_SEQ_NO")
+		private String channelSeqNo;
 
-		@JSONField(name = "PAY_DATE")
-		private String payDate;
-
-		public String getPltfrmSeqNo() {
-			return pltfrmSeqNo;
+		public String getChannelSeqNo() {
+			return channelSeqNo;
 		}
 
-		public void setPltfrmSeqNo(String pltfrmSeqNo) {
-			this.pltfrmSeqNo = pltfrmSeqNo;
-		}
+		public void setChannelSeqNo(String channelSeqNo) {
+			this.channelSeqNo = channelSeqNo;
+		}		
 
-		public String getPayDate() {
-			return payDate;
-		}
-
-		public void setPayDate(String payDate) {
-			this.payDate = payDate;
-		}
-		
 	}
 }

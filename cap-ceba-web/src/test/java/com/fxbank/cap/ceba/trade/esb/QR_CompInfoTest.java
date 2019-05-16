@@ -22,29 +22,27 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ceba.dto.esb.REP_30062001001;
-import com.fxbank.cap.ceba.dto.esb.REQ_30062001001;
+import com.fxbank.cap.ceba.dto.esb.REP_30063001403;
+import com.fxbank.cap.ceba.dto.esb.REQ_30063001403;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
 
 
-
 /** 
-* @ClassName: CG_BillInfoTest 
-* @Description: 缴费单销账测试 
+* @ClassName: QR_CompInfoTest 
+* @Description: 收费单位查询测试
 * @作者 杜振铎
-* @date 2019年5月10日 下午3:57:29 
+* @date 2019年5月16日 下午2:48:14 
 *  
 */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc	
-public class CG_BillInfoTest {
+public class QR_CompInfoTest {
 	
-	private static Logger logger = LoggerFactory.getLogger(CG_BillInfoTest.class);
+	private static Logger logger = LoggerFactory.getLogger(QR_CompInfoTest.class);
 	
     private static final String URL="http://127.0.0.1:7012/esb/ceba.do";
 
@@ -55,16 +53,16 @@ public class CG_BillInfoTest {
 	private LogPool logPool;
 	
 	
-	private REQ_30062001001 req ;
+	private REQ_30063001403 req ;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30062001001.REQ_BODY reqBody ;
+	private REQ_30063001403.REQ_BODY reqBody ;
 	
 	@Before
 	public void init(){
-		req = new REQ_30062001001();
+		req = new REQ_30063001403();
 		reqSysHead = new REQ_SYS_HEAD();
-		reqSysHead.setServiceId("300620010");
-		reqSysHead.setSceneId("01");
+		reqSysHead.setServiceId("300630014");
+		reqSysHead.setSceneId("03");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
 		reqSysHead.setSourceType("CEBA");	
@@ -89,24 +87,20 @@ public class CG_BillInfoTest {
 	
 	@Test
 	public void payOk() throws Exception {
-		logger.info("缴费单销账测试");
-		//billKey等于12345时，报错
-		reqBody.setBillKey("123456");
-		reqBody.setPyCityCode("001");
-		reqBody.setPyCreditNo("001");
-		reqBody.setClientNnae("张三");
-		reqBody.setUnpaidAmt("5555");
+		logger.info("收费单位查询测试");
+		reqBody.setPyCityCode("210001");
+		reqBody.setPyCreditType("01");
 		
 		String reqContent = JSON.toJSONString(req);
-		logger.info("缴费单销账测试请求");
+		logger.info("收费单位查询测试请求");
 		RequestBuilder request = MockMvcRequestBuilders.post(URL)
 				.contentType(MediaType.APPLICATION_JSON_UTF8).content(reqContent);
 		MvcResult mvcResult = mockMvc.perform(request).andReturn();
-		logger.info("缴费单销账测试请求完毕");
+		logger.info("收费单位查询测试请求完毕");
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30062001001 rep = JsonUtil.toBean(repContent, REP_30062001001.class);
+		REP_30063001403 rep = JsonUtil.toBean(repContent, REP_30063001403.class);
 		System.out.println(rep);
 	}
 

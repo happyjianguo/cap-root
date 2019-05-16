@@ -8,18 +8,18 @@ import javax.persistence.Table;
 import org.apache.ibatis.type.Alias;
 
 /**
- * BILL_CHARGE_LOG
+ * CEBA_CHARGE_LOG
  */
 /** 
-* @ClassName: BillChargeLog 
+* @ClassName: CebaChargeLog 
 * @Description: 缴费单销账日志
 * @作者 杜振铎
 * @date 2019年5月14日 下午2:05:48 
 *  
 */
-@Table(name = "BILL_CHARGE_LOG")
-@Alias("billChargeLog")
-public class BillChargeLog {
+@Table(name = "CEBA_CHARGE_LOG")
+@Alias("cebaChargeLog")
+public class CebaChargeLog {
     /**
      * null
      */
@@ -51,6 +51,12 @@ public class BillChargeLog {
      */
     @Column(name = "TX_BRANCH")
     private String txBranch;
+    
+    /**
+     * null
+     */
+    @Column(name = "TX_TEL")
+    private String txTel;
 
     /**
      * null
@@ -133,14 +139,8 @@ public class BillChargeLog {
     /**
      * null
      */
-    @Column(name = "BILL_NO")
-    private String billNo;
-
-    /**
-     * null
-     */
-    @Column(name = "PAY_DATE")
-    private Integer payDate;
+    @Column(name = "SEQ_NO")
+    private String seqNo;
 
     /**
      * null
@@ -462,34 +462,18 @@ public class BillChargeLog {
 
     /**
      * null
-     * @return BILL_NO null
+     * @return SEQ_NO null
      */
-    public String getBillNo() {
-        return billNo;
+    public String getSeqNo() {
+        return seqNo;
     }
 
     /**
      * null
-     * @param billNo null
+     * @param seqNo null
      */
-    public void setBillNo(String billNo) {
-        this.billNo = billNo;
-    }
-
-    /**
-     * null
-     * @return PAY_DATE null
-     */
-    public Integer getPayDate() {
-        return payDate;
-    }
-
-    /**
-     * null
-     * @param payDate null
-     */
-    public void setPayDate(Integer payDate) {
-        this.payDate = payDate;
+    public void setSeqNo(String seqNo) {
+        this.seqNo = seqNo;
     }
 
     /**
@@ -571,4 +555,13 @@ public class BillChargeLog {
     public void setHostRetMsg(String hostRetMsg) {
         this.hostRetMsg = hostRetMsg;
     }
+
+	public String getTxTel() {
+		return txTel;
+	}
+
+	public void setTxTel(String txTel) {
+		this.txTel = txTel;
+	}
+    
 }

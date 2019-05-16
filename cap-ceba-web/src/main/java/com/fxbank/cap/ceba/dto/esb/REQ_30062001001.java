@@ -82,11 +82,8 @@ public class REQ_30062001001 extends REQ_BASE {
 		@JSONField(name = "ACCT_TYPE")
 		private String acctType;
 		
-		@JSONField(name = "PLTFRM_SEQ_NO")
-		private String pltfrmSeqNo;
-		
-		@JSONField(name = "PAY_DATE")
-		private String payDate;
+		@JSONField(name = "CASH_TRNSFR_FLAG")
+		private String cashTrnsfrFlag;
 		
 		@JSONField(name = "CONTRACT_NO")
 		private String contractNo;
@@ -155,28 +152,20 @@ public class REQ_30062001001 extends REQ_BASE {
 			this.acctType = acctType;
 		}
 
-		public String getPltfrmSeqNo() {
-			return pltfrmSeqNo;
-		}
-
-		public void setPltfrmSeqNo(String pltfrmSeqNo) {
-			this.pltfrmSeqNo = pltfrmSeqNo;
-		}
-
-		public String getPayDate() {
-			return payDate;
-		}
-
-		public void setPayDate(String payDate) {
-			this.payDate = payDate;
-		}
-
 		public String getContractNo() {
 			return contractNo;
 		}
 
 		public void setContractNo(String contractNo) {
 			this.contractNo = contractNo;
+		}
+
+		public String getCashTrnsfrFlag() {
+			return cashTrnsfrFlag;
+		}
+
+		public void setCashTrnsfrFlag(String cashTrnsfrFlag) {
+			this.cashTrnsfrFlag = cashTrnsfrFlag;
 		}
 
 	}
