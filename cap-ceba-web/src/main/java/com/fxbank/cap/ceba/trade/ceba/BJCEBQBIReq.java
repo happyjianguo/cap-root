@@ -1,5 +1,6 @@
 package com.fxbank.cap.ceba.trade.ceba;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,8 +76,8 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 			Data data = new Data();
 			data.setContractNo(i+"1");
 			data.setCustomerName(i+"2");
-			data.setBalance(i+"3");
-			data.setPayAmount(i+"4");
+			data.setBalance(new BigDecimal(55.55));
+			data.setPayAmount(new BigDecimal(55.55));
 			data.setBeginDate(i+"5");
 			data.setEndDate(i+"6");
 			dataList.add(data);

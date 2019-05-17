@@ -90,12 +90,6 @@ public class REQ_BJCEBBRQReq extends REQ_BASE2 {
 		
 	}
 
-	/**
-	 * @Title: chanFixPack 
-	 * @Description: TODO(这里用一句话描述这个方法的作用) 
-	 * @param @param pack
-	 * 设定文件 @throws
-	 */
 	@Override
 	public void chanFixPack(String pack) {
 		REQ_BJCEBBRQReq req = (REQ_BJCEBBRQReq) CebaXmlUtil.xmlToObject(this.getClass(), pack);
@@ -103,12 +97,6 @@ public class REQ_BJCEBBRQReq extends REQ_BASE2 {
 		this.setTin(req.getTin());
 	}
 
-	/**
-	 * @Title: creaFixPack 
-	 * @Description: TODO(这里用一句话描述这个方法的作用) 
-	 * @param @return
-	 * 设定文件 @throws
-	 */
 	@Override
 	public String creaFixPack() {
 		return CebaXmlUtil.objectToXml(this);

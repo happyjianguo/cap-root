@@ -1,5 +1,7 @@
 package com.fxbank.cap.ceba.trade.ceba;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +66,7 @@ public class BJCEBBRQReq implements TradeExecutionStrategy {
 		rep.getTout().setBillNo(req.getTin().getBillNo());
 		rep.getTout().setPayDate(req.getTin().getPayDate());
 		rep.getTout().setBankBillNo("123237202");
-		rep.getTout().setPayAmount("5555");
+		rep.getTout().setPayAmount(new BigDecimal(5555));
 		rep.getTout().setPayState("2");
 		
 		return rep;

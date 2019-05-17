@@ -1,6 +1,8 @@
 package com.fxbank.cap.ceba.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -49,7 +51,7 @@ public class REP_BJCEBBRQRes extends REP_BASE {
 		private String billNo = null;
 		private String payDate = null;
 		private String bankBillNo = null;
-		private String payAmount = null;
+		private BigDecimal payAmount = null;
 		private String payState = null;
 		private String filed1 = "";
 		private String filed2 = "";
@@ -79,10 +81,10 @@ public class REP_BJCEBBRQRes extends REP_BASE {
 		public void setBankBillNo(String bankBillNo) {
 			this.bankBillNo = bankBillNo;
 		}
-		public String getPayAmount() {
+		public BigDecimal getPayAmount() {
 			return payAmount;
 		}
-		public void setPayAmount(String payAmount) {
+		public void setPayAmount(BigDecimal payAmount) {
 			this.payAmount = payAmount;
 		}
 		public String getPayState() {
@@ -118,27 +120,17 @@ public class REP_BJCEBBRQRes extends REP_BASE {
 		
 	}
 
-	/**
-	 * @Title: chanFixPack 
-	 * @Description: TODO(这里用一句话描述这个方法的作用) 
-	 * @param @param pack
-	 * 设定文件 @throws
-	 */
 	@Override
 	public void chanFixPack(String pack) {
 		REP_BJCEBBRQRes res = (REP_BJCEBBRQRes) CebaXmlUtil.xmlToObject(this.getClass(), pack);
 		this.setHead(res.getHead());
+		res.getTout().setPayAmount(res.getTout().getPayAmount().movePointLeft(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
 		this.setTout(res.getTout());
 	}
 
-	/**
-	 * @Title: creaFixPack
-	 * @Description: TODO(这里用一句话描述这个方法的作用) 
-	 * @param @return
-	 * 设定文件 @throws
-	 */
 	@Override
 	public String creaFixPack() {
+		this.getTout().setPayAmount(this.getTout().getPayAmount().movePointRight(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
 		return CebaXmlUtil.objectToXml(this);
 	}
 

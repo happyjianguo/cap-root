@@ -83,8 +83,8 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 			DataInfo temp = new DataInfo();
 			temp.setContractNo(data.getContractNo());
 			temp.setClientNnae(data.getCustomerName());
-			temp.setBalance(data.getBalance());
-			temp.setUnpaidAmt(data.getPayAmount());
+			temp.setBalance(data.getBalance().toString());
+			temp.setUnpaidAmt(data.getPayAmount().toString());
 			temp.setStartDate(data.getBeginDate());
 			temp.setEndDate(data.getEndDate());
 			dataList.add(temp);

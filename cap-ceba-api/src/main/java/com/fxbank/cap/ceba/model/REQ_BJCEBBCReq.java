@@ -1,6 +1,7 @@
 package com.fxbank.cap.ceba.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -57,7 +58,7 @@ public class REQ_BJCEBBCReq extends REQ_BASE2 {
 		private String customerName = "";
 		private String payAccount = "";
 		private String pin = "";
-		private String payAmount = "";
+		private BigDecimal payAmount;
 		private String acType = "";
 		private String contractNo = "";
 		public String getBillKey() {
@@ -126,10 +127,10 @@ public class REQ_BJCEBBCReq extends REQ_BASE2 {
 		public void setPin(String pin) {
 			this.pin = pin;
 		}
-		public String getPayAmount() {
+		public BigDecimal getPayAmount() {
 			return payAmount;
 		}
-		public void setPayAmount(String payAmount) {
+		public void setPayAmount(BigDecimal payAmount) {
 			this.payAmount = payAmount;
 		}
 		public String getAcType() {
@@ -148,27 +149,17 @@ public class REQ_BJCEBBCReq extends REQ_BASE2 {
 		
 	}
 
-	/**
-	 * @Title: chanFixPack 
-	 * @Description: TODO(这里用一句话描述这个方法的作用) 
-	 * @param @param pack
-	 * 设定文件 @throws
-	 */
 	@Override
 	public void chanFixPack(String pack) {
 		REQ_BJCEBBCReq req = (REQ_BJCEBBCReq) CebaXmlUtil.xmlToObject(this.getClass(), pack);
 		this.setHead(req.getHead());
+		req.getTin().setPayAmount(req.getTin().getPayAmount().movePointLeft(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
 		this.setTin(req.getTin());
 	}
 
-	/**
-	 * @Title: creaFixPack 
-	 * @Description: TODO(这里用一句话描述这个方法的作用) 
-	 * @param @return
-	 * 设定文件 @throws
-	 */
 	@Override
 	public String creaFixPack() {
+		this.getTin().setPayAmount(this.getTin().getPayAmount().movePointRight(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
 		return CebaXmlUtil.objectToXml(this);
 	}
 

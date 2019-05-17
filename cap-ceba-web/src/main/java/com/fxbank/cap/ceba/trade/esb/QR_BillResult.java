@@ -85,7 +85,7 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 		REP_30063001402.REP_BODY repBody = rep.getRepBody();
 		repBody.setBillKey(tout.getBillKey());
 		repBody.setPltfSeqNo(tout.getBankBillNo());
-		repBody.setUnpaidAmt(tout.getPayAmount());
+		repBody.setUnpaidAmt(tout.getPayAmount().toString());
 		repBody.setDealStatus(tout.getPayState());
 		myLog.info(logger, "查询缴费单销账结果成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
 		return rep;

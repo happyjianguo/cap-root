@@ -1,11 +1,15 @@
 package com.fxbank.cap.ceba.dto.ceba;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBQBIRes.Tout.Data;
 import com.fxbank.cap.ceba.util.CebaXmlUtil;
 
 /** 
@@ -142,8 +146,8 @@ public class REP_BJCEBQBIRes extends REP_BASE {
 			private static final long serialVersionUID = -8514100631244728466L;
 			private String contractNo = null;
 			private String customerName = null;
-			private String balance = null;
-			private String payAmount = null;
+			private BigDecimal balance = null;
+			private BigDecimal payAmount = null;
 			private String beginDate = null;
 			private String endDate = null;
 			private String filed1 = "";
@@ -168,19 +172,19 @@ public class REP_BJCEBQBIRes extends REP_BASE {
 				this.customerName = customerName;
 			}
 
-			public String getBalance() {
+			public BigDecimal getBalance() {
 				return balance;
 			}
 
-			public void setBalance(String balance) {
+			public void setBalance(BigDecimal balance) {
 				this.balance = balance;
 			}
 
-			public String getPayAmount() {
+			public BigDecimal getPayAmount() {
 				return payAmount;
 			}
 
-			public void setPayAmount(String payAmount) {
+			public void setPayAmount(BigDecimal payAmount) {
 				this.payAmount = payAmount;
 			}
 
@@ -244,23 +248,29 @@ public class REP_BJCEBQBIRes extends REP_BASE {
 
 	}
 
-	/**
-	 * @Title: chanFixPack @Description: TODO(这里用一句话描述这个方法的作用) @param @param pack
-	 * 设定文件 @throws
-	 */
 	@Override
 	public void chanFixPack(String pack) {
-		REP_BJCEBQBIRes rep = (REP_BJCEBQBIRes) CebaXmlUtil.xmlToObject(this.getClass(), pack);
-		this.setHead(rep.getHead());
-		this.setTout(rep.getTout());
+		REP_BJCEBQBIRes res = (REP_BJCEBQBIRes) CebaXmlUtil.xmlToObject(this.getClass(), pack);
+		this.setHead(res.getHead());
+		List<Data> list = new ArrayList<Data>();
+		for(Data data:res.getTout().getData()) {
+			data.setPayAmount(data.getPayAmount().movePointLeft(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
+			data.setBalance(data.getBalance().movePointLeft(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
+			list.add(data);
+		}
+		this.getTout().setData(list);
+		this.setTout(res.getTout());
 	}
 
-	/**
-	 * @Title: creaFixPack @Description: TODO(这里用一句话描述这个方法的作用) @param @return
-	 * 设定文件 @throws
-	 */
 	@Override
 	public String creaFixPack() {
+		List<Data> list = new ArrayList<Data>();
+		for(Data data:this.getTout().getData()) {
+			data.setPayAmount(data.getPayAmount().movePointRight(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
+			data.setBalance(data.getBalance().movePointRight(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
+			list.add(data);
+		}
+		this.getTout().setData(list);
 		return CebaXmlUtil.objectToXml(this);
 	}
 

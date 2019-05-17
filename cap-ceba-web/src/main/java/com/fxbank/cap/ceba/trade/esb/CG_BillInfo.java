@@ -29,6 +29,7 @@ import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cip.base.common.EsbReqHeaderBuilder;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.common.MyJedis;
+import com.fxbank.cip.base.constant.CIP;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
@@ -171,7 +172,7 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 				//cgErrorType 0 退款 1暂不退款
 				if (errorInfo.getCgErrorType().equals(REVERSAL_CODE)) {
 						try {
-							ESB_REP_30014000101 res = hostReversal(reqDto, hostTraceNo);
+							ESB_REP_30014000101 res = hostReversal(reqDto, hostTraceNo,errorInfo.getCgErrorMsg());
 							hostDate = res.getRepSysHead().getTranDate();
 							hostTraceNo = res.getRepSysHead().getReference();
 							hostRetCode = res.getRepSysHead().getRet().get(0).getRetCode();
@@ -259,8 +260,10 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		reqBody_30011000101.setTranType("CEBA");
 		// 交易币种
 		reqBody_30011000101.setTranCcy("CNY");
+		//密码
+		reqBody_30011000101.setPassword(reqBody.getPassword());
 		// 交易金额
-		reqBody_30011000101.setTranAmt(new BigDecimal(reqBody.getUnpaidAmt()).movePointLeft(2).toString());
+		reqBody_30011000101.setTranAmt(new BigDecimal(reqBody.getUnpaidAmt()).toString());
 		// 记账渠道类型
 		reqBody_30011000101.setChannelType("CEBA");
 		// 清算日期
@@ -317,8 +320,8 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		tin.setPayDate(reqDto.getSysDate().toString()+reqDto.getSysTime().toString());
 		tin.setCustomerName(reqBody.getClientNnae());
 		tin.setPayAccount(reqBody.getPayAcctNo());
-		tin.setPin(reqBody.getPassword());
-		tin.setPayAmount(reqBody.getUnpaidAmt());
+		tin.setPin("");
+		tin.setPayAmount(new BigDecimal(reqBody.getUnpaidAmt()));
 		tin.setAcType(reqBody.getAcctType());
 		tin.setContractNo(reqBody.getContractNo());
 		REP_BJCEBBCRes res = forwardToCebaService.sendToCeba(req, REP_BJCEBBCRes.class);
@@ -369,13 +372,17 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		MyLog myLog = logPool.get();
 		// 交易机构
 		String txBrno = null;
+		// 交易柜员号
+		String txTel = null;
 		try (Jedis jedis = myJedis.connect()) {
 			txBrno = jedis.get(COMMON_PREFIX + "ceba_txbrno");
+			txTel = jedis.get(COMMON_PREFIX + "ceba_txtel");
 		}
 		REQ_30062001001.REQ_BODY reqBody = reqDto.getReqBody();
 		CebaChargeLogModel record = new CebaChargeLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
 		record.setTxBranch(txBrno);
+		record.setTxTel(txTel);
 		record.setSourceType(reqDto.getSourceType());
         record.setBillKey(reqBody.getBillKey());
         record.setCompanyId(reqBody.getPyCityCode()+reqBody.getPyCreditNo());
@@ -402,7 +409,7 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 	* @return ESB_REP_30014000101    返回类型 
 	* @throws 
 	*/
-	private ESB_REP_30014000101 hostReversal(REQ_30062001001 reqDto,String hostSeqno)
+	private ESB_REP_30014000101 hostReversal(REQ_30062001001 reqDto,String hostSeqno,String reason)
 			throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
 
@@ -421,10 +428,8 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		ESB_REQ_30014000101.REQ_BODY reqBody_30014000101 = esbReq_30014000101.getReqBody();
 		esbReq_30014000101.setReqSysHead(reqSysHead);	
 
-		reqBody_30014000101.setReference(hostSeqno);
-		reqBody_30014000101.setReversalReason("");
-		reqBody_30014000101.setEventType("");
-		
+		reqBody_30014000101.setChannelSeqNo(CIP.SYSTEM_ID+reqDto.getSysDate()+String.format("%08d",reqDto.getSysTraceno()));
+		reqBody_30014000101.setReversalReason(reason);
 
 		ESB_REP_30014000101 esbRep_30014000101 = forwardToESBService.sendToESB(esbReq_30014000101, reqBody_30014000101,
 				ESB_REP_30014000101.class);

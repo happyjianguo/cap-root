@@ -1,6 +1,8 @@
 package com.fxbank.cap.ceba.dto.ceba;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -45,7 +47,7 @@ public class REQ_BJCEBBCReq extends REQ_BASE2 {
 		private String customerName = null;
 		private String payAccount = null;
 		private String pin = null;
-		private String payAmount = null;
+		private BigDecimal payAmount = null;
 		private String acType = null;
 		private String contractNo = null;
 		public String getBillKey() {
@@ -114,10 +116,10 @@ public class REQ_BJCEBBCReq extends REQ_BASE2 {
 		public void setPin(String pin) {
 			this.pin = pin;
 		}
-		public String getPayAmount() {
+		public BigDecimal getPayAmount() {
 			return payAmount;
 		}
-		public void setPayAmount(String payAmount) {
+		public void setPayAmount(BigDecimal payAmount) {
 			this.payAmount = payAmount;
 		}
 		public String getAcType() {
@@ -135,28 +137,18 @@ public class REQ_BJCEBBCReq extends REQ_BASE2 {
 
 	}
 
-	/** 
-	* @Title: chanFixPack 
-	* @Description: TODO(这里用一句话描述这个方法的作用) 
-	* @param @param pack    设定文件 
-	* @throws 
-	*/
 	@Override
 	public void chanFixPack(String pack) {
-		REQ_BJCEBBCReq res = (REQ_BJCEBBCReq) CebaXmlUtil.xmlToObject(this.getClass(), pack);
-		this.setHead(res.getHead());
-		this.setTin(res.getTin());
+		REQ_BJCEBBCReq req = (REQ_BJCEBBCReq) CebaXmlUtil.xmlToObject(this.getClass(), pack);
+		this.setHead(req.getHead());
+		req.getTin().setPayAmount(req.getTin().getPayAmount().movePointLeft(2));
+		this.setTin(req.getTin());
 		
 	}
 
-	/** 
-	* @Title: creaFixPack 
-	* @Description: TODO(这里用一句话描述这个方法的作用) 
-	* @param @return    设定文件 
-	* @throws 
-	*/
 	@Override
 	public String creaFixPack() {
+		this.getTin().setPayAmount(this.getTin().getPayAmount().movePointRight(2));
 		return CebaXmlUtil.objectToXml(this);
 	}
 
