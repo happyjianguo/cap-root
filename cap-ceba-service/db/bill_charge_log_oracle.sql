@@ -51,7 +51,7 @@ COMMENT ON COLUMN ceba_charge_log.error_code IS '光大银行处理失败时返�
 COMMENT ON COLUMN ceba_charge_log.check_state IS '对账状态：0-未对账，1-已对账';
 COMMENT ON COLUMN ceba_charge_log.host_date IS '核心记账日期';
 COMMENT ON COLUMN ceba_charge_log.host_traceno IS '核心记账流水号';
-COMMENT ON COLUMN ceba_charge_log.host_state IS '核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时';
+COMMENT ON COLUMN ceba_charge_log.host_state IS '核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-处理超时';
 COMMENT ON COLUMN ceba_charge_log.host_ret_code IS '核心反馈响应码';
 COMMENT ON COLUMN ceba_charge_log.host_ret_msg IS '核心反馈响应信息';
 

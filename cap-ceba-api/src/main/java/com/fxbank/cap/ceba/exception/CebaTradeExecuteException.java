@@ -22,6 +22,7 @@ public class CebaTradeExecuteException extends SysTradeExecuteException {
 	public final static String CEBA_E_10003 = "FX0003";
 	public final static String CEBA_E_10004 = "FX0004";
 	public final static String CEBA_E_10005 = "FX0005";
+	public final static String CEBA_E_10006 = "FX0006";
 
 	public final static Map<String, String> TCEXERRCODECONV = new HashMap<String, String>() {
 
@@ -33,6 +34,7 @@ public class CebaTradeExecuteException extends SysTradeExecuteException {
 			put(CEBA_E_10003, "光大银行记账超时");
 			put(CEBA_E_10004, "缴费城市代码不存在");
 			put(CEBA_E_10005, "渠道流水号不存在");
+			put(CEBA_E_10006, "处理失败");
 		}
 	};
 

@@ -51,7 +51,12 @@ public class CebaChargeLogService implements ICebaChargeLogService{
 		cebaChargeLog.setPayState("0");
 		cebaChargeLog.setCheckState("0");
 		cebaChargeLog.setSeqNo(record.getSeqNo());
-		cebaChargeLog.setHostState("0");
+		//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-超时
+		if(record.getHostDate()==null) {
+			cebaChargeLog.setHostState("4");
+		}else {
+			cebaChargeLog.setHostState("0");
+		}
 		cebaChargeLog.setHostDate(record.getHostDate());
 		cebaChargeLog.setHostTraceno(record.getHostTraceNo());
 		cebaChargeLog.setHostRetCode(record.getHostRetCode());

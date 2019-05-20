@@ -30,9 +30,19 @@
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 		</dependency>
-		 <dependency>
+		<dependency>
 			<groupId>ESBFileAPI</groupId>
 			<artifactId>ESBFileAPI</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ceb.bouncycastle</groupId>
+			<artifactId>bcprov</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ceb.bouncycastle</groupId>
+			<artifactId>cebenc</artifactId>
 			<version>1.0</version>
 		</dependency>
 	</dependencies>

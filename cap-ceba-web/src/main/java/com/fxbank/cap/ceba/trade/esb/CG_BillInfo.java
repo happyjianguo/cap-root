@@ -85,15 +85,25 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		//核心记账日期、核心记账流水、核心记账响应码、核心记账响应信息
 		String hostDate = null,hostTraceNo = null,hostRetCode = null,hostRetMsg = null;
 		//核心记账
-		ESB_REP_30011000101 esbRep_30011000101 = hostCharge(reqDto);
-		hostDate = esbRep_30011000101.getRepSysHead().getTranDate();
-		hostTraceNo = esbRep_30011000101.getRepBody().getReference();
-		hostRetCode = esbRep_30011000101.getRepSysHead().getRet().get(0).getRetCode();
-		hostRetMsg = esbRep_30011000101.getRepSysHead().getRet().get(0).getRetMsg();
+		try {
+			ESB_REP_30011000101 esbRep_30011000101 = hostCharge(reqDto);
+			hostDate = esbRep_30011000101.getRepSysHead().getTranDate();
+			hostTraceNo = esbRep_30011000101.getRepBody().getReference();
+			hostRetCode = esbRep_30011000101.getRepSysHead().getRet().get(0).getRetCode();
+			hostRetMsg = esbRep_30011000101.getRepSysHead().getRet().get(0).getRetMsg();
+		} catch (SysTradeExecuteException e) {
+            if(e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004)) {
+				//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-处理超时
+        		initBillCharge(reqDto,null,null,null,null);
+            	CebaTradeExecuteException e1 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10006);
+				throw e1;
+            }
+			myLog.error(logger, "商行通存业务核心记账失败，渠道日期" + reqDto.getSysDate() + "渠道流水号" + reqDto.getSysTraceno());
+			throw e;
+		}
 		myLog.info(logger, "缴费单销账核心记账成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
 		//缴费单销账登记
-		CebaChargeLogModel record = new CebaChargeLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
-				reqDto.getSysTraceno());
+		CebaChargeLogModel record = new CebaChargeLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),reqDto.getSysTraceno());
 		record = initBillCharge(reqDto,hostDate,hostTraceNo,hostRetCode,hostRetMsg);
 		//光大银行记账流水号、打印凭证号码、光大银行记账日期
 		String bankBillNo = null,receiptNo = null,acctDate = null;
@@ -113,10 +123,9 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
             	cebaChargeLogService.logUpd(record);
 				try {
 					REP_BJCEBBCRes res = cebaCharge(reqDto);
-					REP_BJCEBBCRes.Tout tout = res.getTout();
-					bankBillNo = tout.getBankBillNo();
-					receiptNo = tout.getReceiptNo();
-					acctDate = tout.getAcctDate();
+					bankBillNo = res.getTout().getBankBillNo();
+					receiptNo = res.getTout().getReceiptNo();
+					acctDate = res.getTout().getAcctDate();
 				} catch (SysTradeExecuteException e1) {
 					//超时 提示错误 不冲正
 					if(e1.getRspCode().equals(SysTradeExecuteException.CIP_E_000009)) {
@@ -128,7 +137,6 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
                     	REP_BJCEBBRQRes res = queryCebaResult(reqDto);
                     	bankBillNo = res.getTout().getBankBillNo();
                     	record.setBankBillNo(res.getTout().getBankBillNo());
-                    	//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
                     	record.setPayState("2");
                     	cebaChargeLogService.logUpd(record);
                     }else {
@@ -144,7 +152,6 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		record.setBankBillNo(bankBillNo);
 		record.setAcctDate(acctDate);
 		record.setReceiptNo(receiptNo);
-		//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
 		record.setPayState("2");
 		cebaChargeLogService.logUpd(record);
 		rep.getRepBody().setChannelDate(reqDto.getSysDate().toString());
@@ -179,7 +186,7 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 							hostRetMsg = res.getRepSysHead().getRet().get(0).getRetMsg();
 						} catch (SysTradeExecuteException e2) {
 							if(e2.getRspCode().equals(SysTradeExecuteException.CIP_E_000004)) {
-								//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时
+								//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-处理超时
 								record.setHostState("3");
 								//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
 								record.setPayState("3");
@@ -189,7 +196,7 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 								CebaTradeExecuteException e3 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10002,e.getRspMsg()+"(退款成功)");
 								throw e3;
 							}else {
-								//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时
+								//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-处理超时
 								record.setHostState("2");
 								//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
 								record.setPayState("3");
@@ -201,7 +208,7 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
 							}
 						}
 					myLog.info(logger, "缴费单销账核心冲正成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
-					//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时
+					//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-处理超时
 					record.setHostState("1");
 					//光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
 					record.setPayState("3");
@@ -392,7 +399,7 @@ public class CG_BillInfo extends TradeBase implements TradeExecutionStrategy {
         record.setAcType(reqBody.getAcctType());
         record.setContractNo(reqBody.getContractNo());
         record.setSeqNo(reqDto.getReqSysHead().getSeqNo());
-        record.setHostDate(Integer.parseInt(hostDate));
+        record.setHostDate(hostDate==null?null:Integer.parseInt(hostDate));
         record.setHostTraceNo(hostTraceNo);
         record.setHostRetCode(hostRetCode);
         record.setHostRetMsg(hostRetMsg);
