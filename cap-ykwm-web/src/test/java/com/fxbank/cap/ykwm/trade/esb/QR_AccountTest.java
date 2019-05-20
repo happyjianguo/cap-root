@@ -92,8 +92,8 @@ public class QR_AccountTest {
 		
 		reqBody.setCompanyID("2323");
 		//用户卡号必须为数字，否则报错
-		reqBody.setCardNum("12345a");
-		reqBody.setBatchNum("354542332");
+		reqBody.setCardNum("12345");
+		reqBody.setBatchNum("35454233");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("查询欠费测试请求");
@@ -105,7 +105,7 @@ public class QR_AccountTest {
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
 		REP_30012002001 rep = JsonUtil.toBean(repContent, REP_30012002001.class);
-		System.out.println(rep);
+		System.out.println(rep.getRepBody().getAddress());
 	}
 
 }

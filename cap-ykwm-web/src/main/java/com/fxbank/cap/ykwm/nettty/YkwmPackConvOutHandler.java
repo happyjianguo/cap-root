@@ -10,6 +10,7 @@ import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
+import com.fxbank.cip.base.pkg.fixed.FixedUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class YkwmPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		if (dto.getStatus().equals(DataTransObject.SUCCESS)) { 
 			myLog.error(logger, "生成成功应答报文");
 			repDto = (REP_BASE) dtoMap.get("repDto");
-			rspCode = repDto.getHeader().getResult();
+			rspCode = repDto.getResult();
 		} else { 
 			// 交易失败
 			myLog.error(logger, "生成错误应答报文");
@@ -66,10 +67,10 @@ public class YkwmPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 			rspMsg = dto.getRspMsg();
 		}
 
-		repDto.getHeader().setResult(rspCode);
+		repDto.setResult(rspCode);
 
-		StringBuffer fixPack = new StringBuffer(repDto.creaFixPack());
-
+        StringBuffer fixPack = new StringBuffer(FixedUtil.toFixed(repDto, "|"));
+		
 		ctx.writeAndFlush(fixPack.toString(),promise);
 		ctx.close();
 	}

@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.fxbank.cap.ykwm.model.REP_Query;
 import com.fxbank.cip.base.log.MyLog;
+import com.fxbank.cip.base.pkg.fixed.FixedUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,10 +74,10 @@ class Run implements Runnable {
             String data = new String(dataByte, SimuYkwmServer.CODING);
             this.logger.info("接收请求报文[" + data + "]");
 
-            REP_Query rep = new REP_Query(new MyLog(), 20190909, 125609, 1);
-            rep.getHeader().setResult("0");
+            REP_Query rep = new REP_Query();
+            rep.setResult("0");
             rep.setOwnerName("张三");
-            String repData = rep.creaFixPack();
+            String repData = FixedUtil.toFixed(rep, "|");;
             repData = repData + "FFFFFFFFFFFFFFFF";
             os = socket.getOutputStream();
             String repLen = String.format("%08d", repData.getBytes(SimuYkwmServer.CODING).length);

@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import com.fxbank.cap.ykwm.dto.ykwm.REQ_BASE;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.log.MyLog;
+import com.fxbank.cip.base.pkg.fixed.FixedUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +51,9 @@ public class YkwmPackConvInHandler extends ChannelInboundHandlerAdapter {
 			}
 			
 			reqBase = (REQ_BASE) ykwmClass.newInstance();
-			reqBase.chanFixPack(fixPack);
+			reqBase = new FixedUtil(fixPack, "\\|").toBean(reqBase.getClass());
 			reqBase.setTxCode(txCode);
-			reqBase.setSourceType("JH");
+			reqBase.setSourceType("YKWM");
 			ctx.fireChannelRead(reqBase);
 		} finally {
 			ReferenceCountUtil.release(msg);

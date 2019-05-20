@@ -1,8 +1,10 @@
 package com.fxbank.cap.ykwm.netty.ykwm;
 
 import com.fxbank.cap.ykwm.model.REP_BASE;
+import com.fxbank.cap.ykwm.model.REP_ERROR;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.netty.NettySyncSlot;
+import com.fxbank.cip.base.pkg.fixed.FixedUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,8 @@ public class YkwmPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 	private NettySyncSlot<T> slot;
 
 	private Class<T> clazz;
+	
+	private static final String SUCCESS_CODE = "0";
 
 	public YkwmPackConvInHandler(MyLog myLog, NettySyncSlot<T> slot, Class<T> clazz) {
 		this.myLog = myLog;
@@ -40,9 +44,15 @@ public class YkwmPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 		try {
 			StringBuffer pack = new StringBuffer((String) msg);
 			String fixPack = pack.substring(0, pack.length());
-			REP_BASE repBase = (REP_BASE) this.clazz.newInstance();
-			repBase.chanFixPack(fixPack);
-			ctx.fireChannelRead(repBase);
+			if(!fixPack.startsWith(SUCCESS_CODE)) {
+				REP_ERROR repBase = new REP_ERROR(null,0,0,0);
+				repBase = new FixedUtil(fixPack, "\\|").toBean(repBase.getClass()); 
+				ctx.fireChannelRead(repBase);
+			}else {
+				REP_BASE repBase = (REP_BASE) this.clazz.newInstance();
+				repBase = new FixedUtil(fixPack, "\\|").toBean(repBase.getClass()); 
+				ctx.fireChannelRead(repBase);
+			}
 		} finally {
 			ReferenceCountUtil.release(msg);
 		}

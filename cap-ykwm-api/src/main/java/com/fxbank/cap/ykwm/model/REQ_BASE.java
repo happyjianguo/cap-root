@@ -3,9 +3,8 @@ package com.fxbank.cap.ykwm.model;
 import java.io.Serializable;
 
 import com.fxbank.cip.base.log.MyLog;
-import com.fxbank.cip.base.model.FIXP_SERIAL;
 import com.fxbank.cip.base.model.ModelBase;
-
+import com.fxbank.cip.base.pkg.fixed.FixedAnno.FixedField;
 
 /** 
 * @ClassName: REQ_BASE 
@@ -14,22 +13,24 @@ import com.fxbank.cip.base.model.ModelBase;
 * @date 2019年4月29日 下午3:02:25 
 *  
 */
-public abstract class REQ_BASE extends ModelBase implements Serializable,FIXP_SERIAL{
+public abstract class REQ_BASE extends ModelBase implements Serializable{
 	
-	private static final long serialVersionUID = -6652288226005628489L;
+	private static final long serialVersionUID = -5131816695318862118L;
 
 	public REQ_BASE(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
 		super(mylog, sysDate, sysTime, sysTraceno);
 	}
 	
-	private REQ_HEADER header = new REQ_HEADER();
+	@FixedField(order = 1, len = 7, desc = "业务类型")
+	private String ttxnNm;
 
-	public REQ_HEADER getHeader() {
-		return header;
+	public String getTtxnNm() {
+		return ttxnNm;
 	}
 
-	public void setHeader(REQ_HEADER header) {
-		this.header = header;
+	public void setTtxnNm(String ttxnNm) {
+		this.ttxnNm = ttxnNm;
 	}
+
 
 }

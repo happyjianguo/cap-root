@@ -1,54 +1,37 @@
 package com.fxbank.cap.ykwm.model;
-
+import java.io.Serializable;
 import com.fxbank.cip.base.log.MyLog;
+import com.fxbank.cip.base.pkg.fixed.FixedAnno.FixedField;
 
-
-/** 
-* @ClassName: REQ_Query 
-* @Description: 欠费查询请求
-* @作者 杜振铎
-* @date 2019年4月29日 下午3:02:57 
-*  
-*/
+/**
+ * @ClassName: REQ_Query
+ * @Description: 欠费查询请求
+ * @作者 杜振铎
+ * @date 2019年4月29日 下午3:02:57
+ * 
+ */
 public class REQ_Query extends REQ_BASE {
 
-	private static final long serialVersionUID = 4990422436703924474L;
+	private static final long serialVersionUID = -7068590384756394085L;
 
-	private String companyID;
-
-	private String cardNum;
-
-	private String batchNum;
-    
-    @Deprecated
+	@Deprecated
 	public REQ_Query() {
 		super(null, 0, 0, 0);
 	}
 
-    public REQ_Query(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
-        super(mylog, sysDate, sysTime, sysTraceno);
-        super.getHeader().settTxnNm("Query");
-    }
-
-    @Override
-	public String creaFixPack() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(super.getHeader().creaFixPack());
-		sb.append(this.companyID == null ? "" : this.companyID).append("|");
-		sb.append(this.cardNum == null ? "" : this.cardNum).append("|");
-		sb.append(this.batchNum == null ? "" : this.batchNum).append("|");
-
-		return sb.toString();
+	public REQ_Query(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
+		super(mylog, sysDate, sysTime, sysTraceno);
+		super.setTtxnNm("Query");
 	}
 
-	@Override
-	public void chanFixPack(String pack) {
-		String[] array = pack.split("\\|");
-		super.getHeader().chanFixPack(array[0]);
-		this.companyID = array[1].trim();
-		this.cardNum = array[2].trim();
-		this.batchNum = array[3].trim();
-	}
+	@FixedField(order = 2, len = 8, desc = "业务类型")
+	private String companyID;
+
+	@FixedField(order = 3, len = 30, desc = "业务类型")
+	private String cardNum;
+
+	@FixedField(order = 4, len = 8, desc = "业务类型")
+	private String batchNum;
 
 	public String getCompanyID() {
 		return companyID;
@@ -73,8 +56,5 @@ public class REQ_Query extends REQ_BASE {
 	public void setBatchNum(String batchNum) {
 		this.batchNum = batchNum;
 	}
-
-	
-   
 
 }

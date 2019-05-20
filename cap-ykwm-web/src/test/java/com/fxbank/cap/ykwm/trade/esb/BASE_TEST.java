@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fxbank.cap.ykwm.common.ScrtUtil;
-import com.fxbank.cap.ykwm.model.REQ_HEADER;
 
 /** 
 * @ClassName: BASE_TEST 
@@ -88,10 +87,10 @@ public class BASE_TEST {
         return repData;
     }
 
-    public void initReqHeader(String tTxnNm,REQ_HEADER header){
+    public void initReqHeader(String tTxnNm){
         String sDate = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         Integer seq = Math.abs(new Random().nextInt(100000000));
-        header.settTxnNm(tTxnNm);
+        //header.settTxnNm(tTxnNm);
        
     }
 

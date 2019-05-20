@@ -2,6 +2,7 @@ package com.fxbank.cap.ykwm.netty.ykwm;
 
 import com.fxbank.cap.ykwm.model.REQ_BASE;
 import com.fxbank.cip.base.log.MyLog;
+import com.fxbank.cip.base.pkg.fixed.FixedUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class YkwmPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 		REQ_BASE reqBase = (REQ_BASE)msg;
-		StringBuffer fixPack = new StringBuffer(reqBase.creaFixPack());
+		StringBuffer fixPack = new StringBuffer(FixedUtil.toFixed(reqBase, "|"));
 		//TODO 生成MAC
 		fixPack.append("FFFFFFFFFFFFFFFF");
 		ctx.writeAndFlush(fixPack.toString(), promise);

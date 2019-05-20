@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.fxbank.cap.ykwm.model.REP_BASE;
+import com.fxbank.cap.ykwm.model.REP_ERROR;
 import com.fxbank.cap.ykwm.model.REQ_BASE;
 import com.fxbank.cap.ykwm.netty.ykwm.YkwmClient;
 import com.fxbank.cap.ykwm.service.IForwardToYkwmService;
@@ -33,7 +34,7 @@ public class ForwardToYkwmService implements IForwardToYkwmService {
 	@Override
 	public <T extends REP_BASE> T sendToYkwm(REQ_BASE reqBase, Class<T> clazz) throws SysTradeExecuteException {
 		MyLog myLog = reqBase.getMylog();
-		reqBase.getHeader().settTxnNm(reqBase.getHeader().gettTxnNm());
+		reqBase.setTtxnNm(reqBase.getTtxnNm());
 		T repModel = null;
 		try {
 			repModel = ykwmClient.comm(myLog, reqBase, clazz);
@@ -52,10 +53,11 @@ public class ForwardToYkwmService implements IForwardToYkwmService {
 			myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg(), e);
 			throw e;
 		} else {
-			String rspCode = repBase.getHeader().getResult();
+			String rspCode = repBase.getResult();
 			// 返回失败
-			if (!RSP_CODE.equals(rspCode)) { 
-				String rspMsg = repBase.getHeader().getErrorMsg();
+			if (!RSP_CODE.equals(rspCode)) {
+				REP_ERROR repError = (REP_ERROR)repModel;
+				String rspMsg = repError.getRepMsg();
 				SysTradeExecuteException e = new SysTradeExecuteException(rspCode, rspMsg);
 				myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
 				throw e;

@@ -1,45 +1,29 @@
 package com.fxbank.cap.ykwm.dto.ykwm;
 
+import com.fxbank.cip.base.pkg.fixed.FixedAnno.FixedField;
+
 /** 
 * @ClassName: REQ_Query 
 * @Description: 欠费查询请求
 * @作者 杜振铎
-* @date 2019年4月29日 下午2:03:30 
+* @date 2019年4月29日 下午3:02:57 
 *  
 */
 public class REQ_Query extends REQ_BASE {
+	
+	public REQ_Query() {
+		super.setTtxnNm("Query");
+	}
 
+	@FixedField(order = 2, len = 8, desc = "业务类型")
 	private String companyID;
 
+	@FixedField(order = 3, len = 30, desc = "业务类型")
 	private String cardNum;
 
+	@FixedField(order = 4, len = 8, desc = "业务类型")
 	private String batchNum;
-
-	public REQ_Query() {
-		super.txDesc = "查询欠费";
-		super.log = false;
-	}
-
-	@Override
-	public String creaFixPack() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(super.getHeader().creaFixPack());
-		sb.append(this.companyID == null ? "" : this.companyID).append("|");
-		sb.append(this.cardNum == null ? "" : this.cardNum).append("|");
-		sb.append(this.batchNum == null ? "" : this.batchNum).append("|");
-
-		return sb.toString();
-	}
-
-	@Override
-	public void chanFixPack(String pack) {
-		String[] array = pack.split("\\|");
-		super.getHeader().chanFixPack(array[0]);
-		this.companyID = array[1].trim();
-		this.cardNum = array[2].trim();
-		this.batchNum = array[3].trim();
-	}
-
+    
 	public String getCompanyID() {
 		return companyID;
 	}
@@ -63,5 +47,7 @@ public class REQ_Query extends REQ_BASE {
 	public void setBatchNum(String batchNum) {
 		this.batchNum = batchNum;
 	}
+
+   
 
 }
