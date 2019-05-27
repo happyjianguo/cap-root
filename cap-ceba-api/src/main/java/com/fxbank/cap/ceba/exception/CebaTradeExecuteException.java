@@ -34,7 +34,7 @@ public class CebaTradeExecuteException extends SysTradeExecuteException {
 			put(CEBA_E_10003, "光大银行记账超时");
 			put(CEBA_E_10004, "缴费城市代码不存在");
 			put(CEBA_E_10005, "渠道流水号不存在");
-			put(CEBA_E_10006, "处理失败");
+			put(CEBA_E_10006, "核心记账超时，请查账");
 		}
 	};
 

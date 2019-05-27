@@ -25,15 +25,8 @@ public class CebaChargeLogService implements ICebaChargeLogService{
 	@Resource
 	private CebaChargeLogMapper cebaChargeLogMapper;
 
-	/** 
-	* @Title: logInit 
-	* @Description: 缴费单销账登记 
-	* @param @param record
-	* @param @throws SysTradeExecuteException    设定文件 
-	* @throws 
-	*/
 	@Override
-	public void logInit(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+	public void hostSuccessInit(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
 		CebaChargeLog cebaChargeLog = new CebaChargeLog();
 		cebaChargeLog.setPlatDate(record.getSysDate());
 		cebaChargeLog.setPlatTime(record.getSysTime());
@@ -51,45 +44,106 @@ public class CebaChargeLogService implements ICebaChargeLogService{
 		cebaChargeLog.setPayState("0");
 		cebaChargeLog.setCheckState("0");
 		cebaChargeLog.setSeqNo(record.getSeqNo());
-		//核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-超时
-		if(record.getHostDate()==null) {
-			cebaChargeLog.setHostState("4");
-		}else {
-			cebaChargeLog.setHostState("0");
-		}
+		cebaChargeLog.setHostState("0");
 		cebaChargeLog.setHostDate(record.getHostDate());
 		cebaChargeLog.setHostTraceno(record.getHostTraceNo());
 		cebaChargeLog.setHostRetCode(record.getHostRetCode());
 		cebaChargeLog.setHostRetMsg(record.getHostRetMsg());
 		
-		cebaChargeLogMapper.insert(cebaChargeLog);
+		cebaChargeLogMapper.insertSelective(cebaChargeLog);
+	}
+	
+	@Override
+	public void hostTimeoutInit(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+		CebaChargeLog cebaChargeLog = new CebaChargeLog();
+		cebaChargeLog.setPlatDate(record.getSysDate());
+		cebaChargeLog.setPlatTime(record.getSysTime());
+		cebaChargeLog.setPlatTrace(record.getSysTraceno());
+		cebaChargeLog.setSourceType(record.getSourceType());
+		cebaChargeLog.setTxBranch(record.getTxBranch());
+		cebaChargeLog.setTxTel(record.getTxTel());
+		cebaChargeLog.setBillKey(record.getBillKey());
+		cebaChargeLog.setCompanyId(record.getCompanyId());
+		cebaChargeLog.setCustomerName(record.getCustomerName());
+		cebaChargeLog.setPayAccount(record.getPayAccount());
+		cebaChargeLog.setPayAmount(record.getPayAmount());
+		cebaChargeLog.setAcType(record.getAcType());
+		cebaChargeLog.setContractNo(record.getContractNo());
+		cebaChargeLog.setPayState("0");
+		cebaChargeLog.setCheckState("0");
+		cebaChargeLog.setSeqNo(record.getSeqNo());
+		cebaChargeLog.setHostState("4");
+		
+		cebaChargeLogMapper.insertSelective(cebaChargeLog);
 	}
 
-	/** 
-	* @Title: logUpd 
-	* @Description: 缴费单销账更新日志
-	* @param @param record
-	* @param @throws SysTradeExecuteException    设定文件 
-	* @throws 
-	*/
 	@Override
-	public void logUpd(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+	public void othSuccessUpdate(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
 		CebaChargeLog cebaChargeLog = new CebaChargeLog();
 		cebaChargeLog.setPlatDate(record.getSysDate());
 		cebaChargeLog.setPlatTrace(record.getSysTraceno());
 		cebaChargeLog.setBankBillNo(record.getBankBillNo());
 		cebaChargeLog.setReceiptNo(record.getReceiptNo());
 		cebaChargeLog.setAcctDate(record.getAcctDate());
-		cebaChargeLog.setPayState(record.getPayState());
+		cebaChargeLog.setPayState("2");
+		cebaChargeLogMapper.updateByPrimaryKeySelective(cebaChargeLog);
+	}
+	@Override
+	public void othTimeoutUpdate(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+		CebaChargeLog cebaChargeLog = new CebaChargeLog();
+		cebaChargeLog.setPlatDate(record.getSysDate());
+		cebaChargeLog.setPlatTrace(record.getSysTraceno());
+		cebaChargeLog.setPayState("1");
+		cebaChargeLogMapper.updateByPrimaryKeySelective(cebaChargeLog);
+	}
+	@Override
+	public void othErrorUpdate(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+		CebaChargeLog cebaChargeLog = new CebaChargeLog();
+		cebaChargeLog.setPlatDate(record.getSysDate());
+		cebaChargeLog.setPlatTrace(record.getSysTraceno());
 		cebaChargeLog.setErrorCode(record.getErrorCode());
+		cebaChargeLog.setPayState("3");
+		cebaChargeLogMapper.updateByPrimaryKeySelective(cebaChargeLog);
+	}
+	@Override
+	public void othTimeoutSuccUpdate(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+		CebaChargeLog cebaChargeLog = new CebaChargeLog();
+		cebaChargeLog.setPlatDate(record.getSysDate());
+		cebaChargeLog.setPlatTrace(record.getSysTraceno());
+		cebaChargeLog.setPayState("2");
+		cebaChargeLogMapper.updateByPrimaryKeySelective(cebaChargeLog);
+	}
+	@Override
+	public void hostUndoSuccess(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+		CebaChargeLog cebaChargeLog = new CebaChargeLog();
+		cebaChargeLog.setPlatDate(record.getSysDate());
+		cebaChargeLog.setPlatTrace(record.getSysTraceno());
+		cebaChargeLog.setHostState("1");
 		cebaChargeLog.setHostDate(record.getHostDate());
 		cebaChargeLog.setHostTraceno(record.getHostTraceNo());
-		cebaChargeLog.setHostState(record.getHostState());
 		cebaChargeLog.setHostRetCode(record.getHostRetCode());
 		cebaChargeLog.setHostRetMsg(record.getHostRetMsg());
 		cebaChargeLogMapper.updateByPrimaryKeySelective(cebaChargeLog);
-		
 	}
+	@Override
+	public void hostUndoTimeout(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+		CebaChargeLog cebaChargeLog = new CebaChargeLog();
+		cebaChargeLog.setPlatDate(record.getSysDate());
+		cebaChargeLog.setPlatTrace(record.getSysTraceno());
+		cebaChargeLog.setHostState("3");
+		cebaChargeLogMapper.updateByPrimaryKeySelective(cebaChargeLog);
+	}
+	@Override
+	public void hostUndoError(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+		CebaChargeLog cebaChargeLog = new CebaChargeLog();
+		cebaChargeLog.setPlatDate(record.getSysDate());
+		cebaChargeLog.setPlatTrace(record.getSysTraceno());
+		cebaChargeLog.setHostState("2");
+		cebaChargeLog.setHostRetCode(record.getHostRetCode());
+		cebaChargeLog.setHostRetMsg(record.getHostRetMsg());
+		cebaChargeLogMapper.updateByPrimaryKeySelective(cebaChargeLog);
+	}
+	
 
 	/** 
 	* @Title: queryLogBySeqNo 

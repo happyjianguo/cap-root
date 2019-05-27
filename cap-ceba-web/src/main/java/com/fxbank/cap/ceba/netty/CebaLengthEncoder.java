@@ -5,6 +5,8 @@ import javax.annotation.Resource;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.log.MyLog;
 
+import cebenc.softenc.SoftEnc;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -38,11 +40,13 @@ public class CebaLengthEncoder extends MessageToByteEncoder<Object> {
 		StringBuffer sb = new StringBuffer();
 		sb.append(String.format("%06d", msgStrLen));
 		sb.append(msgStr);
+		SoftEnc se = new SoftEnc();
+		se.Init("E://soft_enc_java_20190103//cebkey//.20190429093544");
+		sb.append(msgStr.getBytes("GBK"));
 		String reqPack = sb.toString();
 		myLog.info(logger, "发送应答报文=[" + reqPack);
 		out.writeBytes(reqPack.getBytes(ServerInitializer.CODING));
 	}
-
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 		MyLog myLog = this.logPool.get();

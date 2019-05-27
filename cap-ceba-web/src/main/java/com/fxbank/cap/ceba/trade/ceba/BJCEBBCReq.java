@@ -42,6 +42,8 @@ public class BJCEBBCReq implements TradeExecutionStrategy {
 	private final static String COMMON_PREFIX = "ceba.";
 	
 	private static final String ERR_BILLKEY = "12345";
+	
+	private static final String TIMEOUT_BILLKEY = "12346";
 
 	@Override
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
@@ -53,9 +55,18 @@ public class BJCEBBCReq implements TradeExecutionStrategy {
 			repError.getHead().setInstId(req.getHead().getInstId());
 			repError.getHead().setAnsTranCode("Error");
 			repError.getHead().setTrmSeqNum(req.getHead().getTrmSeqNum());
-			repError.getTout().setErrorCode("DEF0002");
+			repError.getTout().setErrorCode("DEF0001");
 			return repError;
 		}
+		if(TIMEOUT_BILLKEY.equals(req.getTin().getBillKey())) {
+			REP_ERROR repError = new REP_ERROR();
+			repError.getHead().setInstId(req.getHead().getInstId());
+			repError.getHead().setAnsTranCode("Error");
+			repError.getHead().setTrmSeqNum(req.getHead().getTrmSeqNum());
+			repError.getTout().setErrorCode("NPP0005");
+			return repError;
+		}
+		
 		REP_BJCEBBCRes rep = new REP_BJCEBBCRes();
 		rep.getHead().setInstId(req.getHead().getInstId());
 		rep.getHead().setAnsTranCode("BJCEBBCRes");

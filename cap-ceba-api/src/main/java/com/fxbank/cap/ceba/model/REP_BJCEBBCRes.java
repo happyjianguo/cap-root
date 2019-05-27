@@ -110,13 +110,19 @@ public class REP_BJCEBBCRes extends REP_BASE {
 	public void chanFixPack(String pack) {
 		REP_BJCEBBCRes res = (REP_BJCEBBCRes) CebaXmlUtil.xmlToObject(this.getClass(), pack);
 		this.setHead(res.getHead());
-		res.getTout().setPayAmount(res.getTout().getPayAmount().movePointLeft(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
+		if (res.getTout().getPayAmount() != null) {
+			res.getTout()
+					.setPayAmount(res.getTout().getPayAmount().movePointLeft(2).setScale(2, BigDecimal.ROUND_HALF_UP));
+		}
 		this.setTout(res.getTout());
 	}
 
 	@Override
 	public String creaFixPack() {
-		this.getTout().setPayAmount(this.getTout().getPayAmount().movePointRight(2).setScale(2,BigDecimal.ROUND_HALF_UP ));
+		if (this.getTout().getPayAmount() != null) {
+			this.getTout().setPayAmount(
+					this.getTout().getPayAmount().movePointRight(2).setScale(2, BigDecimal.ROUND_HALF_UP));
+		}
 		return CebaXmlUtil.objectToXml(this);
 	}
 

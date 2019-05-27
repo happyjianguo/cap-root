@@ -67,8 +67,7 @@ public class CG_BillInfoTest {
 		reqSysHead.setSceneId("01");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
-		reqSysHead.setSourceType("CEBA");	
-//		reqSysHead.setSourceType("302200");
+		reqSysHead.setSourceType("GJ");
 		reqSysHead.setBranchId("02002");
 		reqSysHead.setUserId("002241");
 		reqSysHead.setTranDate(String.valueOf(new SimpleDateFormat("yyyyMMdd").format(new Date())));
@@ -82,6 +81,7 @@ public class CG_BillInfoTest {
 		reqSysHead.setFilePath("FILE_PATH");
 		reqSysHead.setGloabalSeqNo(reqSysHead.getSeqNo());
 		reqSysHead.setAuthUserId("999");
+		reqSysHead.setProgramId("7J13");
 		reqBody = req.new REQ_BODY(); 
 		req.setReqSysHead(reqSysHead);
 		req.setReqBody(reqBody);
@@ -90,12 +90,16 @@ public class CG_BillInfoTest {
 	@Test
 	public void payOk() throws Exception {
 		logger.info("缴费单销账测试");
-		//billKey等于12345时，报错
-		reqBody.setBillKey("123456");
+		//billKey等于12345时，报错,12346超时
+		reqBody.setBillKey("12346");
 		reqBody.setPyCityCode("001");
 		reqBody.setPyCreditNo("001");
-		reqBody.setClientNnae("张三");
-		reqBody.setUnpaidAmt("5555");
+		reqBody.setClientNnae("测试");
+		reqBody.setPayAcctNo("623166001015087122");
+		reqBody.setPassword("147258");
+		reqBody.setUnpaidAmt("55.55");
+		reqBody.setAcctType("1");
+		reqBody.setContractNo("1111");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("缴费单销账测试请求");
