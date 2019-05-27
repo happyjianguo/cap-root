@@ -93,7 +93,7 @@ public class QR_AccountTest {
 		reqBody.setCompanyID("2323");
 		//用户卡号必须为数字，否则报错
 		reqBody.setCardNum("12345");
-		reqBody.setBatchNum("35454233");
+		reqBody.setBatchNum("测试");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("查询欠费测试请求");

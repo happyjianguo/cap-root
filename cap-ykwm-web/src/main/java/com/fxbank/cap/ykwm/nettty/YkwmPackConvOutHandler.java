@@ -69,7 +69,7 @@ public class YkwmPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 
 		repDto.setResult(rspCode);
 
-        StringBuffer fixPack = new StringBuffer(FixedUtil.toFixed(repDto, "|"));
+        StringBuffer fixPack = new StringBuffer(FixedUtil.toFixed(repDto, "|","UTF-8"));
 		
 		ctx.writeAndFlush(fixPack.toString(),promise);
 		ctx.close();

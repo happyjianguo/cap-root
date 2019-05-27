@@ -46,11 +46,11 @@ public class YkwmPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 			String fixPack = pack.substring(0, pack.length());
 			if(!fixPack.startsWith(SUCCESS_CODE)) {
 				REP_ERROR repBase = new REP_ERROR(null,0,0,0);
-				repBase = new FixedUtil(fixPack, "\\|").toBean(repBase.getClass()); 
+				repBase = new FixedUtil(fixPack, "\\|",YkwmClient.CODING).toBean(repBase.getClass()); 
 				ctx.fireChannelRead(repBase);
 			}else {
 				REP_BASE repBase = (REP_BASE) this.clazz.newInstance();
-				repBase = new FixedUtil(fixPack, "\\|").toBean(repBase.getClass()); 
+				repBase = new FixedUtil(fixPack, "\\|",YkwmClient.CODING).toBean(repBase.getClass()); 
 				ctx.fireChannelRead(repBase);
 			}
 		} finally {
