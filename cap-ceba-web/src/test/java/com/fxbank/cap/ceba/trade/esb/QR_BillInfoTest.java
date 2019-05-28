@@ -90,7 +90,7 @@ public class QR_BillInfoTest {
 	public void payOk() throws Exception {
 		logger.info("查询缴费单信息测试");
 		//billKey等于12345时，报错
-		reqBody.setBillKey("123456");
+		reqBody.setBillKey("1234567892");
 		reqBody.setPyCityCode("001");
 		reqBody.setPyCreditNo("001");
 		

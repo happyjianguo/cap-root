@@ -40,9 +40,6 @@ public class CebaLengthEncoder extends MessageToByteEncoder<Object> {
 		StringBuffer sb = new StringBuffer();
 		sb.append(String.format("%06d", msgStrLen));
 		sb.append(msgStr);
-		SoftEnc se = new SoftEnc();
-		se.Init("E://soft_enc_java_20190103//cebkey//.20190429093544");
-		sb.append(msgStr.getBytes("GBK"));
 		String reqPack = sb.toString();
 		myLog.info(logger, "发送应答报文=[" + reqPack);
 		out.writeBytes(reqPack.getBytes(ServerInitializer.CODING));

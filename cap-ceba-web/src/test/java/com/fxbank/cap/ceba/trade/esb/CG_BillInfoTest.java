@@ -91,7 +91,7 @@ public class CG_BillInfoTest {
 	public void payOk() throws Exception {
 		logger.info("缴费单销账测试");
 		//billKey等于12345时，报错,12346超时
-		reqBody.setBillKey("12346");
+		reqBody.setBillKey("1234567");
 		reqBody.setPyCityCode("001");
 		reqBody.setPyCreditNo("001");
 		reqBody.setClientNnae("测试");

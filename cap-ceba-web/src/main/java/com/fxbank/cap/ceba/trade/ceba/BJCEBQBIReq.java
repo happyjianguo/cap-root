@@ -72,16 +72,51 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 		rep.getTout().setCompanyId("654321");
 		rep.getTout().setTotalNum("2");
 		List<Data> dataList = new ArrayList<Data>();
-		for(int i=0;i<COUNT;i++) {
+		if("1234567891".equals(req.getTin().getBillKey())) {
 			Data data = new Data();
-			data.setContractNo(i+"1");
-			data.setCustomerName(i+"2");
-			data.setBalance(new BigDecimal(55.55));
-			data.setPayAmount(new BigDecimal(55.55));
-			data.setBeginDate(i+"5");
-			data.setEndDate(i+"6");
+			data.setContractNo("123456");
+			data.setCustomerName("张三");
+			data.setBalance(new BigDecimal(0));
+			data.setPayAmount(new BigDecimal(23.14));
+			data.setBeginDate("20190329");
+			data.setEndDate("20190428");
+			dataList.add(data);
+			Data data1 = new Data();
+			data1.setContractNo("654321");
+			data1.setCustomerName("李四");
+			data1.setBalance(new BigDecimal(0));
+			data1.setPayAmount(new BigDecimal(55.55));
+			data1.setBeginDate("20190429");
+			data1.setEndDate("2190528");
+			dataList.add(data1);
+		}else if("1234567892".equals(req.getTin().getBillKey())) {
+			Data data = new Data();
+			data.setContractNo("123456");
+			data.setCustomerName("张三");
+			data.setBalance(new BigDecimal(0));
+			data.setPayAmount(new BigDecimal(23.14));
+			data.setBeginDate("201904");
+			data.setEndDate("");
+			dataList.add(data);
+			Data data1 = new Data();
+			data1.setContractNo("654321");
+			data1.setCustomerName("张三");
+			data1.setBalance(new BigDecimal(0));
+			data1.setPayAmount(new BigDecimal(55.55));
+			data1.setBeginDate("201905");
+			data1.setEndDate("");
+			dataList.add(data1);
+		}else if("1234567893".equals(req.getTin().getBillKey())) {
+			Data data = new Data();
+			data.setContractNo("123456");
+			data.setCustomerName("张三");
+			data.setBalance(new BigDecimal(0));
+			data.setPayAmount(new BigDecimal(23.14));
+			data.setBeginDate("");
+			data.setEndDate("");
 			dataList.add(data);
 		}
+		
 		rep.getTout().setData(dataList);
 		return rep;
 	}

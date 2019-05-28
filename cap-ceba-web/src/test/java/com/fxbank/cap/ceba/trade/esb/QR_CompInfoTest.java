@@ -89,7 +89,7 @@ public class QR_CompInfoTest {
 	public void payOk() throws Exception {
 		logger.info("收费单位查询测试");
 		reqBody.setPyCityCode("210001");
-		reqBody.setPyCreditType("01");
+		reqBody.setPyCreditType("03");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("收费单位查询测试请求");

@@ -25,6 +25,17 @@ public class CityInfo {
 
 	@JSONField(name = "ARRAY02")
 	private List<CompanyInfo> array02 = new ArrayList<CompanyInfo>();
+	
+	@JSONField(name = "ARRAY03")
+	private List<CompanyInfo> array03 = new ArrayList<CompanyInfo>();
+
+	public List<CompanyInfo> getArray03() {
+		return array03;
+	}
+
+	public void setArray03(List<CompanyInfo> array03) {
+		this.array03 = array03;
+	}
 
 	public String getCityName() {
 		return cityName;
