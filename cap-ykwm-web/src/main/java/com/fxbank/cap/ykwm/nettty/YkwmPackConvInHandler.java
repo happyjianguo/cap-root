@@ -38,7 +38,7 @@ public class YkwmPackConvInHandler extends ChannelInboundHandlerAdapter {
 		try {
 			StringBuffer pack = new StringBuffer((String) msg);
 			String fixPack = pack.substring(0, pack.length() );
-			String txCode = "REQ_" + pack.substring(0, 5);
+			String txCode = "REQ_" + fixPack.split("\\|")[0];
 			myLog.info(logger, "交易代码=[" + txCode + "]");
 			REQ_BASE reqBase = null;
 			Class<?> ykwmClass = null;

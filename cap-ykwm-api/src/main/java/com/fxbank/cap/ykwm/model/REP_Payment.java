@@ -1,20 +1,15 @@
 package com.fxbank.cap.ykwm.model;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fxbank.cip.base.log.MyLog;
+import com.fxbank.cip.base.pkg.fixed.FixedAnno.FixedField;
 
 
 public class REP_Payment extends REP_BASE {
 
 	private static final long serialVersionUID = -5008748819109644373L;
 
-		private String result;
-
-        private String code;
+	@FixedField(order = 2, len = 100, desc = "取票码列表")
+    private String code;
 
     @Deprecated
     public REP_Payment() {
@@ -33,20 +28,6 @@ public class REP_Payment extends REP_BASE {
      */
     public void setCode(String code) {
         this.code = code;
-    }
-
-    /**
-     * @return the result
-     */
-    public String getResult() {
-        return result;
-    }
-
-    /**
-     * @param result the result to set
-     */
-    public void setResult(String result) {
-        this.result = result;
     }
 
     public REP_Payment(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {

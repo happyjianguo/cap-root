@@ -1,5 +1,6 @@
 package com.fxbank.cap.ykwm.trade.esb;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.fxbank.cap.ykwm.dto.esb.REQ_30012002002.INVOICE;
 import com.fxbank.cap.ykwm.exception.YkwmTradeExecuteException;
 import com.fxbank.cap.ykwm.model.REP_Payment;
 import com.fxbank.cap.ykwm.model.REQ_Payment;
+import com.fxbank.cap.ykwm.model.REQ_Payment.Invoice;
 import com.fxbank.cap.ykwm.model.YkwmTraceLogModel;
 import com.fxbank.cap.ykwm.service.IForwardToYkwmService;
 import com.fxbank.cap.ykwm.service.IPaymentService;
@@ -92,11 +94,13 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 				dto.getSysTraceno());
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(req_30011000101.getReqSysHead(), reqDto)
 				.setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
+		reqSysHead.setProgramId("7J13");
 		req_30011000101.setReqSysHead(reqSysHead);
 
 		ESB_REQ_30011000101.REQ_BODY esb_reqBody = req_30011000101.getReqBody();
 		esb_reqBody.setBaseAcctNo(reqBody.getAcctNoT());// 卡号
 		// 缴费方式 属于 ServDetail List 一部分，得new个对象，然后回传是一个对象
+		/**
 		ESB_REQ_30011000101.ServDetail servDetail = new ESB_REQ_30011000101.ServDetail();
 		// servDetail.setChargeMode(reqBody.getPyFeeTpT());
 		servDetail.setChargeMode("C");
@@ -104,14 +108,17 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		servDetail.setFeeAmt("20");
 		List<ServDetail> servDeailList = new ArrayList<ServDetail>();
 		servDeailList.add(servDetail);
-
-		esb_reqBody.setTranType(reqBody.getPyFeeTpT().equals("1") ? "BH13" : "BH15");
-		esb_reqBody.setTranCcy("CNY");
 		esb_reqBody.setServDetail(servDeailList);// 缴费方式(对象)
+		**/
+		//esb_reqBody.setTranType(reqBody.getPyFeeTpT().equals("1") ? "BH13" : "BH15");
+		esb_reqBody.setTranType("LV03");
+		esb_reqBody.setTranCcy("CNY");
+		
 		esb_reqBody.setTranAmt(reqBody.getPyFeeAmtT());// 缴费金额
 		esb_reqBody.setPassword(reqBody.getPwdT());
 		esb_reqBody.setOthBaseAcctNo("623166001015087122");// 对方账号
-		esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
+		//esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
+		esb_reqBody.setChannelType("LV");
 		esb_reqBody.setSettlementDate(reqDto.getSysDate().toString());// 渠道日期
 		// 捕获异常 对核心记账结果进行判断
 		// *****************************
@@ -162,7 +169,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		record.setPyFeeAmtT(reqBody.getPyFeeAmtT());
 		record.setCoTransactionno(rep.getRepBody().getReference());
 		
-		iPaymentService.hostTimeoutInit(record);
+		iPaymentService.hostSuccessInit(record);
 		
 	}
 
@@ -181,8 +188,6 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		REQ_30012002002.REQ_BODY reqBody = reqDto.getReqBody();
 		REQ_Payment reqPayment = new REQ_Payment(myLog, dto.getSysDate(), dto.getSysTime(), dto.getSysTraceno());
 
-		reqPayment.setAcctNoT(reqBody.getAcctNoT());
-
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("GM", "01");// GM、SJ 问柜面 01\02 热电约定
 		map.put("SJ", "02");
@@ -193,36 +198,35 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		reqPayment.setBatchNum(publicService.getSysDate("CIP").toString());// 批次号 取渠道日期 publicService公共服务
 
 		reqPayment.setCheckNum(reqBody.getCheckNoT());// 流水号 柜面需要处理，将查询的流水送给缴费的接口
-
-		reqPayment.setPyFeeAmtT(reqBody.getPyFeeAmtT());// 缴费金额 加上快递费 不带邮寄费
-
+        BigDecimal payment = new BigDecimal(reqBody.getPyFeeAmtT());
+        //用户缴费金额如果选择邮寄，需包含邮寄费,发票处理方式，0未选择，1邮寄，2自取，3电子发票
+        if("1".equals(reqBody.getBillGetTpT())) {
+        	payment=payment.add(new BigDecimal(reqBody.getCourierAmtT()));
+        }
+		reqPayment.setPayment(Double.parseDouble(payment.toString()));// 缴费金额 加上快递费 不带邮寄费
+		
+		reqPayment.setInvoiceStyle(Integer.parseInt(reqBody.getBillGetTpT()));
+		reqPayment.setExpressID(Integer.parseInt(reqBody.getCourierCmpnyIdT()));// 快递公司
+		reqPayment.setAddress(reqBody.getMailAddrT());// 邮寄地址
+		reqPayment.setPhone(reqBody.getCnttPhnT());// 联系电话
+		reqPayment.setUserName(reqBody.getLnmT3());// 联系人
+		reqPayment.setPostCode(reqBody.getPostNoT5());// 邮编
+		reqPayment.setInvoiceCount(reqBody.getInvoiceArray().size());
+		List<Invoice> list = new ArrayList<Invoice>();
 		// 数据类型 变量名 ： 数组名
-		for (INVOICE a : reqBody.getInvoiceList()) {
+		for (INVOICE a : reqBody.getInvoiceArray()) {
 
-			REQ_Payment.INVOICE invoice = new REQ_Payment.INVOICE();
+			Invoice invoice = new Invoice();
 
-			invoice.setBillGetTpT(a.getBillGetTpT());
-			invoice.setInvcNaHdT3(a.getInvcNaHdT3());
-			invoice.setReimburseAreaT(a.getReimburseAreaT());
-			invoice.setNaT1(a.getNaT1());
+			invoice.setInvoiceTitle(a.getInvcNaHdT3());
+			invoice.setArea(Double.parseDouble((a.getReimburseAreaT())));
+			invoice.setInvoiceName(a.getNaT1());
 			invoice.setInvoiceNum(a.getInvoiceNumT());
-			invoice.setBankNum(a.getBankNumT());// 开户行行号"
-			invoice.setUserAddrT(a.getUserAddrT());
-
-			invoice.setBillGetTpT(a.getBillGetTpT());// 发票获取方式
-
-			reqPayment.getInvoiceList().add(invoice);
+			invoice.setBankNum(a.getBankNumT());
+			invoice.setInvoiceAddress(a.getUserAddrT());
+			list.add(invoice);
 		}
-		reqPayment.setInvoiceCount(String.valueOf(reqBody.getInvoiceList().size()));
-
-		reqPayment.setCourierCmpnyIdT(reqBody.getCourierCmpnyIdT());// 快递公司
-		reqPayment.setMailAddrT(reqBody.getMailAddrT());// 邮寄地址
-		reqPayment.setCnttPhnT(reqBody.getCnttPhnT());// 联系电话
-		reqPayment.setLnmT3(reqBody.getLnmT3());// 联系人
-		reqPayment.setPostNoT5(reqBody.getPostNoT5());// 邮编
-
-		// reqPayment.setInvoiceNum("");// 纳税人识别号
-
+		reqPayment.setInvoiceList(list);
 		REP_Payment repPayment = forwardToYkwmService.sendToYkwm(reqPayment, REP_Payment.class);
 	return repPayment;
 	}
@@ -292,7 +296,9 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		MyLog myLog = logPool.get();
 		ESB_REQ_30014000101 esbReq_30014000101 = new ESB_REQ_30014000101(myLog, reqDto.getSysDate(),
 				reqDto.getSysTime(), reqDto.getSysTraceno());
-		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30014000101.getReqSysHead(), reqDto).build();
+		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30014000101.getReqSysHead(), reqDto).
+				setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
+		reqSysHead.setProgramId("7J13");
 		esbReq_30014000101.setReqSysHead(reqSysHead);
 		ESB_REQ_30014000101.REQ_BODY reqBody_30014000101 = esbReq_30014000101.getReqBody();
 
@@ -428,7 +434,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		rep.getRepBody().setChannelDate(reqDto.getSysDate().toString());
 		rep.getRepBody().setChannelSeqNo(reqDto.getSysTraceno().toString());
 		List<Code> list = new ArrayList<Code>();
-		for(String temp:repPayment.getCode().split("^")) {
+		for(String temp:repPayment.getCode().split("\\^")) {
 			Code c = new Code();
 			c.setCode(temp);
 			list.add(c);

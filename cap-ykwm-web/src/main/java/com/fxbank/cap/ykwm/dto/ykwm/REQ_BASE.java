@@ -12,7 +12,7 @@ import com.fxbank.cip.base.pkg.fixed.FixedAnno.FixedField;
 */
 public abstract class REQ_BASE extends DataTransObject{
 	
-	@FixedField(order = 1, len = 7, desc = "业务类型")
+	@FixedField(order = 1, len = 20, desc = "业务类型")
 	private String ttxnNm;
 
 	public String getTtxnNm() {

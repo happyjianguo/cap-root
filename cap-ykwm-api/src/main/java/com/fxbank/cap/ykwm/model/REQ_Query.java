@@ -1,5 +1,4 @@
 package com.fxbank.cap.ykwm.model;
-import java.io.Serializable;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.pkg.fixed.FixedAnno.FixedField;
 
@@ -24,13 +23,13 @@ public class REQ_Query extends REQ_BASE {
 		super.setTtxnNm("Query");
 	}
 
-	@FixedField(order = 2, len = 8, desc = "业务类型")
+	@FixedField(order = 2, len = 8, desc = "公司ID")
 	private String companyID;
 
-	@FixedField(order = 3, len = 30, desc = "业务类型")
+	@FixedField(order = 3, len = 30, desc = "用户卡号")
 	private String cardNum;
 
-	@FixedField(order = 4, len = 8, desc = "业务类型")
+	@FixedField(order = 4, len = 8, desc = "批次号")
 	private String batchNum;
 
 	public String getCompanyID() {

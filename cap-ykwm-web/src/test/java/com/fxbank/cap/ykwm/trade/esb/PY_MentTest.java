@@ -71,7 +71,7 @@ public class PY_MentTest {
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
 		
-		reqSysHead.setSourceType("YKWM");
+		reqSysHead.setSourceType("MT");
 		reqSysHead.setBranchId("01002");
 		reqSysHead.setUserId("001068");
 		reqSysHead.setTranDate(String.valueOf(new SimpleDateFormat("yyyyMMdd").format(new Date())));
@@ -95,33 +95,35 @@ public class PY_MentTest {
 	public void payOk() throws Exception {
 		logger.info("缴费测试");
 
-		reqBody.setBatchNum("01000009");// 阜新银行网店编号
-		// 用户卡号必须为数字，否则报错
-		reqBody.setBatchNum("20190510");// 批次号 8位
-		
-		reqBody.setAcctNoT("623166001015670786");//kahao 
-		reqBody.setCheckNoT("201905230004");// 交易流水号 16位
-		reqBody.setPyFeeAmtT("390");// 缴费金额f
+		reqBody.setAcctNoT("623166001015670786");// 账号
+		reqBody.setPyFeeAmtT("55.55");//缴费金额
+		reqBody.setUserDbtAmtT("100");//用户欠费金额
+		reqBody.setCourierAmtT("10");//快递金额
+		reqBody.setUserCardNoT("11111");//用户卡号
+		reqBody.setCnttPhnT("18210224456");//联系电话
+		reqBody.setLnmT3("张三");//联系人
+		reqBody.setPyFeeTpT("1");//缴费方式
+		reqBody.setReimburseSignT("A");//报销标志
+		reqBody.setHeatCompanyIdT("2222");//供暖公司ID
+		reqBody.setMailAddrT("沈阳市");//邮寄地址
+		reqBody.setPwdT("147258");//密码
+		reqBody.setHeatCompanyNmT("热电公司");//供暖公司名
+		reqBody.setPostNoT5("111000");//邮编
+		reqBody.setCourierCmpnyIdT("333333");//快递公司ID
+		//TODO 不是数字 报错
+		reqBody.setCheckNoT("44444a");//查询流水号
+		reqBody.setBillGetTpT("1");//发票处理方式，0未选择，1邮寄，2自取，3电子发票
 		List<INVOICE> list = new ArrayList<INVOICE>();
 		INVOICE invoice = new INVOICE();
-		invoice.setBillGetTpT("3");
 		invoice.setInvcNaHdT3("阜新银行股份有限公司");// 发票抬头
 		invoice.setReimburseAreaT("300");// 发票面积
 		invoice.setNaT1("红牛阳123");// 发票姓名
-		// reqBody.setInvoiceNum1("5667788");// 纳税人识别号
-		// reqBody.setbankNm("100");// 开户行 行号 从头取
+		invoice.setInvoiceNumT("5667788");// 纳税人识别号
+		invoice.setBankNumT("100");// 开户行 行号 从头取
 		invoice.setUserAddrT("火星");// 发票地址
 		list.add(invoice);
-		reqBody.setInvoiceList(list);
-		
-		reqBody.setPyFeeTpT("1");
-
-		reqBody.setCourierCmpnyIdT("115566");// 快递公司ID
-		reqBody.setMailAddrT("辽宁省沈阳市铁西区兴华街20号");// 邮寄地址
-		reqBody.setCnttPhnT("18240370382");// 联系电话
-		reqBody.setLnmT3("红牛阳测试123");// 联系人
-		reqBody.setPostNoT5("110035");// 邮编
-		reqBody.setInvoiceCountT("2");// 开票张数
+		reqBody.setInvoiceArray(list);
+        reqBody.setInvoiceCountT(String.valueOf(list.size()));		
 		
 
 		String reqContent = JSON.toJSONString(req);

@@ -21,7 +21,7 @@ public abstract class REQ_BASE extends ModelBase implements Serializable{
 		super(mylog, sysDate, sysTime, sysTraceno);
 	}
 	
-	@FixedField(order = 1, len = 7, desc = "业务类型")
+	@FixedField(order = 1, len = 20, desc = "业务类型")
 	private String ttxnNm;
 
 	public String getTtxnNm() {

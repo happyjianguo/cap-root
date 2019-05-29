@@ -1,281 +1,192 @@
 package com.fxbank.cap.ykwm.dto.ykwm;
 
+import java.util.List;
+import com.fxbank.cip.base.pkg.fixed.FixedAnno.FixedField;
+
 public class REQ_Payment extends REQ_BASE {
 
-	private String source;
-	private String branchNum;
-	private String batchNum;
-	private String checkNum;
-	private String payment;
-	private String invoiceStyle;
-	private String expressID;
-	private String address;
-	private String phone;
-	private String userName;
-	private String postCode;
-	private String invoiceCount;
-	private String invoiceTitle1;
-	private String area1;
-	private String invoiceName1;
-	private String invoiceNum1;
-	private String bankNum1;
-	private String invoiceAddress1;
-
 	public REQ_Payment() {
-		super.txDesc = "热电缴费";
-		super.log = false;
+		super.setTtxnNm("Payment");
+	}
+    
+	@FixedField(order = 2, len = 20, desc = "缴费渠道")
+	private String source;// 缴费渠道（柜面、手机银行、自助、个人网银、支付宝、微信）
+	@FixedField(order = 3, len = 10, desc = "网点编号")
+	private String branchNum;// 网点编号 我行的固定值
+	@FixedField(order = 4, len = 8, desc = "批次号")
+	private String batchNum;// 批次号，银行方提供的对账批次号 需和查询一致
+	@FixedField(order = 5, len = 16, desc = "交易流水号")
+	private String checkNum;// 交易流水号,此流水号为查询时返回的查询流水号
+	@FixedField(order = 6, len = 15, desc = "用户缴费金额")
+	private double payment;// 账号
+	@FixedField(order = 7, len = 1, desc = "发票处理方式")
+	private Integer invoiceStyle;
+	@FixedField(order = 8, len = 8, desc = "快递公司id")
+	private Integer expressID;
+	@FixedField(order = 9, len = 200, desc = "邮寄地址")
+	private String address;
+	@FixedField(order = 10, len = 20, desc = "联系电话")
+	private String phone;
+	@FixedField(order = 11, len = 20, desc = "联系人")
+	private String userName;
+	@FixedField(order = 12, len = 6, desc = "邮编")
+	private String postCode;
+	@FixedField(order = 13, len = 1, cyc = "invoiceList", desc = "循环次数")
+	private Integer invoiceCount;
+	@FixedField(order = 14, desc = "发票明细")
+	private List<Invoice> invoiceList;
+
+	// 发票信息
+	public static class Invoice{
+
+		@FixedField(order = 101,len = 200, desc = "发票抬头")
+		private String invoiceTitle;
+
+		@FixedField(order = 102,len = 15, desc = "发票面积")
+		private double area;
+		
+		@FixedField(order = 103,len = 100, desc = "发票姓名")
+		private String invoiceName;
+
+		@FixedField(order = 104,len = 50, desc = "纳税人识别号")
+		private String invoiceNum;
+
+		@FixedField(order = 105,len = 50, desc = "开户行账号")
+		private String bankNum;
+
+		@FixedField(order = 106,len = 50, desc = "地址电话")
+		private String invoiceAddress;
+
+		public String getInvoiceTitle() {
+			return invoiceTitle;
+		}
+
+		public void setInvoiceTitle(String invoiceTitle) {
+			this.invoiceTitle = invoiceTitle;
+		}
+
+		public double getArea() {
+			return area;
+		}
+
+		public void setArea(double area) {
+			this.area = area;
+		}
+
+		public String getInvoiceName() {
+			return invoiceName;
+		}
+
+		public void setInvoiceName(String invoiceName) {
+			this.invoiceName = invoiceName;
+		}
+
+		public String getInvoiceNum() {
+			return invoiceNum;
+		}
+
+		public void setInvoiceNum(String invoiceNum) {
+			this.invoiceNum = invoiceNum;
+		}
+
+		public String getBankNum() {
+			return bankNum;
+		}
+
+		public void setBankNum(String bankNum) {
+			this.bankNum = bankNum;
+		}
+
+		public String getInvoiceAddress() {
+			return invoiceAddress;
+		}
+
+		public void setInvoiceAddress(String invoiceAddress) {
+			this.invoiceAddress = invoiceAddress;
+		}
+
+
 	}
 
-	/**
-	 * @return the invoiceAddress1
-	 */
-	public String getInvoiceAddress1() {
-		return invoiceAddress1;
-	}
-
-	/**
-	 * @param invoiceAddress1 the invoiceAddress1 to set
-	 */
-	public void setInvoiceAddress1(String invoiceAddress1) {
-		this.invoiceAddress1 = invoiceAddress1;
-	}
-
-	/**
-	 * @return the bankNum1
-	 */
-	public String getBankNum1() {
-		return bankNum1;
-	}
-
-	/**
-	 * @param bankNum1 the bankNum1 to set
-	 */
-	public void setBankNum1(String bankNum1) {
-		this.bankNum1 = bankNum1;
-	}
-
-	/**
-	 * @return the invoiceNum1
-	 */
-	public String getInvoiceNum1() {
-		return invoiceNum1;
-	}
-
-	/**
-	 * @param invoiceNum1 the invoiceNum1 to set
-	 */
-	public void setInvoiceNum1(String invoiceNum1) {
-		this.invoiceNum1 = invoiceNum1;
-	}
-
-	/**
-	 * @return the invoiceName1
-	 */
-	public String getInvoiceName1() {
-		return invoiceName1;
-	}
-
-	/**
-	 * @param invoiceName1 the invoiceName1 to set
-	 */
-	public void setInvoiceName1(String invoiceName1) {
-		this.invoiceName1 = invoiceName1;
-	}
-
-	/**
-	 * @return the area1
-	 */
-	public String getArea1() {
-		return area1;
-	}
-
-	/**
-	 * @param area1 the area1 to set
-	 */
-	public void setArea1(String area1) {
-		this.area1 = area1;
-	}
-
-	/**
-	 * @return the invoiceTitle1
-	 */
-	public String getInvoiceTitle1() {
-		return invoiceTitle1;
-	}
-
-	/**
-	 * @param invoiceTitle1 the invoiceTitle1 to set
-	 */
-	public void setInvoiceTitle1(String invoiceTitle1) {
-		this.invoiceTitle1 = invoiceTitle1;
-	}
-
-	/**
-	 * @return the invoiceCount
-	 */
-	public String getInvoiceCount() {
-		return invoiceCount;
-	}
-
-	/**
-	 * @param invoiceCount the invoiceCount to set
-	 */
-	public void setInvoiceCount(String invoiceCount) {
-		this.invoiceCount = invoiceCount;
-	}
-
-	/**
-	 * @return the postCode
-	 */
-	public String getPostCode() {
-		return postCode;
-	}
-
-	/**
-	 * @param postCode the postCode to set
-	 */
-	public void setPostCode(String postCode) {
-		this.postCode = postCode;
-	}
-
-	/**
-	 * @return the userName
-	 */
-	public String getUserName() {
-		return userName;
-	}
-
-	/**
-	 * @param userName the userName to set
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	/**
-	 * @return the phone
-	 */
-	public String getPhone() {
-		return phone;
-	}
-
-	/**
-	 * @param phone the phone to set
-	 */
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	/**
-	 * @return the address
-	 */
-	public String getAddress() {
-		return address;
-	}
-
-	/**
-	 * @param address the address to set
-	 */
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	/**
-	 * @return the expressID
-	 */
-	public String getExpressID() {
-		return expressID;
-	}
-
-	/**
-	 * @param expressID the expressID to set
-	 */
-	public void setExpressID(String expressID) {
-		this.expressID = expressID;
-	}
-
-	/**
-	 * @return the invoiceStyle
-	 */
-	public String getInvoiceStyle() {
-		return invoiceStyle;
-	}
-
-	/**
-	 * @param invoiceStyle the invoiceStyle to set
-	 */
-	public void setInvoiceStyle(String invoiceStyle) {
-		this.invoiceStyle = invoiceStyle;
-	}
-
-	/**
-	 * @return the payment
-	 */
-	public String getPayment() {
-		return payment;
-	}
-
-	/**
-	 * @param payment the payment to set
-	 */
-	public void setPayment(String payment) {
-		this.payment = payment;
-	}
-
-	/**
-	 * @return the checkNum
-	 */
-	public String getCheckNum() {
-		return checkNum;
-	}
-
-	/**
-	 * @param checkNum the checkNum to set
-	 */
-	public void setCheckNum(String checkNum) {
-		this.checkNum = checkNum;
-	}
-
-	/**
-	 * @return the batchNum
-	 */
-	public String getBatchNum() {
-		return batchNum;
-	}
-
-	/**
-	 * @param batchNum the batchNum to set
-	 */
-	public void setBatchNum(String batchNum) {
-		this.batchNum = batchNum;
-	}
-
-	/**
-	 * @return the branchNum
-	 */
-	public String getBranchNum() {
-		return branchNum;
-	}
-
-	/**
-	 * @param branchNum the branchNum to set
-	 */
-	public void setBranchNum(String branchNum) {
-		this.branchNum = branchNum;
-	}
-
-	/**
-	 * @return the source
-	 */
 	public String getSource() {
 		return source;
 	}
-
-	/**
-	 * @param source the source to set
-	 */
 	public void setSource(String source) {
 		this.source = source;
 	}
+	public String getBranchNum() {
+		return branchNum;
+	}
+	public void setBranchNum(String branchNum) {
+		this.branchNum = branchNum;
+	}
+	public String getBatchNum() {
+		return batchNum;
+	}
+	public void setBatchNum(String batchNum) {
+		this.batchNum = batchNum;
+	}
+	public String getCheckNum() {
+		return checkNum;
+	}
+	public void setCheckNum(String checkNum) {
+		this.checkNum = checkNum;
+	}
+	public double getPayment() {
+		return payment;
+	}
+	public void setPayment(double payment) {
+		this.payment = payment;
+	}
+	public Integer getInvoiceStyle() {
+		return invoiceStyle;
+	}
+	public void setInvoiceStyle(Integer invoiceStyle) {
+		this.invoiceStyle = invoiceStyle;
+	}
+	public Integer getExpressID() {
+		return expressID;
+	}
+	public void setExpressID(Integer expressID) {
+		this.expressID = expressID;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getPostCode() {
+		return postCode;
+	}
+	public void setPostCode(String postCode) {
+		this.postCode = postCode;
+	}
+	public Integer getInvoiceCount() {
+		return invoiceCount;
+	}
+	public void setInvoiceCount(Integer invoiceCount) {
+		this.invoiceCount = invoiceCount;
+	}
+	public List<Invoice> getInvoiceList() {
+		return invoiceList;
+	}
+	public void setInvoiceList(List<Invoice> invoiceList) {
+		this.invoiceList = invoiceList;
+	}
+
+
 
 }

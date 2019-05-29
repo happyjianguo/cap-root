@@ -55,14 +55,13 @@ public class Query implements TradeExecutionStrategy {
 			return repErr;
 		}
 		REP_Query rep = new REP_Query();
-		rep.setResult("0");
 		rep.setOwnerName("张三");
 		rep.setAddress("北京");
 		rep.setMinPayment(new Double(100));
 		rep.setTotal(new Double(500));
 		rep.setUnit("aa");
 		rep.setArea(new Double("120"));
-		List<REP_Query.AccountDetail> data = new ArrayList<REP_Query.AccountDetail>();
+		List<AccountDetail> data = new ArrayList<AccountDetail>();
 		AccountDetail accountDetail = new AccountDetail();
 		accountDetail.setChargeYear("2015-2016");
 		accountDetail.setItemName("ds");
