@@ -75,6 +75,14 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		return super.execute(reqDto);
 	}
 
+	/** 
+	* @Title: hostCharge 
+	* @Description: 核心记账
+	* @param @param dto
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public ModelBase hostCharge(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
@@ -134,6 +142,14 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		
 	}
 
+	/** 
+	* @Title: hostSuccessInitLog 
+	* @Description: 核心记账成功登记
+	* @param @param dto
+	* @param @param model
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public void hostSuccessInitLog(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
@@ -150,6 +166,14 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		
 	}
 
+	/** 
+	* @Title: othCharge 
+	* @Description: 热电记账
+	* @param @param dto
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public ModelBase othCharge(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
@@ -203,10 +227,25 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	return repPayment;
 	}
 
+	/** 
+	* @Title: queryOth 
+	* @Description: 热电记账超时情况下，查询交易状态，此交易不再次查询
+	* @param @param dto
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public void queryOth(DataTransObject dto) throws SysTradeExecuteException {
 	}
 
+	/** 
+	* @Title: othTimeout 
+	* @Description: 判断热电记账是否超时
+	* @param @param e
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public Boolean othTimeout(SysTradeExecuteException e) throws SysTradeExecuteException {
 		return e.getRspCode().equals(SysTradeExecuteException.CIP_E_000009);
@@ -238,6 +277,15 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		return true;
 	}
 
+	/** 
+	* @Title: undoHostCharge 
+	* @Description: 核心冲正
+	* @param @param dto
+	* @param @param e
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public ModelBase undoHostCharge(DataTransObject dto, SysTradeExecuteException e) throws SysTradeExecuteException {
 		REQ_30012002002 reqDto = (REQ_30012002002) dto;
@@ -257,6 +305,13 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		return esbRep_30014000101;
 	}
 
+	/** 
+	* @Title: updateOthTimeout 
+	* @Description: 热电记账超时 更新日志 
+	* @param @param dto
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public void updateOthTimeout(DataTransObject dto) throws SysTradeExecuteException {
 		REQ_30012002002 reqDto = (REQ_30012002002) dto;
@@ -267,6 +322,14 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		
 	}
 
+	/** 
+	* @Title: updateOthSuccess 
+	* @Description: 热电记账成功更新日志
+	* @param @param dto
+	* @param @param model
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public void updateOthSuccess(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
 		REQ_30012002002 reqDto = (REQ_30012002002) dto;
@@ -275,10 +338,18 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
 		record.setTicketNumber(rep.getCode());
-    	iPaymentService.othTimeoutUpdate(record);
+    	iPaymentService.othSuccessUpdate(record);
 		
 	}
 
+	/** 
+	* @Title: updateHostUndoSuccess 
+	* @Description: 核心冲正成功 更新日志 
+	* @param @param dto
+	* @param @param model
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public void updateHostUndoSuccess(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
 		REQ_30012002002 reqDto = (REQ_30012002002) dto;
@@ -288,10 +359,18 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 				reqDto.getSysTraceno());
 		//TODO 更新核心冲正成功返回的信息
 		record.setCoTransactionno(res.getRepSysHead().getReference());
-    	iPaymentService.othTimeoutUpdate(record);
+    	iPaymentService.hostUndoSuccess(record);
 		
 	}
 
+	/** 
+	* @Title: updateOthError 
+	* @Description: 热电记账失败 更新日志
+	* @param @param dto
+	* @param @param e
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public void updateOthError(DataTransObject dto, SysTradeExecuteException e) throws SysTradeExecuteException {
 		REQ_30012002002 reqDto = (REQ_30012002002) dto;
@@ -300,30 +379,47 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 				reqDto.getSysTraceno());
 		//TODO 更新营口热电记账失败信息
 		
-    	iPaymentService.othTimeoutUpdate(record);
+    	iPaymentService.othErrorUpdate(record);
 		
 	}
 
+	/** 
+	* @Title: updateHostUndoTimeout 
+	* @Description: 核心冲正超时 更新日志
+	* @param @param dto
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public void updateHostUndoTimeout(DataTransObject dto) throws SysTradeExecuteException {
 		REQ_30012002002 reqDto = (REQ_30012002002) dto;
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
-    	iPaymentService.othTimeoutUpdate(record);
+    	iPaymentService.hostUndoTimeout(record);
 		
 	}
 
+	/** 
+	* @Title: updateOthTimeoutSucc 
+	* @Description: 热电记账超时情况，再次发起查询交易状态，返回成功则更新第三方记账成功，此交易不再查询 
+	* @param @param dto
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public void updateOthTimeoutSucc(DataTransObject dto) throws SysTradeExecuteException {
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
-		MyLog myLog = logPool.get();
-		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
-				reqDto.getSysTraceno());
-    	iPaymentService.othTimeoutUpdate(record);
-		
 	}
 
+	/** 
+	* @Title: backMsg 
+	* @Description: 给柜面输出 
+	* @param @param dto
+	* @param @param model
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public DataTransObject backMsg(DataTransObject dto,ModelBase model) throws SysTradeExecuteException {
 		REQ_30012002002 reqDto = (REQ_30012002002) dto;
@@ -341,6 +437,14 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		return rep;
 	}
 
+	/** 
+	* @Title: updateHostUndoError 
+	* @Description: 核心冲正失败 更新日志
+	* @param @param dto
+	* @param @param e
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
 	@Override
 	public void updateHostUndoError(DataTransObject dto, SysTradeExecuteException e) throws SysTradeExecuteException {
 		REQ_30012002002 reqDto = (REQ_30012002002) dto;
@@ -348,27 +452,56 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
 		//TODO 更新核心冲正失败的错误信息
-    	iPaymentService.othTimeoutUpdate(record);
+    	iPaymentService.hostUndoError(record);
 		
 	}
 
+	/** 
+	* @Title: othErrorException 
+	* @Description: 热电记账失败，返回热电记账失败错误
+	* @param @param e
+	* @param @return    设定文件 
+	* @throws 
+	*/
 	@Override
 	public SysTradeExecuteException othErrorException(SysTradeExecuteException e) {
 		return e;
 	}
 
+	/** 
+	* @Title: hostUndoSuccessException 
+	* @Description: 核心冲正成功，提示热电记账失败错误和退款成功
+	* @param @param e
+	* @param @return    设定文件 
+	* @throws 
+	*/
 	@Override
 	public SysTradeExecuteException hostUndoSuccessException(SysTradeExecuteException e) {
 		SysTradeExecuteException e1 = new SysTradeExecuteException(e.getRspCode(), e.getRspMsg()+"(退款成功)");
 		return e1;
 	}
 
+	/** 
+	* @Title: hostUndoTimeoutException 
+	* @Description: 核心冲正超时，提示热电记账失败错误和退款超时，请确认账务状态
+	* @param @param e
+	* @param @return    设定文件 
+	* @throws 
+	*/
 	@Override
 	public SysTradeExecuteException hostUndoTimeoutException(SysTradeExecuteException e) {
 		SysTradeExecuteException e1 = new SysTradeExecuteException(e.getRspCode(), e.getRspMsg()+"(退款超时，请确认账务状态)");
 		return e1;
 	}
 
+	/** 
+	* @Title: hostUndoErrorException 
+	* @Description: 核心冲正失败，提示热电记账失败错误和退款失败
+	* @param @param e
+	* @param @param e1
+	* @param @return    设定文件 
+	* @throws 
+	*/
 	@Override
 	public SysTradeExecuteException hostUndoErrorException(SysTradeExecuteException e, SysTradeExecuteException e1) {
 		SysTradeExecuteException e2 = new SysTradeExecuteException(e.getRspCode(), e.getRspMsg()+"("+e1.getRspMsg()+",退款失败)");
