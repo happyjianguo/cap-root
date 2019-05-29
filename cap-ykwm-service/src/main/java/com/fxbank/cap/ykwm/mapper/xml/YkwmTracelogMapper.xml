@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fxbank.cap.ykwm.mapper.YkwmTracelogMapper" >
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ykwm.entity.YkwmTracelog" >
+    <id column="CAP_TRANSACTIONNO" property="capTransactionno" jdbcType="VARCHAR" />
+    <result column="PY_TRANSACTIONNO" property="pyTransactionno" jdbcType="VARCHAR" />
+    <result column="CO_TRANSACTIONNO" property="coTransactionno" jdbcType="VARCHAR" />
+    <result column="PY_RESULT" property="pyResult" jdbcType="VARCHAR" />
+    <result column="CO_RESULT" property="coResult" jdbcType="VARCHAR" />
+    <result column="CAP_RESULT" property="capResult" jdbcType="VARCHAR" />
+    <result column="CAP_REPMSG" property="capRepmsg" jdbcType="VARCHAR" />
+    <result column="PY_DATE" property="pyDate" jdbcType="VARCHAR" />
+    <result column="CO_DATE" property="coDate" jdbcType="VARCHAR" />
+    <result column="CAP_DATE" property="capDate" jdbcType="VARCHAR" />
+    <result column="TE_BRANCHNO" property="teBranchno" jdbcType="VARCHAR" />
+    <result column="TE_NAME" property="teName" jdbcType="VARCHAR" />
+    <result column="TE_VIRTUAL_NAME" property="teVirtualName" jdbcType="VARCHAR" />
+    <result column="TE_CHECK_NUM" property="teCheckNum" jdbcType="VARCHAR" />
+    <result column="ACCT_NO_T" property="acctNoT" jdbcType="VARCHAR" />
+    <result column="PY_FEE_AMT_T" property="pyFeeAmtT" jdbcType="VARCHAR" />
+    <result column="USER_DBT_AMT_T" property="userDbtAmtT" jdbcType="VARCHAR" />
+    <result column="COURIER_AMT_T" property="courierAmtT" jdbcType="VARCHAR" />
+    <result column="REIMBURSE_AREA_T" property="reimburseAreaT" jdbcType="VARCHAR" />
+    <result column="HEAT_SEQ_NO_T" property="heatSeqNoT" jdbcType="VARCHAR" />
+    <result column="USER_CARD_NO_T" property="userCardNoT" jdbcType="VARCHAR" />
+    <result column="CNTT_PHN_T" property="cnttPhnT" jdbcType="VARCHAR" />
+    <result column="LNM_T3" property="lnmT3" jdbcType="VARCHAR" />
+    <result column="PY_FEE_TP_T" property="pyFeeTpT" jdbcType="VARCHAR" />
+    <result column="BILL_GET_TP_T" property="billGetTpT" jdbcType="VARCHAR" />
+    <result column="COMPANY_T" property="companyT" jdbcType="VARCHAR" />
+    <result column="HEAT_COMPANY_ID_T" property="heatCompanyIdT" jdbcType="VARCHAR" />
+    <result column="USER_ADDR_T" property="userAddrT" jdbcType="VARCHAR" />
+    <result column="MAIL_ADDR_T" property="mailAddrT" jdbcType="VARCHAR" />
+    <result column="PWD_T" property="pwdT" jdbcType="VARCHAR" />
+    <result column="INVC_NA_HD_T3" property="invcNaHdT3" jdbcType="VARCHAR" />
+    <result column="HEAT_COMPANY_NM_T" property="heatCompanyNmT" jdbcType="VARCHAR" />
+    <result column="NA_T1" property="naT1" jdbcType="VARCHAR" />
+    <result column="POST_NO_T5" property="postNoT5" jdbcType="VARCHAR" />
+    <result column="COURIER_CMPNY_ID_T" property="courierCmpnyIdT" jdbcType="VARCHAR" />
+    <result column="PY_SOURCE" property="pySource" jdbcType="VARCHAR" />
+    <result column="PY_BRANCHNUM" property="pyBranchnum" jdbcType="VARCHAR" />
+    <result column="PY_BATCHNUM" property="pyBatchnum" jdbcType="VARCHAR" />
+    <result column="EX_ID" property="exId" jdbcType="VARCHAR" />
+    <result column="EX_NAME" property="exName" jdbcType="VARCHAR" />
+    <result column="EX_AMT" property="exAmt" jdbcType="DECIMAL" />
+    <result column="DT_CHARGEYEAR" property="dtChargeyear" jdbcType="VARCHAR" />
+    <result column="DT_ITEMNAME" property="dtItemname" jdbcType="VARCHAR" />
+    <result column="DT_AREA" property="dtArea" jdbcType="DECIMAL" />
+    <result column="DT_PRICE" property="dtPrice" jdbcType="DECIMAL" />
+    <result column="DT_ACCOUNT" property="dtAccount" jdbcType="DECIMAL" />
+    <result column="DT_AGIO" property="dtAgio" jdbcType="DECIMAL" />
+    <result column="DT_LATEFEE" property="dtLatefee" jdbcType="DECIMAL" />
+    <result column="DT_PAYMENT" property="dtPayment" jdbcType="DECIMAL" />
+    <result column="INVOICETITLE1" property="invoicetitle1" jdbcType="VARCHAR" />
+    <result column="AREA1" property="area1" jdbcType="DECIMAL" />
+    <result column="INVOICENAME1" property="invoicename1" jdbcType="VARCHAR" />
+    <result column="INVOICENUM1" property="invoicenum1" jdbcType="VARCHAR" />
+    <result column="BANKNUM1" property="banknum1" jdbcType="VARCHAR" />
+    <result column="INVOICEADDRESS1" property="invoiceaddress1" jdbcType="VARCHAR" />
+    <result column="INVOICETITLE2" property="invoicetitle2" jdbcType="VARCHAR" />
+    <result column="AREA2" property="area2" jdbcType="DECIMAL" />
+    <result column="INVOICENAME2" property="invoicename2" jdbcType="VARCHAR" />
+    <result column="INVOICENUM2" property="invoicenum2" jdbcType="VARCHAR" />
+    <result column="BANKNUM2" property="banknum2" jdbcType="VARCHAR" />
+    <result column="INVOICEADDRESS2" property="invoiceaddress2" jdbcType="VARCHAR" />
+    <result column="INVOICETITLE3" property="invoicetitle3" jdbcType="VARCHAR" />
+    <result column="AREA3" property="area3" jdbcType="DECIMAL" />
+    <result column="INVOICENAME3" property="invoicename3" jdbcType="VARCHAR" />
+    <result column="INVOICENUM3" property="invoicenum3" jdbcType="VARCHAR" />
+    <result column="BANKNUM3" property="banknum3" jdbcType="VARCHAR" />
+    <result column="INVOICEADDRESS3" property="invoiceaddress3" jdbcType="VARCHAR" />
+    <result column="INVOICETITLE4" property="invoicetitle4" jdbcType="VARCHAR" />
+    <result column="AREA4" property="area4" jdbcType="DECIMAL" />
+    <result column="INVOICENAME4" property="invoicename4" jdbcType="VARCHAR" />
+    <result column="INVOICENUM4" property="invoicenum4" jdbcType="VARCHAR" />
+    <result column="BANKNUM4" property="banknum4" jdbcType="VARCHAR" />
+    <result column="INVOICEADDRESS4" property="invoiceaddress4" jdbcType="VARCHAR" />
+    <result column="TICKET_NUMBER" property="ticketNumber" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select CAP_TRANSACTIONNO, PY_TRANSACTIONNO, CO_TRANSACTIONNO, PY_RESULT, CO_RESULT, 
+    CAP_RESULT, CAP_REPMSG, PY_DATE, CO_DATE, CAP_DATE, TE_BRANCHNO, TE_NAME, TE_VIRTUAL_NAME, 
+    TE_CHECK_NUM, ACCT_NO_T, PY_FEE_AMT_T, USER_DBT_AMT_T, COURIER_AMT_T, REIMBURSE_AREA_T, 
+    HEAT_SEQ_NO_T, USER_CARD_NO_T, CNTT_PHN_T, LNM_T3, PY_FEE_TP_T, BILL_GET_TP_T, COMPANY_T, 
+    HEAT_COMPANY_ID_T, USER_ADDR_T, MAIL_ADDR_T, PWD_T, INVC_NA_HD_T3, HEAT_COMPANY_NM_T, 
+    NA_T1, POST_NO_T5, COURIER_CMPNY_ID_T, PY_SOURCE, PY_BRANCHNUM, PY_BATCHNUM, EX_ID, 
+    EX_NAME, EX_AMT, DT_CHARGEYEAR, DT_ITEMNAME, DT_AREA, DT_PRICE, DT_ACCOUNT, DT_AGIO, 
+    DT_LATEFEE, DT_PAYMENT, INVOICETITLE1, AREA1, INVOICENAME1, INVOICENUM1, BANKNUM1, 
+    INVOICEADDRESS1, INVOICETITLE2, AREA2, INVOICENAME2, INVOICENUM2, BANKNUM2, INVOICEADDRESS2, 
+    INVOICETITLE3, AREA3, INVOICENAME3, INVOICENUM3, BANKNUM3, INVOICEADDRESS3, INVOICETITLE4, 
+    AREA4, INVOICENAME4, INVOICENUM4, BANKNUM4, INVOICEADDRESS4, TICKET_NUMBER
+    from YKWM_TRACELOG
+  </select>
+</mapper>
