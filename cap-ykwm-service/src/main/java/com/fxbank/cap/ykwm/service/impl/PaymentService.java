@@ -25,6 +25,10 @@ public class PaymentService implements IPaymentService {
 		log.setCoResult("0");
 		//对账状态 0 未对账, 1 已对账
 		log.setCapResult("0");
+		log.setCoDate(record.getCoDate());
+		log.setCoTransactionno(record.getCoTransactionno());
+		log.setCoRspcode(record.getCoRspcode());
+		log.setCoRspmsg(record.getCoRspmsg());
 		//TODO 登记柜面输入项和核心记账成功返回的信息
 		
 		ykwmTracelogMapper.insertSelective(log);
@@ -54,8 +58,8 @@ public class PaymentService implements IPaymentService {
 		log.setCapTransactionno(record.getSysTraceno().toString());
 		//热电交易状态 0-登记，1-超时，2-处理成功，3-处理失败
 		log.setPyResult("2");
-		//TODO 更新热电记账成功返回的信息
-		
+		log.setTicketNumber(record.getTicketNumber());
+		log.setPyRspcode(record.getPyRspcode());
 		ykwmTracelogMapper.updateByPrimaryKeySelective(log);
 	}
 	@Override
@@ -74,9 +78,8 @@ public class PaymentService implements IPaymentService {
 		log.setCapTransactionno(record.getSysTraceno().toString());
 		//热电交易状态 0-登记，1-超时，2-处理成功，3-处理失败
 		log.setPyResult("3");
-		//TODO 更新热电记账失败信息
-		
-		log.setAcctNoT(record.getAcctNoT());
+        log.setPyRspcode(record.getPyRspcode());
+        log.setPyErrorMsg(record.getPyErrorMsg());
 		ykwmTracelogMapper.updateByPrimaryKeySelective(log);
 	}
 	@Override
@@ -89,8 +92,9 @@ public class PaymentService implements IPaymentService {
 		log.setCapTransactionno(record.getSysTraceno().toString());
 		//核心交易状态 0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-超时
 		log.setCoResult("1");
-		//TODO 更新核心冲正成功返回信息
-		
+        log.setCoDate(record.getCoDate());
+        log.setCoRspcode(record.getCoRspcode());
+        log.setCoRspmsg(record.getCoRspmsg());
 		log.setAcctNoT(record.getAcctNoT());
 		ykwmTracelogMapper.updateByPrimaryKeySelective(log);
 	}

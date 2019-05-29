@@ -168,7 +168,9 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		//TODO 登记柜面的输入项和核心记账成功返回的信息
 		record.setPyFeeAmtT(reqBody.getPyFeeAmtT());
 		record.setCoTransactionno(rep.getRepBody().getReference());
-		
+		record.setCoDate(rep.getRepSysHead().getTranDate());
+		record.setCoRspcode(rep.getRepSysHead().getRet().get(0).getRetCode());
+		record.setCoRspmsg(rep.getRepSysHead().getRet().get(0).getRetMsg());
 		iPaymentService.hostSuccessInit(record);
 		
 	}
@@ -344,6 +346,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
 		record.setTicketNumber(rep.getCode());
+		record.setPyRspcode(rep.getResult());
     	iPaymentService.othSuccessUpdate(record);
 		
 	}
@@ -363,8 +366,10 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
-		//TODO 更新核心冲正成功返回的信息
+		record.setCoDate(res.getRepSysHead().getTranDate());
 		record.setCoTransactionno(res.getRepSysHead().getReference());
+		record.setCoRspcode(res.getRepSysHead().getRet().get(0).getRetCode());
+		record.setCoRspmsg(res.getRepSysHead().getRet().get(0).getRetMsg());
     	iPaymentService.hostUndoSuccess(record);
 		
 	}
@@ -383,8 +388,8 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
-		//TODO 更新营口热电记账失败信息
-		
+		record.setPyRspcode(e.getRspCode());
+		record.setPyErrorMsg(e.getRspMsg());
     	iPaymentService.othErrorUpdate(record);
 		
 	}

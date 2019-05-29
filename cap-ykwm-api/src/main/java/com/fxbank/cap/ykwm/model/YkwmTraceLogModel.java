@@ -1,25 +1,11 @@
-/**   
-* @Title: YkwmTraceLog.java 
-* @Package com.fxbank.cap.ykwm.model 
-* @Description: TODO(用一句话描述该文件做什么) 
-* @作者 杜振铎
-* @date 2019年5月27日 下午7:10:18 
-* @version V1.0   
-*/
 package com.fxbank.cap.ykwm.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.fxbank.cip.base.log.MyLog;
 
 
-/** 
-* @ClassName: YkwmTraceLog 
-* @Description: TODO(这里用一句话描述这个类的作用) 
-* @作者 杜振铎
-* @date 2019年5月27日 下午7:10:18 
-*  
-*/
 public class YkwmTraceLogModel extends REQ_BASE {
 	private static final long serialVersionUID = -6544573451833955213L;
 
@@ -30,257 +16,118 @@ public class YkwmTraceLogModel extends REQ_BASE {
 
 	public YkwmTraceLogModel(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
 		super(mylog, sysDate, sysTime, sysTraceno);
-		super.setTtxnNm("Query");
 	}
-	private String capTransactionno;
+	//渠道流水
+    private String capTransactionno;
+    //热电流水
     private String pyTransactionno;
+    //核心流水
     private String coTransactionno;
+    //热电交易状态 0-登记，1-超时，2-处理成功，3-处理失败
     private String pyResult;
+    //核心交易状态 0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-超时
     private String coResult;
+    //对账状态 “0” 未对账, "1" 已对账
     private String capResult;
     private String capRepmsg;
+    //热电日期
     private String pyDate;
+    //核心日期
     private String coDate;
+    //渠道日期
     private String capDate;
+    //所属机构
     private String teBranchno;
+    //操作柜员
     private String teName;
+    //虚拟柜员
     private String teVirtualName;
+    //查询流水号
     private String teCheckNum;
+    //用户账号
     private String acctNoT;
+    //缴费金额
     private String pyFeeAmtT;
+    //用户欠费金额
     private String userDbtAmtT;
+    //快递金额
     private String courierAmtT;
+    //发票面积
     private String reimburseAreaT;
+    //热力流水号
     private String heatSeqNoT;
+    //用户卡号
     private String userCardNoT;
+    //联系电话
     private String cnttPhnT;
+    //联系人
     private String lnmT3;
+    //缴费方式
     private String pyFeeTpT;
+    //发票获取方式 0未选择，1邮寄，2自取，3电子发票
     private String billGetTpT;
+    //公司
     private String companyT;
+    //供暖公司ID
     private String heatCompanyIdT;
+    //用户地址
     private String userAddrT;
+    //邮寄地址
     private String mailAddrT;
-
+    //密码
     private String pwdT;
+    //发票名头
     private String invcNaHdT3;
-
-    /**
-     * null
-     */
+    //供暖公司名
     private String heatCompanyNmT;
-
-    /**
-     * null
-     */
+    //姓名
     private String naT1;
-
-    /**
-     * null
-     */
+    //邮编
     private String postNoT5;
-
-    /**
-     * null
-     */
+    //快递公司ID
     private String courierCmpnyIdT;
-
-    /**
-     * null
-     */
+    //缴费渠道（CTS:柜面、MBANK:手机银行、SBANK：自助、EBANK:个人网银、WBANK：微信）
     private String pySource;
-
-    /**
-     * null
-     */
+    //网点编号
     private String pyBranchnum;
-
-    /**
-     * null
-     */
+    //批次号，银行方提供的对账批次号，缴费时需要提交此批次号，如果查询和缴费时的批次号不一致，将导致缴费失败
     private String pyBatchnum;
-
-    /**
-     * null
-     */
+    //快递公司ID
     private String exId;
-
-    /**
-     * null
-     */
+    //快递公司名称
     private String exName;
-
-    /**
-     * null
-     */
+    //快递费
     private BigDecimal exAmt;
-
-    /**
-     * null
-     */
+    //供暖年度
     private String dtChargeyear;
-
-    /**
-     * null
-     */
+    //供暖类型
     private String dtItemname;
-
-    /**
-     * null
-     */
+    //供暖面积
     private Long dtArea;
-
-    /**
-     * null
-     */
+    //供暖单价
     private Long dtPrice;
-
-    /**
-     * null
-     */
+    //欠费金额
     private Long dtAccount;
-
-    /**
-     * null
-     */
+    //优惠金额
     private Long dtAgio;
-
-    /**
-     * null
-     */
+    //滞纳金
     private Long dtLatefee;
-
-    /**
-     * null
-     */
+    //应交金额
     private Long dtPayment;
-
-    /**
-     * null
-     */
-    private String invoicetitle1;
-
-    /**
-     * null
-     */
-    private Long area1;
-
-    /**
-     * null
-     */
-    private String invoicename1;
-
-    /**
-     * null
-     */
-    private String invoicenum1;
-
-    /**
-     * null
-     */
-    private String banknum1;
-
-    /**
-     * null
-     */
-    private String invoiceaddress1;
-
-    /**
-     * null
-     */
-    private String invoicetitle2;
-
-    /**
-     * null
-     */
-    private Long area2;
-
-    /**
-     * null
-     */
-    private String invoicename2;
-
-    /**
-     * null
-     */
-    private String invoicenum2;
-
-    /**
-     * null
-     */
-    private String banknum2;
-
-    /**
-     * null
-     */
-    private String invoiceaddress2;
-
-    /**
-     * null
-     */
-    private String invoicetitle3;
-
-    /**
-     * null
-     */
-    private Long area3;
-
-    /**
-     * null
-     */
-    private String invoicename3;
-
-    /**
-     * null
-     */
-    private String invoicenum3;
-
-    /**
-     * null
-     */
-    private String banknum3;
-
-    /**
-     * null
-     */
-    private String invoiceaddress3;
-
-    /**
-     * null
-     */
-    private String invoicetitle4;
-
-    /**
-     * null
-     */
-    private Long area4;
-
-    /**
-     * null
-     */
-    private String invoicename4;
-
-    /**
-     * null
-     */
-    private String invoicenum4;
-
-    /**
-     * null
-     */
-    private String banknum4;
-
-    /**
-     * null
-     */
-    private String invoiceaddress4;
-
-    /**
-     * null
-     */
+    //发票列表
+    private List<Invoice> invoiceList;
+    //取票码列表
     private String ticketNumber;
-
-	public String getCapTransactionno() {
+    //热电响应码
+    private String pyRspcode;
+    //热电错误信息
+    private String pyErrorMsg;
+    //核心响应码
+    private String coRspcode;
+    //核心响应信息
+    private String coRspmsg;
+    
+    public String getCapTransactionno() {
 		return capTransactionno;
 	}
 
@@ -672,196 +519,12 @@ public class YkwmTraceLogModel extends REQ_BASE {
 		this.dtPayment = dtPayment;
 	}
 
-	public String getInvoicetitle1() {
-		return invoicetitle1;
+	public List<Invoice> getInvoiceList() {
+		return invoiceList;
 	}
 
-	public void setInvoicetitle1(String invoicetitle1) {
-		this.invoicetitle1 = invoicetitle1;
-	}
-
-	public Long getArea1() {
-		return area1;
-	}
-
-	public void setArea1(Long area1) {
-		this.area1 = area1;
-	}
-
-	public String getInvoicename1() {
-		return invoicename1;
-	}
-
-	public void setInvoicename1(String invoicename1) {
-		this.invoicename1 = invoicename1;
-	}
-
-	public String getInvoicenum1() {
-		return invoicenum1;
-	}
-
-	public void setInvoicenum1(String invoicenum1) {
-		this.invoicenum1 = invoicenum1;
-	}
-
-	public String getBanknum1() {
-		return banknum1;
-	}
-
-	public void setBanknum1(String banknum1) {
-		this.banknum1 = banknum1;
-	}
-
-	public String getInvoiceaddress1() {
-		return invoiceaddress1;
-	}
-
-	public void setInvoiceaddress1(String invoiceaddress1) {
-		this.invoiceaddress1 = invoiceaddress1;
-	}
-
-	public String getInvoicetitle2() {
-		return invoicetitle2;
-	}
-
-	public void setInvoicetitle2(String invoicetitle2) {
-		this.invoicetitle2 = invoicetitle2;
-	}
-
-	public Long getArea2() {
-		return area2;
-	}
-
-	public void setArea2(Long area2) {
-		this.area2 = area2;
-	}
-
-	public String getInvoicename2() {
-		return invoicename2;
-	}
-
-	public void setInvoicename2(String invoicename2) {
-		this.invoicename2 = invoicename2;
-	}
-
-	public String getInvoicenum2() {
-		return invoicenum2;
-	}
-
-	public void setInvoicenum2(String invoicenum2) {
-		this.invoicenum2 = invoicenum2;
-	}
-
-	public String getBanknum2() {
-		return banknum2;
-	}
-
-	public void setBanknum2(String banknum2) {
-		this.banknum2 = banknum2;
-	}
-
-	public String getInvoiceaddress2() {
-		return invoiceaddress2;
-	}
-
-	public void setInvoiceaddress2(String invoiceaddress2) {
-		this.invoiceaddress2 = invoiceaddress2;
-	}
-
-	public String getInvoicetitle3() {
-		return invoicetitle3;
-	}
-
-	public void setInvoicetitle3(String invoicetitle3) {
-		this.invoicetitle3 = invoicetitle3;
-	}
-
-	public Long getArea3() {
-		return area3;
-	}
-
-	public void setArea3(Long area3) {
-		this.area3 = area3;
-	}
-
-	public String getInvoicename3() {
-		return invoicename3;
-	}
-
-	public void setInvoicename3(String invoicename3) {
-		this.invoicename3 = invoicename3;
-	}
-
-	public String getInvoicenum3() {
-		return invoicenum3;
-	}
-
-	public void setInvoicenum3(String invoicenum3) {
-		this.invoicenum3 = invoicenum3;
-	}
-
-	public String getBanknum3() {
-		return banknum3;
-	}
-
-	public void setBanknum3(String banknum3) {
-		this.banknum3 = banknum3;
-	}
-
-	public String getInvoiceaddress3() {
-		return invoiceaddress3;
-	}
-
-	public void setInvoiceaddress3(String invoiceaddress3) {
-		this.invoiceaddress3 = invoiceaddress3;
-	}
-
-	public String getInvoicetitle4() {
-		return invoicetitle4;
-	}
-
-	public void setInvoicetitle4(String invoicetitle4) {
-		this.invoicetitle4 = invoicetitle4;
-	}
-
-	public Long getArea4() {
-		return area4;
-	}
-
-	public void setArea4(Long area4) {
-		this.area4 = area4;
-	}
-
-	public String getInvoicename4() {
-		return invoicename4;
-	}
-
-	public void setInvoicename4(String invoicename4) {
-		this.invoicename4 = invoicename4;
-	}
-
-	public String getInvoicenum4() {
-		return invoicenum4;
-	}
-
-	public void setInvoicenum4(String invoicenum4) {
-		this.invoicenum4 = invoicenum4;
-	}
-
-	public String getBanknum4() {
-		return banknum4;
-	}
-
-	public void setBanknum4(String banknum4) {
-		this.banknum4 = banknum4;
-	}
-
-	public String getInvoiceaddress4() {
-		return invoiceaddress4;
-	}
-
-	public void setInvoiceaddress4(String invoiceaddress4) {
-		this.invoiceaddress4 = invoiceaddress4;
+	public void setInvoiceList(List<Invoice> invoiceList) {
+		this.invoiceList = invoiceList;
 	}
 
 	public String getTicketNumber() {
@@ -871,5 +534,88 @@ public class YkwmTraceLogModel extends REQ_BASE {
 	public void setTicketNumber(String ticketNumber) {
 		this.ticketNumber = ticketNumber;
 	}
-    
+
+	public String getPyRspcode() {
+		return pyRspcode;
+	}
+
+	public void setPyRspcode(String pyRspcode) {
+		this.pyRspcode = pyRspcode;
+	}
+
+	public String getPyErrorMsg() {
+		return pyErrorMsg;
+	}
+
+	public void setPyErrorMsg(String pyErrorMsg) {
+		this.pyErrorMsg = pyErrorMsg;
+	}
+
+	public String getCoRspcode() {
+		return coRspcode;
+	}
+
+	public void setCoRspcode(String coRspcode) {
+		this.coRspcode = coRspcode;
+	}
+
+	public String getCoRspmsg() {
+		return coRspmsg;
+	}
+
+	public void setCoRspmsg(String coRspmsg) {
+		this.coRspmsg = coRspmsg;
+	}
+
+	public static class Invoice{
+    	//发票抬头
+    	private String invoiceTitle;
+    	//面积
+    	private String area;
+    	//姓名
+    	private String invoiceName;
+    	//纳税人识别号
+    	private String invoiceNum;
+    	//开户行账号
+    	private String bankNum;
+    	//地址电话
+    	private String invoiceAddress;
+		public String getInvoiceTitle() {
+			return invoiceTitle;
+		}
+		public void setInvoiceTitle(String invoiceTitle) {
+			this.invoiceTitle = invoiceTitle;
+		}
+		public String getArea() {
+			return area;
+		}
+		public void setArea(String area) {
+			this.area = area;
+		}
+		public String getInvoiceName() {
+			return invoiceName;
+		}
+		public void setInvoiceName(String invoiceName) {
+			this.invoiceName = invoiceName;
+		}
+		public String getInvoiceNum() {
+			return invoiceNum;
+		}
+		public void setInvoiceNum(String invoiceNum) {
+			this.invoiceNum = invoiceNum;
+		}
+		public String getBankNum() {
+			return bankNum;
+		}
+		public void setBankNum(String bankNum) {
+			this.bankNum = bankNum;
+		}
+		public String getInvoiceAddress() {
+			return invoiceAddress;
+		}
+		public void setInvoiceAddress(String invoiceAddress) {
+			this.invoiceAddress = invoiceAddress;
+		}
+    	
+    }
 }

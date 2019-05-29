@@ -76,6 +76,10 @@
     <result column="BANKNUM4" property="banknum4" jdbcType="VARCHAR" />
     <result column="INVOICEADDRESS4" property="invoiceaddress4" jdbcType="VARCHAR" />
     <result column="TICKET_NUMBER" property="ticketNumber" jdbcType="VARCHAR" />
+    <result column="PY_RSPCODE" property="pyRspcode" jdbcType="VARCHAR" />
+    <result column="PY_ERROR_MSG" property="pyErrorMsg" jdbcType="VARCHAR" />
+    <result column="CO_RSPCODE" property="coRspcode" jdbcType="VARCHAR" />
+    <result column="CO_RSPMSG" property="coRspcode" jdbcType="VARCHAR" />
   </resultMap>
   <select id="selectAll" resultMap="BaseResultMap" >
     select CAP_TRANSACTIONNO, PY_TRANSACTIONNO, CO_TRANSACTIONNO, PY_RESULT, CO_RESULT, 
@@ -88,7 +92,8 @@
     DT_LATEFEE, DT_PAYMENT, INVOICETITLE1, AREA1, INVOICENAME1, INVOICENUM1, BANKNUM1, 
     INVOICEADDRESS1, INVOICETITLE2, AREA2, INVOICENAME2, INVOICENUM2, BANKNUM2, INVOICEADDRESS2, 
     INVOICETITLE3, AREA3, INVOICENAME3, INVOICENUM3, BANKNUM3, INVOICEADDRESS3, INVOICETITLE4, 
-    AREA4, INVOICENAME4, INVOICENUM4, BANKNUM4, INVOICEADDRESS4, TICKET_NUMBER
+    AREA4, INVOICENAME4, INVOICENUM4, BANKNUM4, INVOICEADDRESS4, TICKET_NUMBER,
+    PY_RSPCODE,PY_ERROR_MSG,CO_RSPCODE,CO_RSPMSG 
     from YKWM_TRACELOG
   </select>
 </mapper>

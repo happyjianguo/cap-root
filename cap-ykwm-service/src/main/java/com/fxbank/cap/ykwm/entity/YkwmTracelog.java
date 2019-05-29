@@ -12,11 +12,7 @@ import org.apache.ibatis.type.Alias;
 @Alias("ykwmTracelog")
 
 public class YkwmTracelog {
-    /**
-     * null
-     */
 
-     
     @Id
     @Column(name = "CAP_TRANSACTIONNO")
     private String capTransactionno;
@@ -69,9 +65,7 @@ public class YkwmTracelog {
     @Column(name = "CO_DATE")
     private String coDate;
 
-    /**
-     * null
-     */
+    @Id
     @Column(name = "CAP_DATE")
     private String capDate;
 
@@ -458,8 +452,52 @@ public class YkwmTracelog {
      */
     @Column(name = "TICKET_NUMBER")
     private String ticketNumber;
+    
+    @Column(name = "PY_RSPCODE")
+    private String pyRspcode;
+    
+    @Column(name = "PY_ERROR_MSG")
+    private String pyErrorMsg;
+    
+    @Column(name = "CO_RSPCODE")
+    private String coRspcode;
+    
+    @Column(name = "CO_RSPMSG")
+    private String coRspmsg;
+    
+    public String getPyRspcode() {
+		return pyRspcode;
+	}
 
-    /**
+	public void setPyRspcode(String pyRspcode) {
+		this.pyRspcode = pyRspcode;
+	}
+
+	public String getPyErrorMsg() {
+		return pyErrorMsg;
+	}
+
+	public void setPyErrorMsg(String pyErrorMsg) {
+		this.pyErrorMsg = pyErrorMsg;
+	}
+
+	public String getCoRspcode() {
+		return coRspcode;
+	}
+
+	public void setCoRspcode(String coRspcode) {
+		this.coRspcode = coRspcode;
+	}
+
+	public String getCoRspmsg() {
+		return coRspmsg;
+	}
+
+	public void setCoRspmsg(String coRspmsg) {
+		this.coRspmsg = coRspmsg;
+	}
+
+	/**
      * null
      * @return CAP_TRANSACTIONNO null
      */

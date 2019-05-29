@@ -111,7 +111,7 @@ public class PY_MentTest {
 		reqBody.setPostNoT5("111000");//邮编
 		reqBody.setCourierCmpnyIdT("333333");//快递公司ID
 		//TODO 不是数字 报错
-		reqBody.setCheckNoT("44444a");//查询流水号
+		reqBody.setCheckNoT("44444");//查询流水号
 		reqBody.setBillGetTpT("1");//发票处理方式，0未选择，1邮寄，2自取，3电子发票
 		List<INVOICE> list = new ArrayList<INVOICE>();
 		INVOICE invoice = new INVOICE();
