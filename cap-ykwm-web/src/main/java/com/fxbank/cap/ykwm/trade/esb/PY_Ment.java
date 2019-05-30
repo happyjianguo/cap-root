@@ -142,9 +142,34 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		REQ_30012002002.REQ_BODY reqBody = reqDto.getReqBody();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
-		//TODO 登记柜面的输入项
+		record.setAcctNoT(reqBody.getAcctNoT());
 		record.setPyFeeAmtT(reqBody.getPyFeeAmtT());
-		
+		record.setUserDbtAmtT(reqBody.getUserDbtAmtT());
+		record.setCourierAmtT(reqBody.getCourierAmtT());
+		record.setUserCardNoT(reqBody.getUserCardNoT());
+        record.setCnttPhnT(reqBody.getCnttPhnT());
+        record.setLnmT3(reqBody.getLnmT3());
+        record.setPyFeeTpT(reqBody.getPyFeeTpT());
+        record.setReimburseSignT(reqBody.getReimburseSignT());
+        record.setHeatCompanyIdT(reqBody.getHeatCompanyIdT());
+        record.setMailAddrT(reqBody.getMailAddrT());
+        record.setHeatCompanyNmT(reqBody.getHeatCompanyNmT());
+        record.setPostNoT5(reqBody.getPostNoT5());
+        record.setCourierCmpnyIdT(reqBody.getCourierCmpnyIdT());
+        record.setTeCheckNum(reqBody.getCheckNoT());
+        record.setBillGetTpT(reqBody.getBillGetTpT());
+        List<YkwmTraceLogModel.Invoice> list = new ArrayList<YkwmTraceLogModel.Invoice>();
+        for(INVOICE temp:reqBody.getInvoiceArray()) {
+        	YkwmTraceLogModel.Invoice invoice = new YkwmTraceLogModel.Invoice();
+        	invoice.setInvoiceTitle(temp.getInvcNaHdT3());
+        	invoice.setArea(temp.getReimburseAreaT());
+        	invoice.setInvoiceName(temp.getNaT1());
+        	invoice.setInvoiceNum(temp.getInvoiceNumT());
+        	invoice.setInvoiceAddress(temp.getUserAddrT());
+        	invoice.setBankNum(temp.getBankNumT());
+        	list.add(invoice);
+        }
+        record.setInvoiceList(list);
 		iPaymentService.hostTimeoutInit(record);
 		
 	}
@@ -165,8 +190,34 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		REQ_30012002002.REQ_BODY reqBody = reqDto.getReqBody();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
-		//TODO 登记柜面的输入项和核心记账成功返回的信息
+		record.setAcctNoT(reqBody.getAcctNoT());
 		record.setPyFeeAmtT(reqBody.getPyFeeAmtT());
+		record.setUserDbtAmtT(reqBody.getUserDbtAmtT());
+		record.setCourierAmtT(reqBody.getCourierAmtT());
+		record.setUserCardNoT(reqBody.getUserCardNoT());
+        record.setCnttPhnT(reqBody.getCnttPhnT());
+        record.setLnmT3(reqBody.getLnmT3());
+        record.setPyFeeTpT(reqBody.getPyFeeTpT());
+        record.setReimburseSignT(reqBody.getReimburseSignT());
+        record.setHeatCompanyIdT(reqBody.getHeatCompanyIdT());
+        record.setMailAddrT(reqBody.getMailAddrT());
+        record.setHeatCompanyNmT(reqBody.getHeatCompanyNmT());
+        record.setPostNoT5(reqBody.getPostNoT5());
+        record.setCourierCmpnyIdT(reqBody.getCourierCmpnyIdT());
+        record.setTeCheckNum(reqBody.getCheckNoT());
+        record.setBillGetTpT(reqBody.getBillGetTpT());
+        List<YkwmTraceLogModel.Invoice> list = new ArrayList<YkwmTraceLogModel.Invoice>();
+        for(INVOICE temp:reqBody.getInvoiceArray()) {
+        	YkwmTraceLogModel.Invoice invoice = new YkwmTraceLogModel.Invoice();
+        	invoice.setInvoiceTitle(temp.getInvcNaHdT3());
+        	invoice.setArea(temp.getReimburseAreaT());
+        	invoice.setInvoiceName(temp.getNaT1());
+        	invoice.setInvoiceNum(temp.getInvoiceNumT());
+        	invoice.setInvoiceAddress(temp.getUserAddrT());
+        	invoice.setBankNum(temp.getBankNumT());
+        	list.add(invoice);
+        }
+        record.setInvoiceList(list);
 		record.setCoTransactionno(rep.getRepBody().getReference());
 		record.setCoDate(rep.getRepSysHead().getTranDate());
 		record.setCoRspcode(rep.getRepSysHead().getRet().get(0).getRetCode());
@@ -462,7 +513,8 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
-		//TODO 更新核心冲正失败的错误信息
+		record.setCoRspcode(e.getRspCode());
+		record.setCoRspmsg(e.getRspMsg());
     	iPaymentService.hostUndoError(record);
 		
 	}

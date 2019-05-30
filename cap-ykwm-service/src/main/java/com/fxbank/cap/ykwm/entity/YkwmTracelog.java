@@ -120,8 +120,8 @@ public class YkwmTracelog {
     /**
      * null
      */
-    @Column(name = "REIMBURSE_AREA_T")
-    private String reimburseAreaT;
+    @Column(name = "REIMBURSE_SIGN_T")
+    private String reimburseSignT;
 
     /**
      * null
@@ -787,18 +787,18 @@ public class YkwmTracelog {
 
     /**
      * null
-     * @return REIMBURSE_AREA_T null
+     * @return REIMBURSE_SIGN_T null
      */
-    public String getReimburseAreaT() {
-        return reimburseAreaT;
+    public String getReimburseSignT() {
+        return reimburseSignT;
     }
 
     /**
      * null
-     * @param reimburseAreaT null
+     * @param reimburseSignT null
      */
-    public void setReimburseAreaT(String reimburseAreaT) {
-        this.reimburseAreaT = reimburseAreaT;
+    public void setReimburseSignT(String reimburseSignT) {
+        this.reimburseSignT = reimburseSignT;
     }
 
     /**

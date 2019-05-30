@@ -1,18 +1,15 @@
 package com.fxbank.cap.ykwm.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
-
 import com.fxbank.cip.base.log.MyLog;
+import com.fxbank.cip.base.model.ModelBase;
 
 
-public class YkwmTraceLogModel extends REQ_BASE {
-	private static final long serialVersionUID = -6544573451833955213L;
+public class YkwmTraceLogModel extends ModelBase implements Serializable{
 
-	@Deprecated
-	public YkwmTraceLogModel() {
-		super(null, 0, 0, 0);
-	}
+	private static final long serialVersionUID = -4845870779601322852L;
 
 	public YkwmTraceLogModel(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
 		super(mylog, sysDate, sysTime, sysTraceno);
@@ -52,8 +49,8 @@ public class YkwmTraceLogModel extends REQ_BASE {
     private String userDbtAmtT;
     //快递金额
     private String courierAmtT;
-    //发票面积
-    private String reimburseAreaT;
+    //报销标志
+    private String reimburseSignT;
     //热力流水号
     private String heatSeqNoT;
     //用户卡号
@@ -271,12 +268,12 @@ public class YkwmTraceLogModel extends REQ_BASE {
 		this.courierAmtT = courierAmtT;
 	}
 
-	public String getReimburseAreaT() {
-		return reimburseAreaT;
+	public String getReimburseSignT() {
+		return reimburseSignT;
 	}
 
-	public void setReimburseAreaT(String reimburseAreaT) {
-		this.reimburseAreaT = reimburseAreaT;
+	public void setReimburseSignT(String reimburseSignT) {
+		this.reimburseSignT = reimburseSignT;
 	}
 
 	public String getHeatSeqNoT() {
@@ -567,8 +564,9 @@ public class YkwmTraceLogModel extends REQ_BASE {
 		this.coRspmsg = coRspmsg;
 	}
 
-	public static class Invoice{
-    	//发票抬头
+	public static class Invoice implements Serializable{
+		private static final long serialVersionUID = 8027873480548147655L;
+		//发票抬头
     	private String invoiceTitle;
     	//面积
     	private String area;

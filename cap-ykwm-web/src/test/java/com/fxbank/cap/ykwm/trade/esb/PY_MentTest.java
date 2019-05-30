@@ -115,13 +115,37 @@ public class PY_MentTest {
 		reqBody.setBillGetTpT("1");//发票处理方式，0未选择，1邮寄，2自取，3电子发票
 		List<INVOICE> list = new ArrayList<INVOICE>();
 		INVOICE invoice = new INVOICE();
-		invoice.setInvcNaHdT3("阜新银行股份有限公司");// 发票抬头
-		invoice.setReimburseAreaT("300");// 发票面积
-		invoice.setNaT1("红牛阳123");// 发票姓名
-		invoice.setInvoiceNumT("5667788");// 纳税人识别号
+		invoice.setInvcNaHdT3("阜新银行股份有限公司1");// 发票抬头
+		invoice.setReimburseAreaT("100");// 发票面积
+		invoice.setNaT1("红牛阳1");// 发票姓名
+		invoice.setInvoiceNumT("1111");// 纳税人识别号
 		invoice.setBankNumT("100");// 开户行 行号 从头取
-		invoice.setUserAddrT("火星");// 发票地址
+		invoice.setUserAddrT("火星1");// 发票地址
 		list.add(invoice);
+		INVOICE invoice1 = new INVOICE();
+		invoice1.setInvcNaHdT3("阜新银行股份有限公司2");// 发票抬头
+		invoice1.setReimburseAreaT("200");// 发票面积
+		invoice1.setNaT1("红牛阳2");// 发票姓名
+		invoice1.setInvoiceNumT("22222");// 纳税人识别号
+		invoice1.setBankNumT("200");// 开户行 行号 从头取
+		invoice1.setUserAddrT("火星2");// 发票地址
+		list.add(invoice1);
+		INVOICE invoice2 = new INVOICE();
+		invoice2.setInvcNaHdT3("阜新银行股份有限公司3");// 发票抬头
+		invoice2.setReimburseAreaT("300");// 发票面积
+		invoice2.setNaT1("红牛阳3");// 发票姓名
+		invoice2.setInvoiceNumT("3333");// 纳税人识别号
+		invoice2.setBankNumT("300");// 开户行 行号 从头取
+		invoice2.setUserAddrT("火星3");// 发票地址
+		list.add(invoice2);
+		INVOICE invoice3 = new INVOICE();
+		invoice3.setInvcNaHdT3("阜新银行股份有限公司4");// 发票抬头
+		invoice3.setReimburseAreaT("400");// 发票面积
+		invoice3.setNaT1("红牛阳4");// 发票姓名
+		invoice3.setInvoiceNumT("44444");// 纳税人识别号
+		invoice3.setBankNumT("400");// 开户行 行号 从头取
+		invoice3.setUserAddrT("火星4");// 发票地址
+		list.add(invoice3);
 		reqBody.setInvoiceArray(list);
         reqBody.setInvoiceCountT(String.valueOf(list.size()));		
 		

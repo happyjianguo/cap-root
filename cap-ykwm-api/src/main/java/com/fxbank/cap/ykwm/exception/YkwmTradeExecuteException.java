@@ -19,6 +19,7 @@ public class YkwmTradeExecuteException extends SysTradeExecuteException {
 	public final static String YKWM_E_10001 = "fx10001";
 	public final static String YKWM_E_10002 = "fx10002";
 	public final static String YKWM_E_10003 = "fx10003";
+	public final static String YKWM_E_10004 = "fx10004";
 	
 
 	public final static Map<String, String> YKWMERRCODECONV = new HashMap<String, String>() {
@@ -28,6 +29,7 @@ public class YkwmTradeExecuteException extends SysTradeExecuteException {
 			put(YKWM_E_10001, "业务不支持");
 			put(YKWM_E_10002, "核心记账超时，请查账");
 			put(YKWM_E_10003, "营口热电记账超时");
+			put(YKWM_E_10004, "待冲正信息不存在");
 			
 		}
 	};

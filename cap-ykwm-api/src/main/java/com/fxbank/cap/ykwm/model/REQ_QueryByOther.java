@@ -13,7 +13,7 @@ public class REQ_QueryByOther extends REQ_BASE {
 
 	public REQ_QueryByOther(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
 		super(mylog, sysDate, sysTime, sysTraceno);
-		super.setTtxnNm("Query ByOther");
+		super.setTtxnNm("QueryByOther");
 	}
 
 	@FixedField(order = 2, len = 8, desc = "公司ID")

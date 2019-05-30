@@ -43,15 +43,15 @@ public class REP_30012002004 extends REP_BASE {
 	}
 
 	public class REP_BODY {
-		@JSONField(name = "CODE_ARRAY")
-		private List<Info> codeArray;
+		@JSONField(name = "INFO_ARRAY")
+		private List<Info> infoArray;
 
-		public List<Info> getCodeArray() {
-			return codeArray;
+		public List<Info> getInfoArray() {
+			return infoArray;
 		}
 
-		public void setCodeArray(List<Info> codeArray) {
-			this.codeArray = codeArray;
+		public void setInfoArray(List<Info> infoArray) {
+			this.infoArray = infoArray;
 		}
 		
 	}

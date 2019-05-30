@@ -4,7 +4,7 @@ import com.fxbank.cip.base.pkg.fixed.FixedAnno.FixedField;
 public class REQ_QueryByOther extends REQ_BASE {
 
 	public REQ_QueryByOther() {
-		super.setTtxnNm("Query ByOther");
+		super.setTtxnNm("QueryByOther");
 	}
 
 	@FixedField(order = 2, len = 8, desc = "公司ID")

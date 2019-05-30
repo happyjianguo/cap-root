@@ -42,12 +42,11 @@ public abstract class BaseTradeT2 {
 	* @Title: undoOth 
 	* @Description: 第三方冲正 
 	* @param @param dto
-	* @param @return
 	* @param @throws SysTradeExecuteException    设定文件 
 	* @return ModelBase    返回类型 
 	* @throws 
 	*/
-	public abstract ModelBase undoOth(DataTransObject dto) throws SysTradeExecuteException;
+	public abstract void undoOth(DataTransObject dto, ModelBase model) throws SysTradeExecuteException;
 
 	/** 
 	* @Title: othTimeout 
@@ -60,7 +59,8 @@ public abstract class BaseTradeT2 {
 	*/
 	public abstract Boolean othTimeout(SysTradeExecuteException e) throws SysTradeExecuteException;
 
-	/** 
+	/**
+	 * @param model  
 	* @Title: undoHostCharge 
 	* @Description: 核心冲正
 	* @param @param dto
@@ -99,7 +99,7 @@ public abstract class BaseTradeT2 {
 	* @return SysTradeExecuteException    返回类型 
 	* @throws 
 	*/
-	public abstract SysTradeExecuteException hostUndoTimeoutException(SysTradeExecuteException e);
+	public SysTradeExecuteException hostUndoTimeoutException = null;
 	
 	/** 
 	* @Title: updateHostUndoError 
@@ -141,13 +141,13 @@ public abstract class BaseTradeT2 {
 	
 	/** 
 	* @Title: updateOthUndoSucc 
-	* @Description: 更新第三方记账冲正成功
+	* @Description: 更新第三方冲正成功
 	* @param @param dto
 	* @param @throws SysTradeExecuteException    设定文件 
 	* @return void    返回类型 
 	* @throws 
 	*/
-	public abstract void updateOthUndoSucc(DataTransObject dto,ModelBase model) throws SysTradeExecuteException;
+	public abstract void updateOthUndoSucc(DataTransObject dto) throws SysTradeExecuteException;
 	
 	/** 
 	* @Title: updateOthUndoTimeout 
@@ -160,15 +160,15 @@ public abstract class BaseTradeT2 {
 	public abstract void updateOthUndoTimeout(DataTransObject dto) throws SysTradeExecuteException;
 	
 	/** 
-	* @Title: existRecord 
-	* @Description: 查询日志判断是否有该笔记录
+	* @Title: queryRecord 
+	* @Description: 查询记账日志获取记录
 	* @param @param dto
 	* @param @return
 	* @param @throws SysTradeExecuteException    设定文件 
 	* @return Boolean    返回类型 
 	* @throws 
 	*/
-	public abstract Boolean existRecord(DataTransObject dto) throws SysTradeExecuteException;
+	public abstract ModelBase queryRecord(DataTransObject dto) throws SysTradeExecuteException;
 	
 	/** 
 	* @Fields notExistException : 待冲正信息不存在提示错误 
@@ -179,13 +179,14 @@ public abstract class BaseTradeT2 {
 		ModelBase model = null;
 		MyLog myLog = logPool.get();
 		//查询日志是否有该笔记录
-		if(!existRecord(dto)) {
+		model = queryRecord(dto);
+		if(model==null) {
 			myLog.error(logger, TRADE_DESC + "待冲正信息不存在");
 			throw notExistException;
 		}
 		try {
 			// 第三方冲正
-			model = undoOth(dto);
+			undoOth(dto,model);
 			myLog.info(logger, TRADE_DESC + "第三方冲正成功，渠道日期" + dto.getSysDate() + "渠道流水号" + dto.getSysTraceno());
 		} catch (SysTradeExecuteException e) {
 			// 第三方冲正超时
@@ -200,7 +201,7 @@ public abstract class BaseTradeT2 {
 			}
 		}
 		//更新第三方冲正成功
-		updateOthUndoSucc(dto, model);
+		updateOthUndoSucc(dto);
 		try {
 			//核心冲正
 			model = undoHostCharge(dto);
@@ -210,7 +211,7 @@ public abstract class BaseTradeT2 {
 					|| e.getRspCode().equals(ESB_TIMEOUT_CODE2)) {
 				updateHostUndoTimeout(dto);
 				myLog.error(logger,TRADE_DESC+"核心冲正超时，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno());
-				throw hostUndoTimeoutException(e); // 提示第三方错误信息
+				throw hostUndoTimeoutException; 
 			} else {
 				//核心冲正失败2
 				updateHostUndoError(dto, e);
