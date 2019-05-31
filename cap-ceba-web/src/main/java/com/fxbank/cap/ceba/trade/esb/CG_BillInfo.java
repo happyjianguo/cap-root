@@ -450,7 +450,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 	* @throws 
 	*/
 	@Override
-	public DataTransObject backMsg(DataTransObject dto) throws SysTradeExecuteException {
+	public DataTransObject backMsg(DataTransObject dto,ModelBase model) throws SysTradeExecuteException {
 		REQ_30062001001 reqDto = (REQ_30062001001) dto;
 		REP_30062001001 rep = new REP_30062001001();
 		rep.getRepBody().setChannelDate(reqDto.getSysDate().toString());

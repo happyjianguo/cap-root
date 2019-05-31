@@ -71,22 +71,35 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 		req.getHead().setInstId(instld);
 		req.getHead().setAnsTranCode("BJCEBBRQReq");
 		req.getHead().setTrmSeqNum(publicService.getSysDate("CIP").toString()+publicService.getSysTraceno());
-		REQ_BJCEBBRQReq.Tin tin = req.getTin();
 		CebaChargeLogModel logModel = cebaChargeLogService.queryLogBySeqNo(myLog, reqBody.getChannelSeqNo());
 		if(logModel==null) {
 			CebaTradeExecuteException e = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10005);
 			throw e;
 		}
+		REP_30063001402.REP_BODY repBody = rep.getRepBody();
+		/**查询光大银行订单状态
+        REQ_BJCEBBRQReq.Tin tin = req.getTin();
 		tin.setBillNo(logModel.getSysTraceno().toString());
 		tin.setPayDate(logModel.getSysDate().toString()+logModel.getSysTime().toString());
 		REP_BJCEBBRQRes res = forwardToCebaService.sendToCeba(req, 
 				REP_BJCEBBRQRes.class);
 		REP_BJCEBBRQRes.Tout tout = res.getTout();
-		REP_30063001402.REP_BODY repBody = rep.getRepBody();
+		
 		repBody.setBillKey(tout.getBillKey());
 		repBody.setPltfSeqNo(tout.getBankBillNo());
 		repBody.setUnpaidAmt(tout.getPayAmount().toString());
 		repBody.setDealStatus(tout.getPayState());
+		**/
+		repBody.setBillKey(logModel.getBillKey());
+		repBody.setPltfSeqNo(req.getHead().getTrmSeqNum());
+		repBody.setUnpaidAmt(logModel.getPayAmount().toString());
+		String status = "1";
+		if("0".equals(logModel.getHostState())&&"2".equals(logModel.getPayState())) {
+			status = "2";
+		}else if("3".equals(logModel.getPayState())||"4".equals(logModel.getHostState())) {
+			status = "3";
+		}
+		repBody.setDealStatus(status);
 		myLog.info(logger, "查询缴费单销账结果成功，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
 		return rep;
 	}

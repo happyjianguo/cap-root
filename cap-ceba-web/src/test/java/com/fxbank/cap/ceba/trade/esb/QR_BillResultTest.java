@@ -92,7 +92,7 @@ public class QR_BillResultTest {
 	public void payOk() throws Exception {
 		logger.info("销账结果查询测试");
 		//pltfrmSeqNo等于12345时，报错
-		reqBody.setChannelSeqNo("210011611");
+		reqBody.setChannelSeqNo("2057763105");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("销账结果查询测试请求");

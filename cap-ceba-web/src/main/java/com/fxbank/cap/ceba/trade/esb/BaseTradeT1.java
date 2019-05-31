@@ -186,7 +186,7 @@ public abstract class BaseTradeT1 {
 	* @return DataTransObject    返回类型 
 	* @throws 
 	*/
-	public abstract DataTransObject backMsg(DataTransObject dto) throws SysTradeExecuteException;
+	public abstract DataTransObject backMsg(DataTransObject dto,ModelBase model) throws SysTradeExecuteException;
 
 	/** 
 	* @Title: updateHostUndoError 
@@ -363,7 +363,8 @@ public abstract class BaseTradeT1 {
 						//核心冲正
 						model = undoHostCharge(dto, e);
 					} catch (SysTradeExecuteException e1) {
-						if (e1.getRspCode().equals(SysTradeExecuteException.CIP_E_000004)) { // 超时
+						if (e1.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e1.getRspCode().equals(ESB_TIMEOUT_CODE1)
+								|| e1.getRspCode().equals(ESB_TIMEOUT_CODE2)) {
 							updateHostUndoTimeout(dto);
 							myLog.error(logger,TRADE_DESC+"核心冲正超时，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno(),e1);
 							throw hostUndoTimeoutException(e); // 提示第三方错误信息
@@ -384,6 +385,6 @@ public abstract class BaseTradeT1 {
 		}
 		updateOthSuccess(dto, model1);
 		myLog.info(logger,TRADE_DESC+"第三方记账成功，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno());
-		return backMsg(dto);
+		return backMsg(dto,model1);
 	}
 }

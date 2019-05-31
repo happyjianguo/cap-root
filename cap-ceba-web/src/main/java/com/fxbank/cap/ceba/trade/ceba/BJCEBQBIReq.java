@@ -70,7 +70,7 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 		rep.getHead().setTrmSeqNum(req.getHead().getTrmSeqNum());
 		rep.getTout().setBillKey("123456");
 		rep.getTout().setCompanyId("654321");
-		rep.getTout().setTotalNum("2");
+		
 		List<Data> dataList = new ArrayList<Data>();
 		if("1234567891".equals(req.getTin().getBillKey())) {
 			Data data = new Data();
@@ -87,7 +87,7 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 			data1.setBalance(new BigDecimal(0));
 			data1.setPayAmount(new BigDecimal(55.55));
 			data1.setBeginDate("20190429");
-			data1.setEndDate("2190528");
+			data1.setEndDate("20190528");
 			dataList.add(data1);
 		}else if("1234567892".equals(req.getTin().getBillKey())) {
 			Data data = new Data();
@@ -100,7 +100,7 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 			dataList.add(data);
 			Data data1 = new Data();
 			data1.setContractNo("654321");
-			data1.setCustomerName("张三");
+			data1.setCustomerName("李四");
 			data1.setBalance(new BigDecimal(0));
 			data1.setPayAmount(new BigDecimal(55.55));
 			data1.setBeginDate("201905");
@@ -116,7 +116,7 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 			data.setEndDate("");
 			dataList.add(data);
 		}
-		
+		rep.getTout().setTotalNum(String.valueOf(dataList.size()));
 		rep.getTout().setData(dataList);
 		return rep;
 	}

@@ -159,7 +159,12 @@ public class CebaChargeLogService implements ICebaChargeLogService{
 		log.setSeqNo(seqNo);
 		List<CebaChargeLog> list = cebaChargeLogMapper.select(log);
 		if(list.size()>0) {
-			return new CebaChargeLogModel(myLog,list.get(0).getPlatDate(),list.get(0).getPlatTime(),list.get(0).getPlatTrace());
+			CebaChargeLogModel result = new CebaChargeLogModel(myLog,list.get(0).getPlatDate(),list.get(0).getPlatTime(),list.get(0).getPlatTrace());
+			result.setPayState(list.get(0).getPayState());
+			result.setHostState(list.get(0).getHostState());
+			result.setPayAmount(list.get(0).getPayAmount());
+			result.setBillKey(list.get(0).getBillKey());
+			return result;
 		}
 		return null;
 	}
