@@ -1,13 +1,10 @@
 package com.fxbank.cap.ykwm.trade.esb;
 
 import static org.junit.Assert.assertEquals;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
-
 import javax.annotation.Resource;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ykwm.dto.esb.REP_30012002004;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30012002004;
+import com.fxbank.cap.ykwm.dto.esb.REP_30063001502;
+import com.fxbank.cap.ykwm.dto.esb.REQ_30063001502;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
@@ -53,13 +49,13 @@ public class QR_CardTest {
 	@Resource
 	private LogPool logPool;
 	
-	private REQ_30012002004 req ;
+	private REQ_30063001502 req ;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30012002004.REQ_BODY reqBody ;
+	private REQ_30063001502.REQ_BODY reqBody ;
 	
 	@Before
 	public void init(){
-		req = new REQ_30012002004();
+		req = new REQ_30063001502();
 		reqSysHead = new REQ_SYS_HEAD();
 		reqSysHead.setServiceId("300120020");
 		reqSysHead.setSceneId("04");
@@ -90,11 +86,11 @@ public class QR_CardTest {
 	public void payOk() throws Exception {
 		logger.info("模糊查询测试");
 		//公司ID必须为数字，否则报错
-		reqBody.setHeatCompanyIDT("123456a");
-		reqBody.setOwnerName("张三");
+		reqBody.setHeatCompanyIdT("123456a");
+		reqBody.setUsername("张三");
 		//信息类别：Phone：电话号码；IDCard：身份证号；AgreeCode：合同编号；Address：地址
-		reqBody.setFieldKind("Phone");
-		reqBody.setFieldValue("18010224456");
+		reqBody.setQueryType("Phone");
+		reqBody.setQueryInfo("18010224456");
 		String reqContent = JSON.toJSONString(req);
 		logger.info("模糊查询测试请求");
 		RequestBuilder request = MockMvcRequestBuilders.post(URL)
@@ -104,7 +100,7 @@ public class QR_CardTest {
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30012002004 rep = JsonUtil.toBean(repContent, REP_30012002004.class);
+		REP_30063001502 rep = JsonUtil.toBean(repContent, REP_30063001502.class);
 	}
 
 }

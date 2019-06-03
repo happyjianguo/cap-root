@@ -48,6 +48,31 @@ public abstract class BaseTradeT2 {
 	*/
 	public abstract void undoOth(DataTransObject dto, ModelBase model) throws SysTradeExecuteException;
 
+	
+	/** 
+	* @Title: queryOrigCharge 
+	* @Description: 隔日冲账查询 
+	* @param @param dto
+	* @param @param model
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @return ModelBase    返回类型 
+	* @throws 
+	*/
+	public abstract ModelBase queryOrigCharge(DataTransObject dto, ModelBase model) throws SysTradeExecuteException;
+	
+	/** 
+	* @Title: undoOrigHostCharge 
+	* @Description: 隔日冲账
+	* @param @param dto
+	* @param @param model
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @return ModelBase    返回类型 
+	* @throws 
+	*/
+	public abstract ModelBase undoOrigHostCharge(DataTransObject dto,ModelBase model0, ModelBase model1) throws SysTradeExecuteException;
+	
 	/** 
 	* @Title: othTimeout 
 	* @Description: 判断第三方冲正是否超时 
@@ -58,6 +83,17 @@ public abstract class BaseTradeT2 {
 	* @throws 
 	*/
 	public abstract Boolean othTimeout(SysTradeExecuteException e) throws SysTradeExecuteException;
+	
+	/** 
+	* @Title: isOrigHostCharge 
+	* @Description: 判断是当天冲正还是隔日冲正 
+	* @param @param model
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @return Boolean    返回类型 
+	* @throws 
+	*/
+	public abstract Boolean isOrigHostCharge(DataTransObject dto) throws SysTradeExecuteException;
 
 	/**
 	 * @param model  
@@ -177,16 +213,18 @@ public abstract class BaseTradeT2 {
 	
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
 		ModelBase model = null;
+		//根据渠道流水号和渠道日期查询记账日志记录
+		ModelBase recordModel = null;
 		MyLog myLog = logPool.get();
 		//查询日志是否有该笔记录
-		model = queryRecord(dto);
-		if(model==null) {
+		recordModel = queryRecord(dto);
+		if(recordModel==null) {
 			myLog.error(logger, TRADE_DESC + "待冲正信息不存在");
 			throw notExistException;
 		}
 		try {
 			// 第三方冲正
-			undoOth(dto,model);
+			undoOth(dto,recordModel);
 			myLog.info(logger, TRADE_DESC + "第三方冲正成功，渠道日期" + dto.getSysDate() + "渠道流水号" + dto.getSysTraceno());
 		} catch (SysTradeExecuteException e) {
 			// 第三方冲正超时
@@ -203,8 +241,14 @@ public abstract class BaseTradeT2 {
 		//更新第三方冲正成功
 		updateOthUndoSucc(dto);
 		try {
-			//核心冲正
-			model = undoHostCharge(dto);
+			if(isOrigHostCharge(dto)) {
+				//隔日冲正查询
+				model = queryOrigCharge(dto,recordModel);
+				model = undoOrigHostCharge(dto,recordModel,model);
+			}else {
+				//当日核心冲正
+				model = undoHostCharge(dto);
+			}
 		} catch (SysTradeExecuteException e) {
 			//ESB超时
 			if (e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e.getRspCode().equals(ESB_TIMEOUT_CODE1)
@@ -219,8 +263,9 @@ public abstract class BaseTradeT2 {
 				throw hostUndoErrorException(e);
 			}
 		}
+		
 		//更新核心冲正成功
-		updateHostUndoSucc(dto, model);
+		updateHostUndoSucc(dto, recordModel);
 		myLog.info(logger,TRADE_DESC+"核心冲正成功，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno());
 		return backMsg(dto);
 	}

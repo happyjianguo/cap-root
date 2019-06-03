@@ -1,13 +1,10 @@
 package com.fxbank.cap.ykwm.trade.esb;
 
 import static org.junit.Assert.assertEquals;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
-
 import javax.annotation.Resource;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,28 +19,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ykwm.dto.esb.REP_30063001501;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30063001501;
+import com.fxbank.cap.ykwm.dto.esb.REP_30063812301;
+import com.fxbank.cap.ykwm.dto.esb.REQ_30063812301;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
 
 
-/** 
-* @ClassName: QR_AccountTest 
-* @Description: 柜面欠费查询模拟
-* @作者 杜振铎
-* @date 2019年4月29日 下午2:14:18 
-*  
-*/
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc	
-public class QR_AccountTest {
+public class QR_RevokeTest {
 	
-	private static Logger logger = LoggerFactory.getLogger(QR_AccountTest.class);
+	private static Logger logger = LoggerFactory.getLogger(QR_RevokeTest.class);
 	
      private static final String URL="http://127.0.0.1:7006/esb/ykwm.do";
 
@@ -53,15 +42,15 @@ public class QR_AccountTest {
 	@Resource
 	private LogPool logPool;
 	
-	private REQ_30063001501 req ;
+	private REQ_30063812301 req ;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30063001501.REQ_BODY reqBody ;
+	private REQ_30063812301.REQ_BODY reqBody ;
 	
 	@Before
 	public void init(){
-		req = new REQ_30063001501();
+		req = new REQ_30063812301();
 		reqSysHead = new REQ_SYS_HEAD();
-		reqSysHead.setServiceId("300630015");
+		reqSysHead.setServiceId("300638123");
 		reqSysHead.setSceneId("01");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
@@ -88,22 +77,19 @@ public class QR_AccountTest {
 	
 	@Test
 	public void payOk() throws Exception {
-		logger.info("查询欠费测试");
-		
-		reqBody.setHeatCompanyIdT("2323");
-		//用户卡号必须为数字，否则报错
-		reqBody.setUserCardNoT("12345");
-		
+		logger.info("撤销快查测试");
+		reqBody.setPltfrmDateT1("20190622");
+		reqBody.setPltfrmSeqT1("302866");
 		String reqContent = JSON.toJSONString(req);
-		logger.info("查询欠费测试请求");
+		logger.info("撤销快查测试请求");
 		RequestBuilder request = MockMvcRequestBuilders.post(URL)
 				.contentType(MediaType.APPLICATION_JSON_UTF8).content(reqContent);
 		MvcResult mvcResult = mockMvc.perform(request).andReturn();
-		logger.info("查询欠费测试请求完毕");
+		logger.info("撤销快查测试请求完毕");
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30063001501 rep = JsonUtil.toBean(repContent, REP_30063001501.class);
+		REP_30063812301 rep = JsonUtil.toBean(repContent, REP_30063812301.class);
 	}
 
 }

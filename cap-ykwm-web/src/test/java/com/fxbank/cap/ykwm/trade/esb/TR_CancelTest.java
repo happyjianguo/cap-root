@@ -20,8 +20,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ykwm.dto.esb.REP_30012002003;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30012002003;
+import com.fxbank.cap.ykwm.dto.esb.REP_30064000201;
+import com.fxbank.cap.ykwm.dto.esb.REQ_30064000201;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
@@ -49,16 +49,16 @@ public class TR_CancelTest {
 	@Resource
 	private LogPool logPool;
 	
-	private REQ_30012002003 req ;
+	private REQ_30064000201 req ;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30012002003.REQ_BODY reqBody ;
+	private REQ_30064000201.REQ_BODY reqBody ;
 	
 	@Before
 	public void init(){
-		req = new REQ_30012002003();
+		req = new REQ_30064000201();
 		reqSysHead = new REQ_SYS_HEAD();
-		reqSysHead.setServiceId("300120020");
-		reqSysHead.setSceneId("03");
+		reqSysHead.setServiceId("300640002");
+		reqSysHead.setSceneId("01");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
 		//网联
@@ -87,8 +87,8 @@ public class TR_CancelTest {
 		logger.info("冲正测试");
 		
 		reqBody.setChannelDate("20190622");
-		reqBody.setChannelSeqNo("302849");
-		reqBody.setUndoReason("重复缴费");
+		reqBody.setChannelSeqNo("302866");
+		reqBody.setRevokeReason("重复缴费");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("冲正测试请求");
@@ -99,7 +99,7 @@ public class TR_CancelTest {
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30012002003 rep = JsonUtil.toBean(repContent, REP_30012002003.class);
+		REP_30064000201 rep = JsonUtil.toBean(repContent, REP_30064000201.class);
 	}
 
 }

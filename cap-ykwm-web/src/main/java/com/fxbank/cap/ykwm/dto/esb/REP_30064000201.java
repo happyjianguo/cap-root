@@ -5,7 +5,14 @@ import com.fxbank.cip.base.dto.REP_APP_HEAD;
 import com.fxbank.cip.base.dto.REP_BASE;
 import com.fxbank.cip.base.dto.REP_SYS_HEAD;
 
-public class REP_30012002003 extends REP_BASE {
+/** 
+* @ClassName: REP_30064000201 
+* @Description: 营口供热冲正应答
+* @作者 杜振铎
+* @date 2019年5月31日 下午2:27:15 
+*  
+*/
+public class REP_30064000201 extends REP_BASE {
 
 	@JSONField(name = "APP_HEAD")
 	private REP_APP_HEAD repAppHead = new REP_APP_HEAD();
@@ -43,4 +50,5 @@ public class REP_30012002003 extends REP_BASE {
 	public class REP_BODY {
 
 	}
+
 }

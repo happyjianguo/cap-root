@@ -5,20 +5,26 @@ import com.fxbank.cip.base.dto.REQ_APP_HEAD;
 import com.fxbank.cip.base.dto.REQ_BASE;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 
+/** 
+* @ClassName: REQ_30063812301 
+* @Description: 营口供热撤销快查请求
+* @作者 杜振铎
+* @date 2019年5月31日 下午2:29:54 
+*  
+*/
+public class REQ_30063812301 extends REQ_BASE {
 
-public class REQ_30012002003 extends REQ_BASE {
-	
 	@JSONField(name = "APP_HEAD")
 	private REQ_APP_HEAD reqAppHead;
-	
+
 	@JSONField(name = "SYS_HEAD")
 	private REQ_SYS_HEAD reqSysHead;
-	
+
 	@JSONField(name = "BODY")
 	private REQ_BODY reqBody;
-	
-	public REQ_30012002003(){
-		super.txDesc = "冲正";
+
+	public REQ_30063812301() {
+		super.txDesc = "营口热电撤销快查";
 	}
 
 	public REQ_APP_HEAD getReqAppHead() {
@@ -29,21 +35,19 @@ public class REQ_30012002003 extends REQ_BASE {
 		this.reqAppHead = reqAppHead;
 	}
 
-    @Override
+	@Override
 	public REQ_SYS_HEAD getReqSysHead() {
 		return reqSysHead;
 	}
 
-    @Override
+	@Override
 	public void setReqSysHead(REQ_SYS_HEAD reqSysHead) {
 		this.reqSysHead = reqSysHead;
 	}
 
-
 	public REQ_BODY getReqBody() {
 		return reqBody;
 	}
-
 
 	public void setReqBody(REQ_BODY reqBody) {
 		this.reqBody = reqBody;
@@ -51,38 +55,28 @@ public class REQ_30012002003 extends REQ_BASE {
 
 	public class REQ_BODY {
 
-		@JSONField(name = "CHANNEL_DATE")
-		private String channelDate;	
+		@JSONField(name = "PLTFRM_DATE_T1")
+		private String pltfrmDateT1;// 渠道日期
 
-		@JSONField(name = "CHANNEL_SEQ_NO")
-		private String channelSeqNo;	
-		
-		@JSONField(name = "UNDO_REASON")
-		private String undoReason;
+		@JSONField(name = "PLTFRM_SEQ_T1")
+		private String pltfrmSeqT1;// 渠道流水
 
-		public String getChannelDate() {
-			return channelDate;
+		public String getPltfrmSeqT1() {
+			return pltfrmSeqT1;
 		}
 
-		public void setChannelDate(String channelDate) {
-			this.channelDate = channelDate;
+		public void setPltfrmSeqT1(String pltfrmSeqT1) {
+			this.pltfrmSeqT1 = pltfrmSeqT1;
 		}
 
-		public String getChannelSeqNo() {
-			return channelSeqNo;
+		public String getPltfrmDateT1() {
+			return pltfrmDateT1;
 		}
 
-		public void setChannelSeqNo(String channelSeqNo) {
-			this.channelSeqNo = channelSeqNo;
+		public void setPltfrmDateT1(String pltfrmDateT1) {
+			this.pltfrmDateT1 = pltfrmDateT1;
 		}
 
-		public String getUndoReason() {
-			return undoReason;
-		}
-
-		public void setUndoReason(String undoReason) {
-			this.undoReason = undoReason;
-		}
-	
 	}
+
 }

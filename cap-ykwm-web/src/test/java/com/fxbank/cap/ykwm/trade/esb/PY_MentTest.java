@@ -1,15 +1,12 @@
 package com.fxbank.cap.ykwm.trade.esb;
 
 import static org.junit.Assert.assertEquals;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-
 import javax.annotation.Resource;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ykwm.dto.esb.REP_30012002001;
-import com.fxbank.cap.ykwm.dto.esb.REP_30012002002;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30012002001;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30012002002;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30012002002.INVOICE;
+import com.fxbank.cap.ykwm.dto.esb.REP_30061001201;
+import com.fxbank.cap.ykwm.dto.esb.REQ_30061001201;
+import com.fxbank.cap.ykwm.dto.esb.REQ_30061001201.Invoice;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
@@ -58,16 +52,16 @@ public class PY_MentTest {
 	@Resource
 	private LogPool logPool;
 
-	private REQ_30012002002 req;
+	private REQ_30061001201 req;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30012002002.REQ_BODY reqBody;
+	private REQ_30061001201.REQ_BODY reqBody;
 
 	@Before
 	public void init() {
-		req = new REQ_30012002002();
+		req = new REQ_30061001201();
 		reqSysHead = new REQ_SYS_HEAD();
-		reqSysHead.setServiceId("300120020");
-		reqSysHead.setSceneId("02");
+		reqSysHead.setServiceId("300610012");
+		reqSysHead.setSceneId("01");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
 		
@@ -95,59 +89,58 @@ public class PY_MentTest {
 	public void payOk() throws Exception {
 		logger.info("缴费测试");
 
-		reqBody.setAcctNoT("623166001015670786");// 账号
+		reqBody.setAcctNo("623166001015670786");// 账号
 		reqBody.setPyFeeAmtT("55.55");//缴费金额
 		reqBody.setUserDbtAmtT("100");//用户欠费金额
-		reqBody.setCourierAmtT("10");//快递金额
+		reqBody.setCourierFeeT("10");//快递金额
 		reqBody.setUserCardNoT("11111");//用户卡号
-		reqBody.setCnttPhnT("18210224456");//联系电话
-		reqBody.setLnmT3("张三");//联系人
+		reqBody.setContactTel("18210224456");//联系电话
+		reqBody.setLnmT1("张三");//联系人
 		reqBody.setPyFeeTpT("1");//缴费方式
-		reqBody.setReimburseSignT("A");//报销标志
+		reqBody.setReimburseInd("A");//报销标志
 		reqBody.setHeatCompanyIdT("2222");//供暖公司ID
 		reqBody.setMailAddrT("沈阳市");//邮寄地址
-		reqBody.setPwdT("147258");//密码
+		reqBody.setPassword("147258");//密码
 		reqBody.setHeatCompanyNmT("热电公司");//供暖公司名
-		reqBody.setPostNoT5("111000");//邮编
+		reqBody.setPostno("111000");//邮编
 		reqBody.setCourierCmpnyIdT("333333");//快递公司ID
 		//TODO 不是数字 报错
-		reqBody.setCheckNoT("44444");//查询流水号
-		reqBody.setBillGetTpT("1");//发票处理方式，0未选择，1邮寄，2自取，3电子发票
-		List<INVOICE> list = new ArrayList<INVOICE>();
-		INVOICE invoice = new INVOICE();
+		reqBody.setChannelRefNo("44444");//查询流水号
+		List<Invoice> list = new ArrayList<Invoice>();
+		Invoice invoice = new Invoice();
 		invoice.setInvcNaHdT3("阜新银行股份有限公司1");// 发票抬头
 		invoice.setReimburseAreaT("100");// 发票面积
-		invoice.setNaT1("红牛阳1");// 发票姓名
-		invoice.setInvoiceNumT("1111");// 纳税人识别号
-		invoice.setBankNumT("100");// 开户行 行号 从头取
-		invoice.setUserAddrT("火星1");// 发票地址
+		invoice.setName("红牛阳1");// 发票姓名
+		invoice.setTxpyrDistNo("1111");// 纳税人识别号
+		invoice.setOpnAcctBnkNo("100");// 开户行 行号 从头取
+		invoice.setUserAddr("火星1");// 发票地址
 		list.add(invoice);
-		INVOICE invoice1 = new INVOICE();
+		Invoice invoice1 = new Invoice();
 		invoice1.setInvcNaHdT3("阜新银行股份有限公司2");// 发票抬头
 		invoice1.setReimburseAreaT("200");// 发票面积
-		invoice1.setNaT1("红牛阳2");// 发票姓名
-		invoice1.setInvoiceNumT("22222");// 纳税人识别号
-		invoice1.setBankNumT("200");// 开户行 行号 从头取
-		invoice1.setUserAddrT("火星2");// 发票地址
+		invoice1.setName("红牛阳2");// 发票姓名
+		invoice1.setTxpyrDistNo("22222");// 纳税人识别号
+		invoice1.setOpnAcctBnkNo("200");// 开户行 行号 从头取
+		invoice1.setUserAddr("火星2");// 发票地址
 		list.add(invoice1);
-		INVOICE invoice2 = new INVOICE();
+		Invoice invoice2 = new Invoice();
 		invoice2.setInvcNaHdT3("阜新银行股份有限公司3");// 发票抬头
 		invoice2.setReimburseAreaT("300");// 发票面积
-		invoice2.setNaT1("红牛阳3");// 发票姓名
-		invoice2.setInvoiceNumT("3333");// 纳税人识别号
-		invoice2.setBankNumT("300");// 开户行 行号 从头取
-		invoice2.setUserAddrT("火星3");// 发票地址
+		invoice2.setName("红牛阳3");// 发票姓名
+		invoice2.setTxpyrDistNo("3333");// 纳税人识别号
+		invoice2.setOpnAcctBnkNo("300");// 开户行 行号 从头取
+		invoice2.setUserAddr("火星3");// 发票地址
 		list.add(invoice2);
-		INVOICE invoice3 = new INVOICE();
+		Invoice invoice3 = new Invoice();
 		invoice3.setInvcNaHdT3("阜新银行股份有限公司4");// 发票抬头
 		invoice3.setReimburseAreaT("400");// 发票面积
-		invoice3.setNaT1("红牛阳4");// 发票姓名
-		invoice3.setInvoiceNumT("44444");// 纳税人识别号
-		invoice3.setBankNumT("400");// 开户行 行号 从头取
-		invoice3.setUserAddrT("火星4");// 发票地址
+		invoice3.setName("红牛阳4");// 发票姓名
+		invoice3.setTxpyrDistNo("44444");// 纳税人识别号
+		invoice3.setOpnAcctBnkNo("400");// 开户行 行号 从头取
+		invoice3.setUserAddr("火星4");// 发票地址
 		list.add(invoice3);
 		reqBody.setInvoiceArray(list);
-        reqBody.setInvoiceCountT(String.valueOf(list.size()));		
+        reqBody.setBllQnttyT(String.valueOf(list.size()));		
 		
 
 		String reqContent = JSON.toJSONString(req);
@@ -159,7 +152,7 @@ public class PY_MentTest {
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30012002002 rep = JsonUtil.toBean(repContent, REP_30012002002.class);
+		REP_30061001201 rep = JsonUtil.toBean(repContent, REP_30061001201.class);
 	}
 
 }

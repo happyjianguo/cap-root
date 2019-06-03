@@ -15,10 +15,9 @@ import com.fxbank.cap.esb.model.ses.ESB_REQ_30011000101;
 import com.fxbank.cap.esb.model.ses.ESB_REQ_30011000101.ServDetail;
 import com.fxbank.cap.esb.model.ses.ESB_REQ_30014000101;
 import com.fxbank.cap.esb.service.IForwardToESBService;
-import com.fxbank.cap.ykwm.dto.esb.REP_30012002002;
-import com.fxbank.cap.ykwm.dto.esb.REP_30012002002.Code;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30012002002;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30012002002.INVOICE;
+import com.fxbank.cap.ykwm.dto.esb.REP_30061001201;
+import com.fxbank.cap.ykwm.dto.esb.REP_30061001201.TicketCode;
+import com.fxbank.cap.ykwm.dto.esb.REQ_30061001201;
 import com.fxbank.cap.ykwm.exception.YkwmTradeExecuteException;
 import com.fxbank.cap.ykwm.model.REP_Payment;
 import com.fxbank.cap.ykwm.model.REQ_Payment;
@@ -42,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Service("REQ_30012002002")
+@Service("REQ_30061001201")
 public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	private static Logger logger = LoggerFactory.getLogger(PY_Ment.class);
 
@@ -73,7 +72,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		super.TRADE_DESC = "入账交易";
 		super.othTimeoutQuery = false;
 		super.logger = logger;
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		return super.execute(reqDto);
 	}
 
@@ -88,8 +87,8 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	@Override
 	public ModelBase hostCharge(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
-		REQ_30012002002.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
+		REQ_30061001201.REQ_BODY reqBody = reqDto.getReqBody();
 		ESB_REQ_30011000101 req_30011000101 = new ESB_REQ_30011000101(myLog, dto.getSysDate(), dto.getSysTime(),
 				dto.getSysTraceno());
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(req_30011000101.getReqSysHead(), reqDto)
@@ -98,7 +97,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		req_30011000101.setReqSysHead(reqSysHead);
 
 		ESB_REQ_30011000101.REQ_BODY esb_reqBody = req_30011000101.getReqBody();
-		esb_reqBody.setBaseAcctNo(reqBody.getAcctNoT());// 卡号
+		esb_reqBody.setBaseAcctNo(reqBody.getAcctNo());// 卡号
 		// 缴费方式 属于 ServDetail List 一部分，得new个对象，然后回传是一个对象
 		/**
 		ESB_REQ_30011000101.ServDetail servDetail = new ESB_REQ_30011000101.ServDetail();
@@ -115,7 +114,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		esb_reqBody.setTranCcy("CNY");
 		
 		esb_reqBody.setTranAmt(reqBody.getPyFeeAmtT());// 缴费金额
-		esb_reqBody.setPassword(reqBody.getPwdT());
+		esb_reqBody.setPassword(reqBody.getPassword());
 		esb_reqBody.setOthBaseAcctNo("623166001015087122");// 对方账号
 		//esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
 		esb_reqBody.setChannelType("LV");
@@ -138,35 +137,35 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	@Override
 	public void hostTimeoutInitLog(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
-		REQ_30012002002.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
+		REQ_30061001201.REQ_BODY reqBody = reqDto.getReqBody();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
-		record.setAcctNoT(reqBody.getAcctNoT());
+		record.setAcctNoT(reqBody.getAcctNo());
 		record.setPyFeeAmtT(reqBody.getPyFeeAmtT());
 		record.setUserDbtAmtT(reqBody.getUserDbtAmtT());
-		record.setCourierAmtT(reqBody.getCourierAmtT());
+		record.setCourierAmtT(reqBody.getCourierFeeT());
 		record.setUserCardNoT(reqBody.getUserCardNoT());
-        record.setCnttPhnT(reqBody.getCnttPhnT());
-        record.setLnmT3(reqBody.getLnmT3());
+        record.setCnttPhnT(reqBody.getContactTel());
+        record.setLnmT3(reqBody.getLnmT1());
         record.setPyFeeTpT(reqBody.getPyFeeTpT());
-        record.setReimburseSignT(reqBody.getReimburseSignT());
+        record.setReimburseSignT(reqBody.getReimburseInd());
         record.setHeatCompanyIdT(reqBody.getHeatCompanyIdT());
         record.setMailAddrT(reqBody.getMailAddrT());
         record.setHeatCompanyNmT(reqBody.getHeatCompanyNmT());
-        record.setPostNoT5(reqBody.getPostNoT5());
+        record.setPostNoT5(reqBody.getPostno());
         record.setCourierCmpnyIdT(reqBody.getCourierCmpnyIdT());
-        record.setTeCheckNum(reqBody.getCheckNoT());
-        record.setBillGetTpT(reqBody.getBillGetTpT());
+        record.setTeCheckNum(reqBody.getChannelRefNo());
         List<YkwmTraceLogModel.Invoice> list = new ArrayList<YkwmTraceLogModel.Invoice>();
-        for(INVOICE temp:reqBody.getInvoiceArray()) {
+        for(com.fxbank.cap.ykwm.dto.esb.REQ_30061001201.Invoice temp:reqBody.getInvoiceArray()) {
         	YkwmTraceLogModel.Invoice invoice = new YkwmTraceLogModel.Invoice();
         	invoice.setInvoiceTitle(temp.getInvcNaHdT3());
         	invoice.setArea(temp.getReimburseAreaT());
-        	invoice.setInvoiceName(temp.getNaT1());
-        	invoice.setInvoiceNum(temp.getInvoiceNumT());
-        	invoice.setInvoiceAddress(temp.getUserAddrT());
-        	invoice.setBankNum(temp.getBankNumT());
+        	invoice.setInvoiceName(temp.getName());
+        	invoice.setInvoiceNum(temp.getTxpyrDistNo());
+        	invoice.setInvoiceAddress(temp.getUserAddr());
+        	invoice.setBankNum(temp.getOpnAcctBnkNo());
+        	record.setBillGetTpT(temp.getInvoiceDealMode());
         	list.add(invoice);
         }
         record.setInvoiceList(list);
@@ -185,36 +184,36 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	@Override
 	public void hostSuccessInitLog(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		ESB_REP_30011000101 rep = (ESB_REP_30011000101) model;
-		REQ_30012002002.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30061001201.REQ_BODY reqBody = reqDto.getReqBody();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
-		record.setAcctNoT(reqBody.getAcctNoT());
+		record.setAcctNoT(reqBody.getAcctNo());
 		record.setPyFeeAmtT(reqBody.getPyFeeAmtT());
 		record.setUserDbtAmtT(reqBody.getUserDbtAmtT());
-		record.setCourierAmtT(reqBody.getCourierAmtT());
+		record.setCourierAmtT(reqBody.getCourierFeeT());
 		record.setUserCardNoT(reqBody.getUserCardNoT());
-        record.setCnttPhnT(reqBody.getCnttPhnT());
-        record.setLnmT3(reqBody.getLnmT3());
+        record.setCnttPhnT(reqBody.getContactTel());
+        record.setLnmT3(reqBody.getLnmT1());
         record.setPyFeeTpT(reqBody.getPyFeeTpT());
-        record.setReimburseSignT(reqBody.getReimburseSignT());
+        record.setReimburseSignT(reqBody.getReimburseInd());
         record.setHeatCompanyIdT(reqBody.getHeatCompanyIdT());
         record.setMailAddrT(reqBody.getMailAddrT());
         record.setHeatCompanyNmT(reqBody.getHeatCompanyNmT());
-        record.setPostNoT5(reqBody.getPostNoT5());
+        record.setPostNoT5(reqBody.getPostno());
         record.setCourierCmpnyIdT(reqBody.getCourierCmpnyIdT());
-        record.setTeCheckNum(reqBody.getCheckNoT());
-        record.setBillGetTpT(reqBody.getBillGetTpT());
+        record.setTeCheckNum(reqBody.getChannelRefNo());
         List<YkwmTraceLogModel.Invoice> list = new ArrayList<YkwmTraceLogModel.Invoice>();
-        for(INVOICE temp:reqBody.getInvoiceArray()) {
+        for(com.fxbank.cap.ykwm.dto.esb.REQ_30061001201.Invoice temp:reqBody.getInvoiceArray()) {
         	YkwmTraceLogModel.Invoice invoice = new YkwmTraceLogModel.Invoice();
         	invoice.setInvoiceTitle(temp.getInvcNaHdT3());
         	invoice.setArea(temp.getReimburseAreaT());
-        	invoice.setInvoiceName(temp.getNaT1());
-        	invoice.setInvoiceNum(temp.getInvoiceNumT());
-        	invoice.setInvoiceAddress(temp.getUserAddrT());
-        	invoice.setBankNum(temp.getBankNumT());
+        	invoice.setInvoiceName(temp.getName());
+        	invoice.setInvoiceNum(temp.getTxpyrDistNo());
+        	invoice.setInvoiceAddress(temp.getUserAddr());
+        	invoice.setBankNum(temp.getOpnAcctBnkNo());
+        	record.setBillGetTpT(temp.getInvoiceDealMode());
         	list.add(invoice);
         }
         record.setInvoiceList(list);
@@ -237,8 +236,8 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	@Override
 	public ModelBase othCharge(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
-		REQ_30012002002.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
+		REQ_30061001201.REQ_BODY reqBody = reqDto.getReqBody();
 		REQ_Payment reqPayment = new REQ_Payment(myLog, dto.getSysDate(), dto.getSysTime(), dto.getSysTraceno());
 
 		Map<String, String> map = new HashMap<String, String>();
@@ -250,33 +249,33 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		reqPayment.setBranchNum(reqDto.getReqSysHead().getBranchId());// 网点编号 ??????
 		reqPayment.setBatchNum(publicService.getSysDate("CIP").toString());// 批次号 取渠道日期 publicService公共服务
 
-		reqPayment.setCheckNum(reqBody.getCheckNoT());// 流水号 柜面需要处理，将查询的流水送给缴费的接口
+		reqPayment.setCheckNum(reqBody.getChannelRefNo());// 流水号 柜面需要处理，将查询的流水送给缴费的接口
         BigDecimal payment = new BigDecimal(reqBody.getPyFeeAmtT());
         //用户缴费金额如果选择邮寄，需包含邮寄费,发票处理方式，0未选择，1邮寄，2自取，3电子发票
-        if("1".equals(reqBody.getBillGetTpT())) {
-        	payment=payment.add(new BigDecimal(reqBody.getCourierAmtT()));
+        if("1".equals(reqBody.getInvoiceArray().get(0).getInvoiceDealMode())) {
+        	payment=payment.add(new BigDecimal(reqBody.getCourierFeeT()));
         }
 		reqPayment.setPayment(Double.parseDouble(payment.toString()));// 缴费金额 加上快递费 不带邮寄费
 		
-		reqPayment.setInvoiceStyle(Integer.parseInt(reqBody.getBillGetTpT()));
+		reqPayment.setInvoiceStyle(Integer.parseInt(reqBody.getInvoiceArray().get(0).getInvoiceDealMode()));
 		reqPayment.setExpressID(Integer.parseInt(reqBody.getCourierCmpnyIdT()));// 快递公司
 		reqPayment.setAddress(reqBody.getMailAddrT());// 邮寄地址
-		reqPayment.setPhone(reqBody.getCnttPhnT());// 联系电话
-		reqPayment.setUserName(reqBody.getLnmT3());// 联系人
-		reqPayment.setPostCode(reqBody.getPostNoT5());// 邮编
+		reqPayment.setPhone(reqBody.getContactTel());// 联系电话
+		reqPayment.setUserName(reqBody.getLnmT1());// 联系人
+		reqPayment.setPostCode(reqBody.getPostno());// 邮编
 		reqPayment.setInvoiceCount(reqBody.getInvoiceArray().size());
 		List<Invoice> list = new ArrayList<Invoice>();
 		// 数据类型 变量名 ： 数组名
-		for (INVOICE a : reqBody.getInvoiceArray()) {
+		for (REQ_30061001201.Invoice a : reqBody.getInvoiceArray()) {
 
 			Invoice invoice = new Invoice();
 
 			invoice.setInvoiceTitle(a.getInvcNaHdT3());
 			invoice.setArea(Double.parseDouble((a.getReimburseAreaT())));
-			invoice.setInvoiceName(a.getNaT1());
-			invoice.setInvoiceNum(a.getInvoiceNumT());
-			invoice.setBankNum(a.getBankNumT());
-			invoice.setInvoiceAddress(a.getUserAddrT());
+			invoice.setInvoiceName(a.getName());
+			invoice.setInvoiceNum(a.getTxpyrDistNo());
+			invoice.setBankNum(a.getOpnAcctBnkNo());
+			invoice.setInvoiceAddress(a.getUserAddr());
 			list.add(invoice);
 		}
 		reqPayment.setInvoiceList(list);
@@ -345,7 +344,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public ModelBase undoHostCharge(DataTransObject dto, SysTradeExecuteException e) throws SysTradeExecuteException {
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		MyLog myLog = logPool.get();
 		ESB_REQ_30014000101 esbReq_30014000101 = new ESB_REQ_30014000101(myLog, reqDto.getSysDate(),
 				reqDto.getSysTime(), reqDto.getSysTraceno());
@@ -373,7 +372,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public void updateOthTimeout(DataTransObject dto) throws SysTradeExecuteException {
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
@@ -391,7 +390,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public void updateOthSuccess(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		REP_Payment rep = (REP_Payment)model;
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
@@ -412,7 +411,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public void updateHostUndoSuccess(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		ESB_REP_30014000101 res = (ESB_REP_30014000101) model;
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
@@ -435,7 +434,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public void updateOthError(DataTransObject dto, SysTradeExecuteException e) throws SysTradeExecuteException {
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
@@ -454,7 +453,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public void updateHostUndoTimeout(DataTransObject dto) throws SysTradeExecuteException {
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());
@@ -484,18 +483,18 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public DataTransObject backMsg(DataTransObject dto,ModelBase model) throws SysTradeExecuteException {
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
-		REP_30012002002 rep = new REP_30012002002();
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
+		REP_30061001201 rep = new REP_30061001201();
 		REP_Payment repPayment = (REP_Payment)model;
 		rep.getRepBody().setChannelDate(reqDto.getSysDate().toString());
 		rep.getRepBody().setChannelSeqNo(reqDto.getSysTraceno().toString());
-		List<Code> list = new ArrayList<Code>();
+		List<TicketCode> list = new ArrayList<TicketCode>();
 		for(String temp:repPayment.getCode().split("\\^")) {
-			Code c = new Code();
-			c.setCode(temp);
+			TicketCode c = new TicketCode();
+			c.setTicketCodeT(temp);
 			list.add(c);
 		}
-		rep.getRepBody().setCodeArray(list);
+		rep.getRepBody().setTicketCodeArray(list);
 		return rep;
 	}
 
@@ -509,7 +508,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public void updateHostUndoError(DataTransObject dto, SysTradeExecuteException e) throws SysTradeExecuteException {
-		REQ_30012002002 reqDto = (REQ_30012002002) dto;
+		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
 				reqDto.getSysTraceno());

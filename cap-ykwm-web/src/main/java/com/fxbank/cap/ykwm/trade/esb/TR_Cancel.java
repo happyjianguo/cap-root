@@ -3,10 +3,14 @@ package com.fxbank.cap.ykwm.trade.esb;
 import javax.annotation.Resource;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.esb.model.ses.ESB_REP_30014000101;
+import com.fxbank.cap.esb.model.ses.ESB_REP_30061000501;
+import com.fxbank.cap.esb.model.ses.ESB_REP_30063000701;
 import com.fxbank.cap.esb.model.ses.ESB_REQ_30014000101;
+import com.fxbank.cap.esb.model.ses.ESB_REQ_30061000501;
+import com.fxbank.cap.esb.model.ses.ESB_REQ_30063000701;
 import com.fxbank.cap.esb.service.IForwardToESBService;
-import com.fxbank.cap.ykwm.dto.esb.REP_30012002003;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30012002003;
+import com.fxbank.cap.ykwm.dto.esb.REP_30064000201;
+import com.fxbank.cap.ykwm.dto.esb.REQ_30064000201;
 import com.fxbank.cap.ykwm.exception.YkwmTradeExecuteException;
 import com.fxbank.cap.ykwm.model.REP_Cancel;
 import com.fxbank.cap.ykwm.model.REQ_Cancel;
@@ -28,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Service("REQ_30012002003")
+@Service("REQ_30064000201")
 public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	private static Logger logger = LoggerFactory.getLogger(TR_Cancel.class);
 
@@ -56,7 +60,7 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
 		super.TRADE_DESC = "冲正交易";
 		super.logger = logger;
-		REQ_30012002003 reqDto = (REQ_30012002003) dto;
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
 		super.notExistException = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10004);
 		super.hostUndoTimeoutException = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10002);
 		return super.execute(reqDto);
@@ -72,7 +76,7 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public DataTransObject backMsg(DataTransObject dto) throws SysTradeExecuteException {
-		REP_30012002003 rep = new REP_30012002003();
+		REP_30064000201 rep = new REP_30064000201();
 		return rep;
 	}
 
@@ -87,7 +91,7 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	@Override
 	public void undoOth(DataTransObject dto,ModelBase model) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002003 reqDto = (REQ_30012002003) dto;
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
 		YkwmTraceLogModel record = (YkwmTraceLogModel)model;
 		REQ_Cancel reqCancel = new REQ_Cancel(myLog, dto.getSysDate(), dto.getSysTime(), dto.getSysTraceno());
 
@@ -121,8 +125,8 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public ModelBase undoHostCharge(DataTransObject dto) throws SysTradeExecuteException {
-		REQ_30012002003 reqDto = (REQ_30012002003) dto;
-		REQ_30012002003.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
+		REQ_30064000201.REQ_BODY reqBody = reqDto.getReqBody();
 		MyLog myLog = logPool.get();
 		ESB_REQ_30014000101 esbReq_30014000101 = new ESB_REQ_30014000101(myLog, reqDto.getSysDate(),
 				reqDto.getSysTime(), reqDto.getSysTraceno());
@@ -133,7 +137,7 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 		ESB_REQ_30014000101.REQ_BODY reqBody_30014000101 = esbReq_30014000101.getReqBody();
 
 		reqBody_30014000101.setChannelSeqNo(CIP.SYSTEM_ID+reqBody.getChannelDate()+String.format("%08d",Integer.parseInt(reqBody.getChannelSeqNo())));
-		reqBody_30014000101.setReversalReason(reqBody.getUndoReason());
+		reqBody_30014000101.setReversalReason(reqBody.getRevokeReason());
 
 		ESB_REP_30014000101 esbRep_30014000101 = forwardToESBService.sendToESB(esbReq_30014000101, reqBody_30014000101,
 				ESB_REP_30014000101.class);
@@ -149,8 +153,8 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	*/
 	@Override
 	public void updateHostUndoTimeout(DataTransObject dto) throws SysTradeExecuteException {
-		REQ_30012002003 reqDto = (REQ_30012002003) dto;
-		REQ_30012002003.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
+		REQ_30064000201.REQ_BODY reqBody = reqDto.getReqBody();
 		MyLog myLog = logPool.get();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, Integer.parseInt(reqBody.getChannelDate()), reqDto.getSysTime(),
 				Integer.parseInt(reqBody.getChannelSeqNo()));
@@ -169,8 +173,8 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	@Override
 	public void updateHostUndoError(DataTransObject dto, SysTradeExecuteException e) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002003 reqDto = (REQ_30012002003) dto;
-		REQ_30012002003.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
+		REQ_30064000201.REQ_BODY reqBody = reqDto.getReqBody();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, Integer.parseInt(reqBody.getChannelDate()), reqDto.getSysTime(),
 				Integer.parseInt(reqBody.getChannelSeqNo()));
 		record.setCoRspcode(e.getRspCode());
@@ -204,9 +208,9 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	@Override
 	public void updateHostUndoSucc(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002003 reqDto = (REQ_30012002003) dto;
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
 		ESB_REP_30014000101 res = (ESB_REP_30014000101) model;
-		REQ_30012002003.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30064000201.REQ_BODY reqBody = reqDto.getReqBody();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, Integer.parseInt(reqBody.getChannelDate()), reqDto.getSysTime(),
 				Integer.parseInt(reqBody.getChannelSeqNo()));
 		record.setCoDate(res.getRepSysHead().getTranDate());
@@ -228,8 +232,8 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	@Override
 	public void updateOthUndoSucc(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002003 reqDto = (REQ_30012002003) dto;
-		REQ_30012002003.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
+		REQ_30064000201.REQ_BODY reqBody = reqDto.getReqBody();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, Integer.parseInt(reqBody.getChannelDate()), reqDto.getSysTime(),
 				Integer.parseInt(reqBody.getChannelSeqNo()));
 		iPaymentService.othUndoSuccUpdate(record);
@@ -246,8 +250,8 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	@Override
 	public void updateOthUndoTimeout(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002003 reqDto = (REQ_30012002003) dto;
-		REQ_30012002003.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
+		REQ_30064000201.REQ_BODY reqBody = reqDto.getReqBody();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, Integer.parseInt(reqBody.getChannelDate()), reqDto.getSysTime(),
 				Integer.parseInt(reqBody.getChannelSeqNo()));
 		iPaymentService.othUndoTimeoutUpdate(record);
@@ -265,12 +269,100 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	@Override
 	public ModelBase queryRecord(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30012002003 reqDto = (REQ_30012002003) dto;
-		REQ_30012002003.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
+		REQ_30064000201.REQ_BODY reqBody = reqDto.getReqBody();
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, Integer.parseInt(reqBody.getChannelDate()), reqDto.getSysTime(),
 				Integer.parseInt(reqBody.getChannelSeqNo()));
 		record = iPaymentService.queryLogBySeqNo(record);
 		return record;
+	}
+
+	/** 
+	* @Title: queryOrigCharge 
+	* @Description: 隔日冲账查询
+	* @param @param dto
+	* @param @param model
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
+	@Override
+	public ModelBase queryOrigCharge(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
+		MyLog myLog = logPool.get();
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
+		YkwmTraceLogModel record = (YkwmTraceLogModel)model;
+		ESB_REQ_30063000701 esbReq_30063000701 = new ESB_REQ_30063000701(myLog, reqDto.getSysDate(),
+				reqDto.getSysTime(), reqDto.getSysTraceno());
+		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30063000701.getReqSysHead(), reqDto).
+				setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
+		esbReq_30063000701.setReqSysHead(reqSysHead);
+		ESB_REQ_30063000701.REQ_BODY reqBody_30063000701 = esbReq_30063000701.getReqBody();
+
+		reqBody_30063000701.setOrigChannelSeqNo(record.getCoTransactionno());
+		//1-有线电视2-水费3-联通缴费4-阜新供热5-彰武供热6-宏大热力7-沈阳热力8-医保缴费9-交警缴费
+		reqBody_30063000701.setPyFeeType("10");
+
+		ESB_REP_30063000701 esbRep_30063000701 = forwardToESBService.sendToESB(esbReq_30063000701, reqBody_30063000701,
+				ESB_REP_30063000701.class);
+		return esbRep_30063000701;
+	}
+
+	/** 
+	* @Title: undoOrigHostCharge 
+	* @Description: 隔日冲账
+	* @param @param dto
+	* @param @param model
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
+	@Override
+	public ModelBase undoOrigHostCharge(DataTransObject dto,ModelBase model0, ModelBase model1) throws SysTradeExecuteException {
+		YkwmTraceLogModel record = (YkwmTraceLogModel)model0;
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
+		ESB_REP_30063000701 origInfo = (ESB_REP_30063000701) model1;
+		ESB_REP_30063000701.REP_BODY origInfoBody = origInfo.getRepBody();
+		MyLog myLog = logPool.get();
+		ESB_REQ_30061000501 esbReq_30061000501 = new ESB_REQ_30061000501(myLog, record.getSysDate(),
+				record.getSysTime(), record.getSysTraceno());
+		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30061000501.getReqSysHead(), reqDto).
+				setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
+		esbReq_30061000501.setReqSysHead(reqSysHead);
+		ESB_REQ_30061000501.REQ_BODY reqBody_30061000501 = esbReq_30061000501.getReqBody();
+
+		reqBody_30061000501.setOrigChannelSeqNo(record.getCoTransactionno());
+		reqBody_30061000501.setDebitBaseAcctNo(origInfoBody.getDebitBaseAcctNo());
+		reqBody_30061000501.setDebitName(origInfoBody.getDebitName());
+		reqBody_30061000501.setCreditBaseAcctNo(origInfoBody.getCreditBaseAcctNo());
+		reqBody_30061000501.setCreditName(origInfoBody.getCreditName());
+		reqBody_30061000501.setTranType("");
+		reqBody_30061000501.setTranAmt(origInfoBody.getTranAmt());
+		//缴费类型1-有线电视2-水费3-联通缴费4-阜新供热5-彰武供热6-宏大热力7-沈阳热力8-医保缴费9-交警缴费
+		reqBody_30061000501.setPyFeeType("10");
+		reqBody_30061000501.setReversalReason(reqDto.getReqBody().getRevokeReason());
+
+		ESB_REP_30061000501 esbRep_30061000501 = forwardToESBService.sendToESB(esbReq_30061000501, esbReq_30061000501.getReqBody(),
+				ESB_REP_30061000501.class);
+		return esbRep_30061000501;
+	}
+
+	/** 
+	* @Title: isOrigHostCharge 
+	* @Description: 判断是当天冲正还是隔日冲正
+	* @param @param model
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
+	@Override
+	public Boolean isOrigHostCharge(DataTransObject dto) throws SysTradeExecuteException {
+		REQ_30064000201 reqDto = (REQ_30064000201) dto;
+		if(publicService.getSysDate(CIP.SYSTEM_ID).compareTo(Integer.parseInt(reqDto.getReqBody().getChannelDate()))>0) {
+			return true;
+		}else {
+			return false;
+		}
+		
 	}
 	
 }

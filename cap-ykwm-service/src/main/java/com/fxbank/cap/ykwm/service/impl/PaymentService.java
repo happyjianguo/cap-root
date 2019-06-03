@@ -244,6 +244,10 @@ public class PaymentService implements IPaymentService {
 		YkwmTracelog result = ykwmTracelogMapper.selectOne(log);
 		if(null!=result) {
 			record.setTeCheckNum(result.getTeCheckNum());
+			record.setCoDate(result.getCoDate());
+			record.setCoTransactionno(result.getCoTransactionno());
+			record.setAcctNoT(result.getAcctNoT());
+			record.setPyFeeAmtT(result.getPyFeeAmtT());
 		}else {
 			return null;
 		}
