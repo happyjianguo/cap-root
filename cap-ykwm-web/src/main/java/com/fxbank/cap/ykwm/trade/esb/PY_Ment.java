@@ -109,15 +109,13 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		servDeailList.add(servDetail);
 		esb_reqBody.setServDetail(servDeailList);// 缴费方式(对象)
 		**/
-		//esb_reqBody.setTranType(reqBody.getPyFeeTpT().equals("1") ? "BH13" : "BH15");
-		esb_reqBody.setTranType("LV03");
+		esb_reqBody.setTranType(reqBody.getPyFeeTpT().equals("1") ? "BH13" : "BH15");
 		esb_reqBody.setTranCcy("CNY");
 		
 		esb_reqBody.setTranAmt(reqBody.getPyFeeAmtT());// 缴费金额
 		esb_reqBody.setPassword(reqBody.getPassword());
 		esb_reqBody.setOthBaseAcctNo("623166001015087122");// 对方账号
-		//esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
-		esb_reqBody.setChannelType("LV");
+		esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
 		esb_reqBody.setSettlementDate(reqDto.getSysDate().toString());// 渠道日期
 		// 捕获异常 对核心记账结果进行判断
 		// *****************************

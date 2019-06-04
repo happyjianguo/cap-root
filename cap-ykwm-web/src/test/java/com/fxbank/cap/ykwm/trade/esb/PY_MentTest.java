@@ -95,7 +95,7 @@ public class PY_MentTest {
 	public void payOk() throws Exception {
 		logger.info("缴费测试");
 
-		reqBody.setAcctNo("623166001015670786");// 账号
+		reqBody.setAcctNo("12009000094950");// 账号
 		reqBody.setPyFeeAmtT("55.55");//缴费金额
 		reqBody.setUserDbtAmtT("100");//用户欠费金额
 		reqBody.setCourierFeeT("10");//快递金额
