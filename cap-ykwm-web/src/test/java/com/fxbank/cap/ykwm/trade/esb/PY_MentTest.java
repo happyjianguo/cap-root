@@ -21,7 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.fxbank.cap.esb.service.ISafeService;
 import com.fxbank.cap.ykwm.dto.esb.REP_30061001201;
 import com.fxbank.cap.ykwm.dto.esb.REQ_30061001201;
 import com.fxbank.cap.ykwm.dto.esb.REQ_30061001201.Invoice;
@@ -51,6 +54,9 @@ public class PY_MentTest {
 
 	@Resource
 	private LogPool logPool;
+	
+	@Reference(version = "1.0.0")
+	private ISafeService passwordService;
 
 	private REQ_30061001201 req;
 	private REQ_SYS_HEAD reqSysHead;
@@ -109,6 +115,7 @@ public class PY_MentTest {
 		List<Invoice> list = new ArrayList<Invoice>();
 		Invoice invoice = new Invoice();
 		invoice.setInvcNaHdT3("阜新银行股份有限公司1");// 发票抬头
+		invoice.setInvoiceDealMode("1");
 		invoice.setReimburseAreaT("100");// 发票面积
 		invoice.setName("红牛阳1");// 发票姓名
 		invoice.setTxpyrDistNo("1111");// 纳税人识别号
@@ -117,6 +124,7 @@ public class PY_MentTest {
 		list.add(invoice);
 		Invoice invoice1 = new Invoice();
 		invoice1.setInvcNaHdT3("阜新银行股份有限公司2");// 发票抬头
+		invoice1.setInvoiceDealMode("1");
 		invoice1.setReimburseAreaT("200");// 发票面积
 		invoice1.setName("红牛阳2");// 发票姓名
 		invoice1.setTxpyrDistNo("22222");// 纳税人识别号
@@ -125,6 +133,7 @@ public class PY_MentTest {
 		list.add(invoice1);
 		Invoice invoice2 = new Invoice();
 		invoice2.setInvcNaHdT3("阜新银行股份有限公司3");// 发票抬头
+		invoice2.setInvoiceDealMode("1");
 		invoice2.setReimburseAreaT("300");// 发票面积
 		invoice2.setName("红牛阳3");// 发票姓名
 		invoice2.setTxpyrDistNo("3333");// 纳税人识别号
@@ -133,6 +142,7 @@ public class PY_MentTest {
 		list.add(invoice2);
 		Invoice invoice3 = new Invoice();
 		invoice3.setInvcNaHdT3("阜新银行股份有限公司4");// 发票抬头
+		invoice3.setInvoiceDealMode("1");
 		invoice3.setReimburseAreaT("400");// 发票面积
 		invoice3.setName("红牛阳4");// 发票姓名
 		invoice3.setTxpyrDistNo("44444");// 纳税人识别号
@@ -142,7 +152,12 @@ public class PY_MentTest {
 		reqBody.setInvoiceArray(list);
         reqBody.setBllQnttyT(String.valueOf(list.size()));		
 		
-
+		String macDataStr = JsonUtil.toJson(reqBody);
+		byte[] macBytes = macDataStr.getBytes();
+		String macValue = passwordService.calcMac(logPool.get(), macBytes);
+		reqSysHead.setMacValue(macValue);
+		
+		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("缴费测试请求");
 		RequestBuilder request = MockMvcRequestBuilders.post(URL).contentType(MediaType.APPLICATION_JSON_UTF8)

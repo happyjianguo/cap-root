@@ -6,13 +6,13 @@ import com.fxbank.cip.base.dto.REQ_BASE;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 
 /** 
-* @ClassName: REQ_30062812001 
-* @Description: 营口供热对账请求
+* @ClassName: REQ_30063001701 
+* @Description: 营口供热撤销快查请求
 * @作者 杜振铎
-* @date 2019年5月31日 下午2:28:22 
+* @date 2019年5月31日 下午2:29:54 
 *  
 */
-public class REQ_30062812001 extends REQ_BASE {
+public class REQ_30063001701 extends REQ_BASE {
 
 	@JSONField(name = "APP_HEAD")
 	private REQ_APP_HEAD reqAppHead;
@@ -23,8 +23,8 @@ public class REQ_30062812001 extends REQ_BASE {
 	@JSONField(name = "BODY")
 	private REQ_BODY reqBody;
 
-	public REQ_30062812001() {
-		super.txDesc = "营口供热对账";
+	public REQ_30063001701() {
+		super.txDesc = "营口热电撤销快查";
 	}
 
 	public REQ_APP_HEAD getReqAppHead() {
@@ -55,15 +55,26 @@ public class REQ_30062812001 extends REQ_BASE {
 
 	public class REQ_BODY {
 
-		@JSONField(name = "STMT_DT_T")
-		private String stmtDtT;// 对账日期
+		@JSONField(name = "CHANNEL_DATE")
+		private String channelDate;// 渠道日期
 
-		public String getStmtDtT() {
-			return stmtDtT;
+		@JSONField(name = "CHANNEL_SEQ_NO")
+		private String channelSeqNo;// 渠道流水
+
+		public String getChannelDate() {
+			return channelDate;
 		}
 
-		public void setStmtDtT(String stmtDtT) {
-			this.stmtDtT = stmtDtT;
+		public void setChannelDate(String channelDate) {
+			this.channelDate = channelDate;
+		}
+
+		public String getChannelSeqNo() {
+			return channelSeqNo;
+		}
+
+		public void setChannelSeqNo(String channelSeqNo) {
+			this.channelSeqNo = channelSeqNo;
 		}
 
 	}

@@ -3,8 +3,8 @@ package com.fxbank.cap.ykwm.trade.esb;
 import javax.annotation.Resource;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.esb.service.IForwardToESBService;
-import com.fxbank.cap.ykwm.dto.esb.REP_30063812301;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30063812301;
+import com.fxbank.cap.ykwm.dto.esb.REP_30063001701;
+import com.fxbank.cap.ykwm.dto.esb.REQ_30063001701;
 import com.fxbank.cap.ykwm.model.YkwmTraceLogModel;
 import com.fxbank.cap.ykwm.service.IForwardToYkwmService;
 import com.fxbank.cap.ykwm.service.IPaymentService;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 
 
-@Service("REQ_30063812301")
+@Service("REQ_30063001701")
 public class QR_Revoke extends TradeBase implements TradeExecutionStrategy {
 	private static Logger logger = LoggerFactory.getLogger(QR_Revoke.class);
 
@@ -42,18 +42,18 @@ public class QR_Revoke extends TradeBase implements TradeExecutionStrategy {
 	@Override
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
-		REQ_30063812301 reqDto = (REQ_30063812301) dto;
-		REQ_30063812301.REQ_BODY reqBody = reqDto.getReqBody();
+		REQ_30063001701 reqDto = (REQ_30063001701) dto;
+		REQ_30063001701.REQ_BODY reqBody = reqDto.getReqBody();
 
-		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, Integer.parseInt(reqBody.getPltfrmDateT1()), reqDto.getSysTime(),
-				Integer.parseInt(reqBody.getPltfrmSeqT1()));
+		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, Integer.parseInt(reqBody.getChannelDate()), reqDto.getSysTime(),
+				Integer.parseInt(reqBody.getChannelSeqNo()));
 		record = iPaymentService.queryLogBySeqNo(record);
 		
-		REP_30063812301 rep = new REP_30063812301();
+		REP_30063001701 rep = new REP_30063001701();
 		rep.getRepBody().setPyFeeAmtT(record.getPyFeeAmtT());
-		rep.getRepBody().setCoreDtT2(record.getCoDate());
-		rep.getRepBody().setCoreSeqT2(record.getCoTransactionno());
-		rep.getRepBody().setHeatSeqNoT(record.getTeCheckNum());
+		rep.getRepBody().setHostDate(record.getCoDate());
+		rep.getRepBody().setHostTraceNo(record.getCoTransactionno());
+		rep.getRepBody().setChannelRefNo(record.getTeCheckNum());
 		rep.getRepBody().setPyFeeCardNoT(record.getAcctNoT());
 		
 		return rep;

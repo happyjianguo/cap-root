@@ -6,13 +6,13 @@ import com.fxbank.cip.base.dto.REP_BASE;
 import com.fxbank.cip.base.dto.REP_SYS_HEAD;
 
 /** 
-* @ClassName: REP_30063812301 
+* @ClassName: REP_30063001701 
 * @Description: 营口供热撤销快查应答 
 * @作者 杜振铎
 * @date 2019年5月31日 下午2:26:22 
 *  
 */
-public class REP_30063812301 extends REP_BASE {
+public class REP_30063001701 extends REP_BASE {
 
 	@JSONField(name = "APP_HEAD")
 	private REP_APP_HEAD repAppHead = new REP_APP_HEAD();
@@ -51,12 +51,12 @@ public class REP_30063812301 extends REP_BASE {
 
 		@JSONField(name = "PY_FEE_AMT_T")
 		private String pyFeeAmtT;// 缴费金额
-		@JSONField(name = "CORE_DT_T2")
-		private String coreDtT2;// 核心日期
-		@JSONField(name = "CORE_SEQ_T2")
-		private String coreSeqT2;// 核心流水
-		@JSONField(name = "HEAT_SEQ_NO_T")
-		private String heatSeqNoT;// 热力流水号
+		@JSONField(name = "HOST_DATE")
+		private String hostDate;// 核心日期
+		@JSONField(name = "HOST_TRACE_NO")
+		private String hostTraceNo;// 核心流水
+		@JSONField(name = "CHANNEL_REF_NO")
+		private String channelRefNo;// 热力流水号
 		@JSONField(name = "PY_FEE_CARD_NO_T")
 		private String pyFeeCardNoT;// 缴费卡号
 
@@ -76,28 +76,28 @@ public class REP_30063812301 extends REP_BASE {
 			this.pyFeeAmtT = pyFeeAmtT;
 		}
 
-		public String getCoreDtT2() {
-			return coreDtT2;
+		public String getHostDate() {
+			return hostDate;
 		}
 
-		public void setCoreDtT2(String coreDtT2) {
-			this.coreDtT2 = coreDtT2;
+		public void setHostDate(String hostDate) {
+			this.hostDate = hostDate;
 		}
 
-		public String getCoreSeqT2() {
-			return coreSeqT2;
+		public String getHostTraceNo() {
+			return hostTraceNo;
 		}
 
-		public void setCoreSeqT2(String coreSeqT2) {
-			this.coreSeqT2 = coreSeqT2;
+		public void setHostTraceNo(String hostTraceNo) {
+			this.hostTraceNo = hostTraceNo;
 		}
 
-		public String getHeatSeqNoT() {
-			return heatSeqNoT;
+		public String getChannelRefNo() {
+			return channelRefNo;
 		}
 
-		public void setHeatSeqNoT(String heatSeqNoT) {
-			this.heatSeqNoT = heatSeqNoT;
+		public void setChannelRefNo(String channelRefNo) {
+			this.channelRefNo = channelRefNo;
 		}
 
 	}

@@ -6,13 +6,13 @@ import com.fxbank.cip.base.dto.REP_BASE;
 import com.fxbank.cip.base.dto.REP_SYS_HEAD;
 
 /** 
-* @ClassName: REP_30062812001 
+* @ClassName: REP_30062001201 
 * @Description: 营口供热对账应答
 * @作者 杜振铎
 * @date 2019年5月31日 下午2:24:37 
 *  
 */
-public class REP_30062812001 extends REP_BASE {
+public class REP_30062001201 extends REP_BASE {
 
 	@JSONField(name = "APP_HEAD")
 	private REP_APP_HEAD repAppHead = new REP_APP_HEAD();

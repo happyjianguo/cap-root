@@ -299,8 +299,6 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 		ESB_REQ_30063000701.REQ_BODY reqBody_30063000701 = esbReq_30063000701.getReqBody();
 
 		reqBody_30063000701.setOrigChannelSeqNo(record.getCoTransactionno());
-		//1-有线电视2-水费3-联通缴费4-阜新供热5-彰武供热6-宏大热力7-沈阳热力8-医保缴费9-交警缴费
-		reqBody_30063000701.setPyFeeType("10");
 
 		ESB_REP_30063000701 esbRep_30063000701 = forwardToESBService.sendToESB(esbReq_30063000701, reqBody_30063000701,
 				ESB_REP_30063000701.class);
@@ -337,8 +335,6 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 		reqBody_30061000501.setCreditName(origInfoBody.getCreditName());
 		reqBody_30061000501.setTranType("");
 		reqBody_30061000501.setTranAmt(origInfoBody.getTranAmt());
-		//缴费类型1-有线电视2-水费3-联通缴费4-阜新供热5-彰武供热6-宏大热力7-沈阳热力8-医保缴费9-交警缴费
-		reqBody_30061000501.setPyFeeType("10");
 		reqBody_30061000501.setReversalReason(reqDto.getReqBody().getRevokeReason());
 
 		ESB_REP_30061000501 esbRep_30061000501 = forwardToESBService.sendToESB(esbReq_30061000501, esbReq_30061000501.getReqBody(),
@@ -357,7 +353,7 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	@Override
 	public Boolean isOrigHostCharge(DataTransObject dto) throws SysTradeExecuteException {
 		REQ_30064000201 reqDto = (REQ_30064000201) dto;
-		if(publicService.getSysDate(CIP.SYSTEM_ID).compareTo(Integer.parseInt(reqDto.getReqBody().getChannelDate()))>0) {
+		if(publicService.getSysDate("CIP").compareTo(Integer.parseInt(reqDto.getReqBody().getChannelDate()))>0) {
 			return true;
 		}else {
 			return false;

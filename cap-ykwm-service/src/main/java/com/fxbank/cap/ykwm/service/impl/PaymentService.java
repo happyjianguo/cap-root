@@ -238,9 +238,9 @@ public class PaymentService implements IPaymentService {
 		log.setCapDate(record.getSysDate().toString());
 		log.setCapTransactionno(record.getSysTraceno().toString());
 		//核心交易状态 0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-超时
-		log.setCoResult("0");
+		//log.setCoResult("0");
 		//热电交易状态 0-登记，1-超时，2-处理成功，3-处理失败，4-冲正成功，5-冲正超时
-		log.setPyResult("2");
+		//log.setPyResult("2");
 		YkwmTracelog result = ykwmTracelogMapper.selectOne(log);
 		if(null!=result) {
 			record.setTeCheckNum(result.getTeCheckNum());

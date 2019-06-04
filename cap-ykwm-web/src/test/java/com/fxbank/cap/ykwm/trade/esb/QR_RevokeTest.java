@@ -20,8 +20,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.alibaba.fastjson.JSON;
-import com.fxbank.cap.ykwm.dto.esb.REP_30063812301;
-import com.fxbank.cap.ykwm.dto.esb.REQ_30063812301;
+import com.fxbank.cap.ykwm.dto.esb.REP_30063001701;
+import com.fxbank.cap.ykwm.dto.esb.REQ_30063001701;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.REQ_SYS_HEAD;
 import com.fxbank.cip.base.util.JsonUtil;
@@ -42,15 +42,15 @@ public class QR_RevokeTest {
 	@Resource
 	private LogPool logPool;
 	
-	private REQ_30063812301 req ;
+	private REQ_30063001701 req ;
 	private REQ_SYS_HEAD reqSysHead;
-	private REQ_30063812301.REQ_BODY reqBody ;
+	private REQ_30063001701.REQ_BODY reqBody ;
 	
 	@Before
 	public void init(){
-		req = new REQ_30063812301();
+		req = new REQ_30063001701();
 		reqSysHead = new REQ_SYS_HEAD();
-		reqSysHead.setServiceId("300638123");
+		reqSysHead.setServiceId("300630017");
 		reqSysHead.setSceneId("01");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
@@ -78,8 +78,8 @@ public class QR_RevokeTest {
 	@Test
 	public void payOk() throws Exception {
 		logger.info("撤销快查测试");
-		reqBody.setPltfrmDateT1("20190622");
-		reqBody.setPltfrmSeqT1("302866");
+		reqBody.setChannelDate("20190622");
+		reqBody.setChannelSeqNo("302866");
 		String reqContent = JSON.toJSONString(req);
 		logger.info("撤销快查测试请求");
 		RequestBuilder request = MockMvcRequestBuilders.post(URL)
@@ -89,7 +89,7 @@ public class QR_RevokeTest {
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();
-		REP_30063812301 rep = JsonUtil.toBean(repContent, REP_30063812301.class);
+		REP_30063001701 rep = JsonUtil.toBean(repContent, REP_30063001701.class);
 	}
 
 }
