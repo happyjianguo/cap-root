@@ -62,7 +62,7 @@ public class TR_CancelTest {
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
 		//网联
-		reqSysHead.setSourceType("YKWM");	
+		reqSysHead.setSourceType("BH");	
 		reqSysHead.setBranchId("01002");
 		reqSysHead.setUserId("001068");
 		reqSysHead.setTranDate(String.valueOf(new SimpleDateFormat("yyyyMMdd").format(new Date())));
@@ -86,8 +86,8 @@ public class TR_CancelTest {
 	public void payOk() throws Exception {
 		logger.info("冲正测试");
 		
-		reqBody.setChannelDate("20190622");
-		reqBody.setChannelSeqNo("302864");
+		reqBody.setChannelDate("20190530");
+		reqBody.setChannelSeqNo("7827");
 		reqBody.setRevokeReason("重复缴费");
 		
 		String reqContent = JSON.toJSONString(req);

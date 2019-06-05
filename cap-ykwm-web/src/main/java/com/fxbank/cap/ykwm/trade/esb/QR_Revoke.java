@@ -5,6 +5,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cap.ykwm.dto.esb.REP_30063001701;
 import com.fxbank.cap.ykwm.dto.esb.REQ_30063001701;
+import com.fxbank.cap.ykwm.exception.YkwmTradeExecuteException;
 import com.fxbank.cap.ykwm.model.YkwmTraceLogModel;
 import com.fxbank.cap.ykwm.service.IForwardToYkwmService;
 import com.fxbank.cap.ykwm.service.IPaymentService;
@@ -49,6 +50,10 @@ public class QR_Revoke extends TradeBase implements TradeExecutionStrategy {
 				Integer.parseInt(reqBody.getChannelSeqNo()));
 		record = iPaymentService.queryLogBySeqNo(record);
 		
+		if(null == record) {
+			myLog.error(logger, "冲正快查交易查询失败，渠道日期"+reqDto.getSysDate()+"渠道流水号"+reqDto.getSysTraceno());
+			throw new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10004);
+		}
 		REP_30063001701 rep = new REP_30063001701();
 		rep.getRepBody().setPyFeeAmtT(record.getPyFeeAmtT());
 		rep.getRepBody().setHostDate(record.getCoDate());

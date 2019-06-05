@@ -132,7 +132,6 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 				reqDto.getSysTime(), reqDto.getSysTraceno());
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30014000101.getReqSysHead(), reqDto).
 				setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
-		reqSysHead.setProgramId("7J13");
 		esbReq_30014000101.setReqSysHead(reqSysHead);
 		ESB_REQ_30014000101.REQ_BODY reqBody_30014000101 = esbReq_30014000101.getReqBody();
 
@@ -275,71 +274,6 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 				Integer.parseInt(reqBody.getChannelSeqNo()));
 		record = iPaymentService.queryLogBySeqNo(record);
 		return record;
-	}
-
-	/** 
-	* @Title: queryOrigCharge 
-	* @Description: 隔日冲账查询
-	* @param @param dto
-	* @param @param model
-	* @param @return
-	* @param @throws SysTradeExecuteException    设定文件 
-	* @throws 
-	*/
-	@Override
-	public ModelBase queryOrigCharge(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
-		MyLog myLog = logPool.get();
-		REQ_30064000201 reqDto = (REQ_30064000201) dto;
-		YkwmTraceLogModel record = (YkwmTraceLogModel)model;
-		ESB_REQ_30063000701 esbReq_30063000701 = new ESB_REQ_30063000701(myLog, reqDto.getSysDate(),
-				reqDto.getSysTime(), reqDto.getSysTraceno());
-		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30063000701.getReqSysHead(), reqDto).
-				setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
-		esbReq_30063000701.setReqSysHead(reqSysHead);
-		ESB_REQ_30063000701.REQ_BODY reqBody_30063000701 = esbReq_30063000701.getReqBody();
-
-		reqBody_30063000701.setOrigChannelSeqNo(record.getCoTransactionno());
-
-		ESB_REP_30063000701 esbRep_30063000701 = forwardToESBService.sendToESB(esbReq_30063000701, reqBody_30063000701,
-				ESB_REP_30063000701.class);
-		return esbRep_30063000701;
-	}
-
-	/** 
-	* @Title: undoOrigHostCharge 
-	* @Description: 隔日冲账
-	* @param @param dto
-	* @param @param model
-	* @param @return
-	* @param @throws SysTradeExecuteException    设定文件 
-	* @throws 
-	*/
-	@Override
-	public ModelBase undoOrigHostCharge(DataTransObject dto,ModelBase model0, ModelBase model1) throws SysTradeExecuteException {
-		YkwmTraceLogModel record = (YkwmTraceLogModel)model0;
-		REQ_30064000201 reqDto = (REQ_30064000201) dto;
-		ESB_REP_30063000701 origInfo = (ESB_REP_30063000701) model1;
-		ESB_REP_30063000701.REP_BODY origInfoBody = origInfo.getRepBody();
-		MyLog myLog = logPool.get();
-		ESB_REQ_30061000501 esbReq_30061000501 = new ESB_REQ_30061000501(myLog, record.getSysDate(),
-				record.getSysTime(), record.getSysTraceno());
-		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30061000501.getReqSysHead(), reqDto).
-				setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
-		esbReq_30061000501.setReqSysHead(reqSysHead);
-		ESB_REQ_30061000501.REQ_BODY reqBody_30061000501 = esbReq_30061000501.getReqBody();
-
-		reqBody_30061000501.setOrigChannelSeqNo(record.getCoTransactionno());
-		reqBody_30061000501.setDebitBaseAcctNo(origInfoBody.getDebitBaseAcctNo());
-		reqBody_30061000501.setDebitName(origInfoBody.getDebitName());
-		reqBody_30061000501.setCreditBaseAcctNo(origInfoBody.getCreditBaseAcctNo());
-		reqBody_30061000501.setCreditName(origInfoBody.getCreditName());
-		reqBody_30061000501.setTranType("");
-		reqBody_30061000501.setTranAmt(origInfoBody.getTranAmt());
-		reqBody_30061000501.setReversalReason(reqDto.getReqBody().getRevokeReason());
-
-		ESB_REP_30061000501 esbRep_30061000501 = forwardToESBService.sendToESB(esbReq_30061000501, esbReq_30061000501.getReqBody(),
-				ESB_REP_30061000501.class);
-		return esbRep_30061000501;
 	}
 
 	/** 

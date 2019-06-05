@@ -93,7 +93,6 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 				dto.getSysTraceno());
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(req_30011000101.getReqSysHead(), reqDto)
 				.setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
-		reqSysHead.setProgramId("7J13");
 		req_30011000101.setReqSysHead(reqSysHead);
 
 		ESB_REQ_30011000101.REQ_BODY esb_reqBody = req_30011000101.getReqBody();
@@ -114,7 +113,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		
 		esb_reqBody.setTranAmt(reqBody.getPyFeeAmtT());// 缴费金额
 		esb_reqBody.setPassword(reqBody.getPassword());
-		esb_reqBody.setOthBaseAcctNo("623166001015087122");// 对方账号
+		esb_reqBody.setOthBaseAcctNo("34128070020000004");// 对方账号
 		esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
 		esb_reqBody.setSettlementDate(reqDto.getSysDate().toString());// 渠道日期
 		// 捕获异常 对核心记账结果进行判断
@@ -348,7 +347,6 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 				reqDto.getSysTime(), reqDto.getSysTraceno());
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30014000101.getReqSysHead(), reqDto).
 				setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
-		reqSysHead.setProgramId("7J13");
 		esbReq_30014000101.setReqSysHead(reqSysHead);
 		ESB_REQ_30014000101.REQ_BODY reqBody_30014000101 = esbReq_30014000101.getReqBody();
 
