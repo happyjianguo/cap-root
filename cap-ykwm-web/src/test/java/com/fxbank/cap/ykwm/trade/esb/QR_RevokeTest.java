@@ -78,14 +78,15 @@ public class QR_RevokeTest {
 	@Test
 	public void payOk() throws Exception {
 		logger.info("撤销快查测试");
-		reqBody.setChannelDate("20190622");
-		reqBody.setChannelSeqNo("302866");
+		reqBody.setChannelDate("20190530");
+		reqBody.setChannelSeqNo("7833");
 		String reqContent = JSON.toJSONString(req);
 		logger.info("撤销快查测试请求");
 		RequestBuilder request = MockMvcRequestBuilders.post(URL)
 				.contentType(MediaType.APPLICATION_JSON_UTF8).content(reqContent);
 		MvcResult mvcResult = mockMvc.perform(request).andReturn();
 		logger.info("撤销快查测试请求完毕");
+		
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(status, 200);
 		String repContent = mvcResult.getResponse().getContentAsString();

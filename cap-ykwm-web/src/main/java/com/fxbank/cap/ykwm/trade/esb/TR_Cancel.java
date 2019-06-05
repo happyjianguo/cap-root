@@ -3,11 +3,7 @@ package com.fxbank.cap.ykwm.trade.esb;
 import javax.annotation.Resource;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.esb.model.ses.ESB_REP_30014000101;
-import com.fxbank.cap.esb.model.ses.ESB_REP_30061000501;
-import com.fxbank.cap.esb.model.ses.ESB_REP_30063000701;
 import com.fxbank.cap.esb.model.ses.ESB_REQ_30014000101;
-import com.fxbank.cap.esb.model.ses.ESB_REQ_30061000501;
-import com.fxbank.cap.esb.model.ses.ESB_REQ_30063000701;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cap.ykwm.dto.esb.REP_30064000201;
 import com.fxbank.cap.ykwm.dto.esb.REQ_30064000201;
@@ -124,9 +120,10 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 	* @throws 
 	*/
 	@Override
-	public ModelBase undoHostCharge(DataTransObject dto) throws SysTradeExecuteException {
+	public ModelBase undoHostCharge(DataTransObject dto,ModelBase model) throws SysTradeExecuteException {
 		REQ_30064000201 reqDto = (REQ_30064000201) dto;
 		REQ_30064000201.REQ_BODY reqBody = reqDto.getReqBody();
+		YkwmTraceLogModel record = (YkwmTraceLogModel)model;
 		MyLog myLog = logPool.get();
 		ESB_REQ_30014000101 esbReq_30014000101 = new ESB_REQ_30014000101(myLog, reqDto.getSysDate(),
 				reqDto.getSysTime(), reqDto.getSysTraceno());
@@ -135,7 +132,7 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 		esbReq_30014000101.setReqSysHead(reqSysHead);
 		ESB_REQ_30014000101.REQ_BODY reqBody_30014000101 = esbReq_30014000101.getReqBody();
 
-		reqBody_30014000101.setChannelSeqNo(CIP.SYSTEM_ID+reqBody.getChannelDate()+String.format("%08d",Integer.parseInt(reqBody.getChannelSeqNo())));
+		reqBody_30014000101.setReference(record.getCoTransactionno());
 		reqBody_30014000101.setReversalReason(reqBody.getRevokeReason());
 
 		ESB_REP_30014000101 esbRep_30014000101 = forwardToESBService.sendToESB(esbReq_30014000101, reqBody_30014000101,
@@ -158,7 +155,7 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 		YkwmTraceLogModel record = new YkwmTraceLogModel(myLog, Integer.parseInt(reqBody.getChannelDate()), reqDto.getSysTime(),
 				Integer.parseInt(reqBody.getChannelSeqNo()));
     	iPaymentService.hostUndoTimeout(record);
-		
+		 
 	}
 
 	/** 
@@ -276,23 +273,6 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 		return record;
 	}
 
-	/** 
-	* @Title: isOrigHostCharge 
-	* @Description: 判断是当天冲正还是隔日冲正
-	* @param @param model
-	* @param @return
-	* @param @throws SysTradeExecuteException    设定文件 
-	* @throws 
-	*/
-	@Override
-	public Boolean isOrigHostCharge(DataTransObject dto) throws SysTradeExecuteException {
-		REQ_30064000201 reqDto = (REQ_30064000201) dto;
-		if(publicService.getSysDate("CIP").compareTo(Integer.parseInt(reqDto.getReqBody().getChannelDate()))>0) {
-			return true;
-		}else {
-			return false;
-		}
-		
-	}
+	
 	
 }

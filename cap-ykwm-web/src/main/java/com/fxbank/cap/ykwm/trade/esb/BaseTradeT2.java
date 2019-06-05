@@ -59,17 +59,6 @@ public abstract class BaseTradeT2 {
 	*/
 	public abstract Boolean othTimeout(SysTradeExecuteException e) throws SysTradeExecuteException;
 	
-	/** 
-	* @Title: isOrigHostCharge 
-	* @Description: 判断是当天冲正还是隔日冲正 
-	* @param @param model
-	* @param @return
-	* @param @throws SysTradeExecuteException    设定文件 
-	* @return Boolean    返回类型 
-	* @throws 
-	*/
-	public abstract Boolean isOrigHostCharge(DataTransObject dto) throws SysTradeExecuteException;
-
 	/**
 	 * @param model  
 	* @Title: undoHostCharge 
@@ -80,7 +69,7 @@ public abstract class BaseTradeT2 {
 	* @return ModelBase    返回类型 
 	* @throws 
 	*/
-	public abstract ModelBase undoHostCharge(DataTransObject dto) throws SysTradeExecuteException;
+	public abstract ModelBase undoHostCharge(DataTransObject dto,ModelBase model) throws SysTradeExecuteException;
 
 	/** 
 	* @Fields ESB_TIMEOUT_CODE : 核心超时ESB响应码
@@ -214,7 +203,7 @@ public abstract class BaseTradeT2 {
 		//更新第三方冲正成功
 		updateOthUndoSucc(dto);
 		try {
-			model = undoHostCharge(dto);
+			model = undoHostCharge(dto,model);
 		} catch (SysTradeExecuteException e) {
 			//ESB超时
 			if (e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e.getRspCode().equals(ESB_TIMEOUT_CODE1)

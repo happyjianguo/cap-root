@@ -87,7 +87,7 @@ public class TR_CancelTest {
 		logger.info("冲正测试");
 		
 		reqBody.setChannelDate("20190530");
-		reqBody.setChannelSeqNo("7827");
+		reqBody.setChannelSeqNo("7860");
 		reqBody.setRevokeReason("重复缴费");
 		
 		String reqContent = JSON.toJSONString(req);

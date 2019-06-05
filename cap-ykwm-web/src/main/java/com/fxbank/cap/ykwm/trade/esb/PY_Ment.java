@@ -28,7 +28,6 @@ import com.fxbank.cap.ykwm.service.IPaymentService;
 import com.fxbank.cip.base.common.EsbReqHeaderBuilder;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.common.MyJedis;
-import com.fxbank.cip.base.constant.CIP;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
@@ -340,8 +339,9 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	* @throws 
 	*/
 	@Override
-	public ModelBase undoHostCharge(DataTransObject dto, SysTradeExecuteException e) throws SysTradeExecuteException {
+	public ModelBase undoHostCharge(DataTransObject dto,ModelBase model, SysTradeExecuteException e) throws SysTradeExecuteException {
 		REQ_30061001201 reqDto = (REQ_30061001201) dto;
+		ESB_REP_30011000101 rep = (ESB_REP_30011000101) model;
 		MyLog myLog = logPool.get();
 		ESB_REQ_30014000101 esbReq_30014000101 = new ESB_REQ_30014000101(myLog, reqDto.getSysDate(),
 				reqDto.getSysTime(), reqDto.getSysTraceno());
@@ -350,7 +350,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		esbReq_30014000101.setReqSysHead(reqSysHead);
 		ESB_REQ_30014000101.REQ_BODY reqBody_30014000101 = esbReq_30014000101.getReqBody();
 
-		reqBody_30014000101.setChannelSeqNo(CIP.SYSTEM_ID+reqDto.getSysDate()+String.format("%08d",reqDto.getSysTraceno()));
+		reqBody_30014000101.setReference(rep.getRepBody().getReference());
 		
 		reqBody_30014000101.setReversalReason(e.getRspMsg());
 

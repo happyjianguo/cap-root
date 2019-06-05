@@ -110,7 +110,7 @@ public abstract class BaseTradeT1 {
 	* @return ModelBase    返回类型 
 	* @throws 
 	*/
-	public abstract ModelBase undoHostCharge(DataTransObject dto, SysTradeExecuteException e)
+	public abstract ModelBase undoHostCharge(DataTransObject dto,ModelBase model, SysTradeExecuteException e)
 			throws SysTradeExecuteException;
 
 	/** 
@@ -331,7 +331,7 @@ public abstract class BaseTradeT1 {
 				if (othErrorUndoHost(e)) {
 					try {
 						//核心冲正
-						model = undoHostCharge(dto, e);
+						model = undoHostCharge(dto,model, e);
 					} catch (SysTradeExecuteException e2) {
 						//ESB超时
 						if (e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e.getRspCode().equals(ESB_TIMEOUT_CODE1)
@@ -361,7 +361,7 @@ public abstract class BaseTradeT1 {
 				if (othErrorUndoHost(e)) {
 					try {
 						//核心冲正
-						model = undoHostCharge(dto, e);
+						model = undoHostCharge(dto,model, e);
 					} catch (SysTradeExecuteException e1) {
 						if (e1.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e1.getRspCode().equals(ESB_TIMEOUT_CODE1)
 								|| e1.getRspCode().equals(ESB_TIMEOUT_CODE2)) {
