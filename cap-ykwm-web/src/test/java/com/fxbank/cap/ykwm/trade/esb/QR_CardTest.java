@@ -57,8 +57,8 @@ public class QR_CardTest {
 	public void init(){
 		req = new REQ_30063001502();
 		reqSysHead = new REQ_SYS_HEAD();
-		reqSysHead.setServiceId("300120020");
-		reqSysHead.setSceneId("04");
+		reqSysHead.setServiceId("300630015");
+		reqSysHead.setSceneId("02");
 		reqSysHead.setSystemId("301907");
 		reqSysHead.setTranMode("ONLINE");
 		//网联
@@ -86,7 +86,7 @@ public class QR_CardTest {
 	public void payOk() throws Exception {
 		logger.info("模糊查询测试");
 		//公司ID必须为数字，否则报错
-		reqBody.setHeatCompanyIdT("123456a");
+		reqBody.setHeatCompanyIdT("123456");
 		reqBody.setUsername("张三");
 		//信息类别：Phone：电话号码；IDCard：身份证号；AgreeCode：合同编号；Address：地址
 		reqBody.setQueryType("Phone");

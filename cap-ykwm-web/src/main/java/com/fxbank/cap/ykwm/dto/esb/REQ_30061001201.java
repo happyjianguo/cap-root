@@ -72,8 +72,6 @@ public class REQ_30061001201 extends REQ_BASE {
 		private String lnmT1;// 联系人
 		@JSONField(name = "PY_FEE_TP_T")
 		private String pyFeeTpT;// 缴费方式
-		@JSONField(name = "REIMBURSE_IND")
-		private String reimburseInd;// 报销标志
 		@JSONField(name = "HEAT_COMPANY_ID_T")
 		private String heatCompanyIdT;// 供暖公司ID
 		@JSONField(name = "MAIL_ADDR_T")
@@ -155,14 +153,6 @@ public class REQ_30061001201 extends REQ_BASE {
 
 		public void setPyFeeTpT(String pyFeeTpT) {
 			this.pyFeeTpT = pyFeeTpT;
-		}
-
-		public String getReimburseInd() {
-			return reimburseInd;
-		}
-
-		public void setReimburseInd(String reimburseInd) {
-			this.reimburseInd = reimburseInd;
 		}
 
 		public String getHeatCompanyIdT() {
