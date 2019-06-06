@@ -54,6 +54,7 @@ public class YkwmPackConvInHandler extends ChannelInboundHandlerAdapter {
 			reqBase = new FixedUtil(fixPack, "\\|","UTF-8").toBean(reqBase.getClass());
 			reqBase.setTxCode(txCode);
 			reqBase.setSourceType("YKWM");
+			reqBase.setOthDate(0);
 			ctx.fireChannelRead(reqBase);
 		} finally {
 			ReferenceCountUtil.release(msg);
