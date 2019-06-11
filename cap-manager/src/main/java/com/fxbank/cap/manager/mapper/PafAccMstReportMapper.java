@@ -14,5 +14,5 @@ public interface PafAccMstReportMapper extends MyMapper<PafAccMstReport> {
     List<PafAccMstReport> getFileListByCenterNo(PafAccMstReport data);
     String selectMaxId();
 	String selectSumAmt(String acNo);
-	String queryReference(String reference);
+	String queryReference(String acctNo,String reference);
 }
