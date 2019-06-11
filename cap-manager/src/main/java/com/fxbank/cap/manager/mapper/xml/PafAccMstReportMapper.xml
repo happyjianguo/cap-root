@@ -99,4 +99,8 @@
     select sum(tran_amt) from paf_acct_mst_report where acct_no = #{acNo}
   </select>
 
+  <select id="queryReference" parameterType="string" resultType="String" >
+    select reference from paf_acct_mst_report where rownum = 1 and reference = #{reference}
+  </select>
+
 </mapper>

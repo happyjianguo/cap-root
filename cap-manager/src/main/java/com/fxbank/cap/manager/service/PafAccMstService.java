@@ -78,4 +78,8 @@ public class PafAccMstService {
 	public String getSumAmt(String acNo) {
 		return mapper.selectSumAmt(acNo);
 	}
+	
+	public String queryReference(String reference) {
+		return mapper.queryReference(reference);
+	}
 }

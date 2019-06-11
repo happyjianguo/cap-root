@@ -121,7 +121,7 @@ public class AccMstTracePushTask {
 					"推送账户变动信息，公积金中心[" + centerNo + "][" + pafAcNoInfo.getAcNo() + "][" + pafAcNoInfo.getAcName() + "]");
 
 			// 1、取当前账户最大流水号
-			String reference = getMaxRef(myLog, centerNo, pafAcNoInfo.getAcNo(), sysDate);
+			String reference = getMaxRef(myLog, centerNo, pafAcNoInfo.getAcNo(), sysDate);			
 
 			// 2、依据当前账户最大流水与核心通讯获取文件
 			ESB_REP_30015700901 esb_rep_30015700901 = fetchTraceLogBySingleAcc(myLog, centerNo, pafAcNoInfo.getAcNo(),
@@ -131,6 +131,31 @@ public class AccMstTracePushTask {
 				throw new RuntimeException("核心返回数据异常[" + esb_rep_30015700901.getRepBody().getQueryArray().size() + "]");
 			}
 			String refMax = esb_rep_30015700901.getRepBody().getQueryArray().get(0).getRefMax();
+
+		    //hotfix_15修改流水信息异常
+			try {
+				//原账号核心流水号
+				long oldRef = Long.parseLong(reference.substring(3));
+				//当前核心返回的最新流水
+				long newRef = Long.parseLong(refMax.substring(3));
+				myLog.info(logger,"判断最新流水号与当前流水号大小关系");
+				if(oldRef>newRef){
+					myLog.info(logger,"查询流水号是否存在:"+refMax);
+					//查询获取的最大流水号，判断是否存在，如果存在说明之前已经处理过本笔业务
+					String queryResult = pafAccMstService.queryReference(refMax);					
+					if(queryResult!=null){
+						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的核心流水号：[" + reference + "] 已经存在，不处理本条数据");
+						continue;
+					}else{
+						
+					}
+				}
+			} catch (RuntimeException e) {
+				e.printStackTrace();
+				throw new RuntimeException("流水号信息异常，原流水[" + reference + "] 最新流水[" + refMax + "]");
+			}
+			
+			
 			// 3、从文件传输平台获取核心文件
 			String remoteFile = esb_rep_30015700901.getRepSysHead().getFilePath();
 			String fileName = "BDC_BAL_NTF" + "SBDC201" + String.format("%08d", sysDate)
