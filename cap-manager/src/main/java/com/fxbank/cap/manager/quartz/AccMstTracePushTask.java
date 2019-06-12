@@ -273,7 +273,7 @@ public class AccMstTracePushTask {
 		    					//查询获取的最大流水号，判断是否存在，如果存在说明之前已经处理过本笔业务
 		    					String queryResult = pafAccMstService.queryReference(pafAccMstReport.getAcctNo(),refMax);					
 		    					if(queryResult!=null){	    			
-		    						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的核心流水号：[" + reference + "] 已经存在，不处理本条数据");
+		    						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的核心流水号：[" + refMax + "] 已经存在，不处理本条数据");
 		    						continue;
 		    					}else{
 		    						
@@ -284,7 +284,7 @@ public class AccMstTracePushTask {
 		    				continue;
 		    			}
 	                }else{
-	                	myLog.info(logger,"本条记录为冲正流水，返回账户变动信息，流水号【"+refMax+"】");
+	                	myLog.info(logger,"本条记录为冲正流水，返回账户变动信息，流水号【"+refMax+"");
 	                }
 
 	                
