@@ -1,8 +1,10 @@
 package com.fxbank.cap.ykwm.service;
 
+import java.util.List;
 import javax.validation.Valid;
 import com.fxbank.cap.ykwm.model.YkwmTraceLogModel;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
+import com.fxbank.cip.base.log.MyLog;
 
 /**
  * @ClassName: IPaymentService<br>
@@ -36,4 +38,20 @@ public interface IPaymentService {
 	
 	YkwmTraceLogModel queryLogBySeqNo(@Valid YkwmTraceLogModel record) throws SysTradeExecuteException;
 
+	List<YkwmTraceLogModel> getCheckTrace(MyLog myLog, Integer sysDate, Integer sysTime, Integer sysTraceno,
+			String date) throws SysTradeExecuteException;
+	
+	void updateCheck(@Valid YkwmTraceLogModel record) throws SysTradeExecuteException;
+	
+	YkwmTraceLogModel queryLogByPk(MyLog myLog, Integer sysDate, Integer sysTime, Integer sysTraceno) throws SysTradeExecuteException;
+	
+	String getTotalNum(String date) throws SysTradeExecuteException;
+	
+	String getTotalAmt(String date) throws SysTradeExecuteException;
+	
+	List<YkwmTraceLogModel> getUploadCheckSndTrace(MyLog myLog, Integer sysDate, Integer sysTime, Integer sysTraceno,
+			String date) throws SysTradeExecuteException;
+	
+	String getTraceNum(String date, String capResult) throws SysTradeExecuteException;
+	
 }

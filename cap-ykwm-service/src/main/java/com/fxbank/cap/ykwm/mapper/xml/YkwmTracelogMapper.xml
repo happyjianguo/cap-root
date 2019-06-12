@@ -96,4 +96,33 @@
     PY_RSPCODE,PY_ERROR_MSG,CO_RSPCODE,CO_RSPMSG 
     from YKWM_TRACELOG
   </select>
+   <select id="selectCheckedTrace" resultMap="BaseResultMap">
+    select CAP_TRANSACTIONNO, PY_TRANSACTIONNO, CO_TRANSACTIONNO, PY_RESULT, CO_RESULT, 
+    CAP_RESULT, CAP_REPMSG, PY_DATE, CO_DATE, CAP_DATE, TE_BRANCHNO, TE_NAME, TE_VIRTUAL_NAME, 
+    TE_CHECK_NUM, ACCT_NO_T, PY_FEE_AMT_T, USER_DBT_AMT_T, COURIER_AMT_T, REIMBURSE_SIGN_T, 
+    HEAT_SEQ_NO_T, USER_CARD_NO_T, CNTT_PHN_T, LNM_T3, PY_FEE_TP_T, BILL_GET_TP_T, COMPANY_T, 
+    HEAT_COMPANY_ID_T, USER_ADDR_T, MAIL_ADDR_T, PWD_T, INVC_NA_HD_T3, HEAT_COMPANY_NM_T, 
+    NA_T1, POST_NO_T5, COURIER_CMPNY_ID_T, PY_SOURCE, PY_BRANCHNUM, PY_BATCHNUM, EX_ID, 
+    EX_NAME, EX_AMT, DT_CHARGEYEAR, DT_ITEMNAME, DT_AREA, DT_PRICE, DT_ACCOUNT, DT_AGIO, 
+    DT_LATEFEE, DT_PAYMENT, INVOICETITLE1, AREA1, INVOICENAME1, INVOICENUM1, BANKNUM1, 
+    INVOICEADDRESS1, INVOICETITLE2, AREA2, INVOICENAME2, INVOICENUM2, BANKNUM2, INVOICEADDRESS2, 
+    INVOICETITLE3, AREA3, INVOICENAME3, INVOICENUM3, BANKNUM3, INVOICEADDRESS3, INVOICETITLE4, 
+    AREA4, INVOICENAME4, INVOICENUM4, BANKNUM4, INVOICEADDRESS4, TICKET_NUMBER,
+    PY_RSPCODE,PY_ERROR_MSG,CO_RSPCODE,CO_RSPMSG 
+    from YKWM_TRACELOG where cap_date=#{date} and co_result=0 and cap_result in ('2','3')
+  </select>
+   <select id="selectTotalNum" resultType="java.lang.String" >
+     select count(t.py_fee_amt_t) as num from ykwm_tracelog t where 
+     t.cap_date=#{date} and t.co_result=0 and cap_result in ('2','3')
+  </select>
+   <select id="selectTotalSum" resultType="java.lang.String" >
+    select sum(t.py_fee_amt_t) as num from ykwm_tracelog t where 
+     t.cap_date=#{date} and t.co_result=0 and cap_result in ('2','3')
+  </select>
+   <select id="selectTraceNum" resultType="java.lang.String" >
+    select count(*) as num from ykwm_tracelog where cap_date=#{date}  
+     <if test='capResult != null and capResult != ""'>
+        and cap_result = #{capResult}
+      </if>
+  </select>
 </mapper>

@@ -103,7 +103,6 @@ public class PY_MentTest {
 		reqBody.setContactTel("18210224456");//联系电话
 		reqBody.setLnmT1("张三");//联系人
 		reqBody.setPyFeeTpT("2");//缴费方式
-		reqBody.setReimburseInd("A");//报销标志
 		reqBody.setHeatCompanyIdT("2222");//供暖公司ID
 		reqBody.setMailAddrT("沈阳市");//邮寄地址
 		reqBody.setPassword("147258");//密码

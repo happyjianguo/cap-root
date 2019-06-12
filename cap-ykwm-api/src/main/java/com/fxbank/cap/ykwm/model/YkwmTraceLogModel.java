@@ -14,8 +14,6 @@ public class YkwmTraceLogModel extends ModelBase implements Serializable{
 	public YkwmTraceLogModel(MyLog mylog, Integer sysDate, Integer sysTime, Integer sysTraceno) {
 		super(mylog, sysDate, sysTime, sysTraceno);
 	}
-	//渠道流水
-    private String capTransactionno;
     //热电流水
     private String pyTransactionno;
     //核心流水
@@ -31,8 +29,6 @@ public class YkwmTraceLogModel extends ModelBase implements Serializable{
     private String pyDate;
     //核心日期
     private String coDate;
-    //渠道日期
-    private String capDate;
     //所属机构
     private String teBranchno;
     //操作柜员
@@ -124,14 +120,6 @@ public class YkwmTraceLogModel extends ModelBase implements Serializable{
     //核心响应信息
     private String coRspmsg;
     
-    public String getCapTransactionno() {
-		return capTransactionno;
-	}
-
-	public void setCapTransactionno(String capTransactionno) {
-		this.capTransactionno = capTransactionno;
-	}
-
 	public String getPyTransactionno() {
 		return pyTransactionno;
 	}
@@ -194,14 +182,6 @@ public class YkwmTraceLogModel extends ModelBase implements Serializable{
 
 	public void setCoDate(String coDate) {
 		this.coDate = coDate;
-	}
-
-	public String getCapDate() {
-		return capDate;
-	}
-
-	public void setCapDate(String capDate) {
-		this.capDate = capDate;
 	}
 
 	public String getTeBranchno() {

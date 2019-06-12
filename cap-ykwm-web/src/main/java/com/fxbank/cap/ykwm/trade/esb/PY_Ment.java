@@ -145,7 +145,6 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
         record.setCnttPhnT(reqBody.getContactTel());
         record.setLnmT3(reqBody.getLnmT1());
         record.setPyFeeTpT(reqBody.getPyFeeTpT());
-        record.setReimburseSignT(reqBody.getReimburseInd());
         record.setHeatCompanyIdT(reqBody.getHeatCompanyIdT());
         record.setMailAddrT(reqBody.getMailAddrT());
         record.setHeatCompanyNmT(reqBody.getHeatCompanyNmT());
@@ -193,7 +192,6 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
         record.setCnttPhnT(reqBody.getContactTel());
         record.setLnmT3(reqBody.getLnmT1());
         record.setPyFeeTpT(reqBody.getPyFeeTpT());
-        record.setReimburseSignT(reqBody.getReimburseInd());
         record.setHeatCompanyIdT(reqBody.getHeatCompanyIdT());
         record.setMailAddrT(reqBody.getMailAddrT());
         record.setHeatCompanyNmT(reqBody.getHeatCompanyNmT());

@@ -271,37 +271,37 @@ public class YkwmTracelog {
      * null
      */
     @Column(name = "DT_AREA")
-    private Long dtArea;
+    private BigDecimal dtArea;
 
     /**
      * null
      */
     @Column(name = "DT_PRICE")
-    private Long dtPrice;
+    private BigDecimal dtPrice;
 
     /**
      * null
      */
     @Column(name = "DT_ACCOUNT")
-    private Long dtAccount;
+    private BigDecimal dtAccount;
 
     /**
      * null
      */
     @Column(name = "DT_AGIO")
-    private Long dtAgio;
+    private BigDecimal dtAgio;
 
     /**
      * null
      */
     @Column(name = "DT_LATEFEE")
-    private Long dtLatefee;
+    private BigDecimal dtLatefee;
 
     /**
      * null
      */
     @Column(name = "DT_PAYMENT")
-    private Long dtPayment;
+    private BigDecimal dtPayment;
 
     /**
      * null
@@ -313,7 +313,7 @@ public class YkwmTracelog {
      * null
      */
     @Column(name = "AREA1")
-    private Long area1;
+    private BigDecimal area1;
 
     /**
      * null
@@ -349,7 +349,7 @@ public class YkwmTracelog {
      * null
      */
     @Column(name = "AREA2")
-    private Long area2;
+    private BigDecimal area2;
 
     /**
      * null
@@ -385,7 +385,7 @@ public class YkwmTracelog {
      * null
      */
     @Column(name = "AREA3")
-    private Long area3;
+    private BigDecimal area3;
 
     /**
      * null
@@ -421,7 +421,7 @@ public class YkwmTracelog {
      * null
      */
     @Column(name = "AREA4")
-    private Long area4;
+    private BigDecimal area4;
 
     /**
      * null
@@ -1189,7 +1189,7 @@ public class YkwmTracelog {
      * null
      * @return DT_AREA null
      */
-    public Long getDtArea() {
+    public BigDecimal getDtArea() {
         return dtArea;
     }
 
@@ -1197,7 +1197,7 @@ public class YkwmTracelog {
      * null
      * @param dtArea null
      */
-    public void setDtArea(Long dtArea) {
+    public void setDtArea(BigDecimal dtArea) {
         this.dtArea = dtArea;
     }
 
@@ -1205,7 +1205,7 @@ public class YkwmTracelog {
      * null
      * @return DT_PRICE null
      */
-    public Long getDtPrice() {
+    public BigDecimal getDtPrice() {
         return dtPrice;
     }
 
@@ -1213,7 +1213,7 @@ public class YkwmTracelog {
      * null
      * @param dtPrice null
      */
-    public void setDtPrice(Long dtPrice) {
+    public void setDtPrice(BigDecimal dtPrice) {
         this.dtPrice = dtPrice;
     }
 
@@ -1221,7 +1221,7 @@ public class YkwmTracelog {
      * null
      * @return DT_ACCOUNT null
      */
-    public Long getDtAccount() {
+    public BigDecimal getDtAccount() {
         return dtAccount;
     }
 
@@ -1229,7 +1229,7 @@ public class YkwmTracelog {
      * null
      * @param dtAccount null
      */
-    public void setDtAccount(Long dtAccount) {
+    public void setDtAccount(BigDecimal dtAccount) {
         this.dtAccount = dtAccount;
     }
 
@@ -1237,7 +1237,7 @@ public class YkwmTracelog {
      * null
      * @return DT_AGIO null
      */
-    public Long getDtAgio() {
+    public BigDecimal getDtAgio() {
         return dtAgio;
     }
 
@@ -1245,7 +1245,7 @@ public class YkwmTracelog {
      * null
      * @param dtAgio null
      */
-    public void setDtAgio(Long dtAgio) {
+    public void setDtAgio(BigDecimal dtAgio) {
         this.dtAgio = dtAgio;
     }
 
@@ -1253,7 +1253,7 @@ public class YkwmTracelog {
      * null
      * @return DT_LATEFEE null
      */
-    public Long getDtLatefee() {
+    public BigDecimal getDtLatefee() {
         return dtLatefee;
     }
 
@@ -1261,7 +1261,7 @@ public class YkwmTracelog {
      * null
      * @param dtLatefee null
      */
-    public void setDtLatefee(Long dtLatefee) {
+    public void setDtLatefee(BigDecimal dtLatefee) {
         this.dtLatefee = dtLatefee;
     }
 
@@ -1269,7 +1269,7 @@ public class YkwmTracelog {
      * null
      * @return DT_PAYMENT null
      */
-    public Long getDtPayment() {
+    public BigDecimal getDtPayment() {
         return dtPayment;
     }
 
@@ -1277,7 +1277,7 @@ public class YkwmTracelog {
      * null
      * @param dtPayment null
      */
-    public void setDtPayment(Long dtPayment) {
+    public void setDtPayment(BigDecimal dtPayment) {
         this.dtPayment = dtPayment;
     }
 
@@ -1301,7 +1301,7 @@ public class YkwmTracelog {
      * null
      * @return AREA1 null
      */
-    public Long getArea1() {
+    public BigDecimal getArea1() {
         return area1;
     }
 
@@ -1309,7 +1309,7 @@ public class YkwmTracelog {
      * null
      * @param area1 null
      */
-    public void setArea1(Long area1) {
+    public void setArea1(BigDecimal area1) {
         this.area1 = area1;
     }
 
@@ -1397,7 +1397,7 @@ public class YkwmTracelog {
      * null
      * @return AREA2 null
      */
-    public Long getArea2() {
+    public BigDecimal getArea2() {
         return area2;
     }
 
@@ -1405,7 +1405,7 @@ public class YkwmTracelog {
      * null
      * @param area2 null
      */
-    public void setArea2(Long area2) {
+    public void setArea2(BigDecimal area2) {
         this.area2 = area2;
     }
 
@@ -1493,7 +1493,7 @@ public class YkwmTracelog {
      * null
      * @return AREA3 null
      */
-    public Long getArea3() {
+    public BigDecimal getArea3() {
         return area3;
     }
 
@@ -1501,7 +1501,7 @@ public class YkwmTracelog {
      * null
      * @param area3 null
      */
-    public void setArea3(Long area3) {
+    public void setArea3(BigDecimal area3) {
         this.area3 = area3;
     }
 
@@ -1589,7 +1589,7 @@ public class YkwmTracelog {
      * null
      * @return AREA4 null
      */
-    public Long getArea4() {
+    public BigDecimal getArea4() {
         return area4;
     }
 
@@ -1597,7 +1597,7 @@ public class YkwmTracelog {
      * null
      * @param area4 null
      */
-    public void setArea4(Long area4) {
+    public void setArea4(BigDecimal area4) {
         this.area4 = area4;
     }
 

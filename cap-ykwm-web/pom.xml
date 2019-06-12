@@ -30,6 +30,20 @@
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 		</dependency>
+		 <dependency>
+			<groupId>ESBFileAPI</groupId>
+			<artifactId>ESBFileAPI</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+    		<artifactId>commons-net</artifactId>
+			<version>3.6</version>
+		</dependency>
+		<dependency>
+			<groupId>dom4j</groupId>
+    		<artifactId>dom4j</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
