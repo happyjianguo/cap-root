@@ -283,6 +283,8 @@ public class AccMstTracePushTask {
 		    				myLog.error(logger,"流水号信息异常，原流水[" + reference + "] 最新流水[" + pafAccMstReport.getReference() + "]");
 		    				continue;
 		    			}
+	                }else{
+	                	myLog.info(logger,"本条记录为冲正流水，返回账户变动信息，流水号【"+refMax+"】");
 	                }
 
 	                
