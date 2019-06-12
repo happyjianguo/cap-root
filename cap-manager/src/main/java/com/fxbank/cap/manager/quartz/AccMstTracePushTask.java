@@ -275,8 +275,6 @@ public class AccMstTracePushTask {
 		    					if(queryResult!=null){	    			
 		    						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的核心流水号：[" + refMax + "] 已经存在，不处理本条数据");
 		    						continue;
-		    					}else{
-		    						
 		    					}
 		    				}
 		    			} catch (RuntimeException e) {
@@ -284,6 +282,12 @@ public class AccMstTracePushTask {
 		    				continue;
 		    			}
 	                }else{
+	                	//冲正情况判断
+	                	String queryResult = pafAccMstService.queryReference(pafAccMstReport.getAcctNo(),refMax);
+	                	if(queryResult!=null){	    			
+    						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的冲正流水号：[" + refMax + "] 已经存在，不处理本条数据");
+    						continue;
+    					}
 	                	myLog.info(logger,"本条记录为冲正流水，返回账户变动信息，流水号【"+refMax+"");
 	                }
 
