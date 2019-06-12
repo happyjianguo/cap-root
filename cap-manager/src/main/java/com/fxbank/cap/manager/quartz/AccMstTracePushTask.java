@@ -257,30 +257,34 @@ public class AccMstTracePushTask {
 	                pafAccMstReport.setSerialNum(array[21]); //笔号
 	                pafAccMstReport.setVolumeNum(array[22]); //册号
 
-	                
-	    		    //hotfix_15修改流水信息异常
-	    			try {
-	    				//原账号核心流水号
-	    				long oldRef = Long.parseLong(reference.substring(3));
-	    				//当前变动文件返回的核心最新流水
-	    				String refMax = pafAccMstReport.getReference();
-	    				long newRef = Long.parseLong(refMax.substring(3));
-	    				myLog.info(logger,"判断最新流水号与当前流水号大小关系");
-	    				if(oldRef>newRef){
-	    					myLog.info(logger,"查询流水号是否存在:"+refMax);
-	    					//查询获取的最大流水号，判断是否存在，如果存在说明之前已经处理过本笔业务
-	    					String queryResult = pafAccMstService.queryReference(pafAccMstReport.getAcctNo(),refMax);					
-	    					if(queryResult!=null){	    			
-	    						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的核心流水号：[" + reference + "] 已经存在，不处理本条数据");
-	    						continue;
-	    					}else{
-	    						
-	    					}
-	    				}
-	    			} catch (RuntimeException e) {
-	    				myLog.error(logger,"流水号信息异常，原流水[" + reference + "] 最新流水[" + pafAccMstReport.getReference() + "]");
-	    				continue;
-	    			}
+	                //账户变动核心流水号
+	                String refMax = pafAccMstReport.getReference();
+	                //判断核心流水号是否有ENS前缀，如果有说明是变动信息，如果没有说明是冲正流水
+	                if(refMax.indexOf("ENS")!=-1){
+		    		    //hotfix_15修改流水信息异常
+		    			try {
+		    				//原账号核心流水号
+		    				long oldRef = Long.parseLong(reference.substring(3));
+		    				//当前变动文件返回的核心最新流水	    				
+		    				long newRef = Long.parseLong(refMax.substring(3));
+		    				myLog.info(logger,"判断最新流水号与当前流水号大小关系");
+		    				if(oldRef>newRef){
+		    					myLog.info(logger,"查询流水号是否存在:"+refMax);
+		    					//查询获取的最大流水号，判断是否存在，如果存在说明之前已经处理过本笔业务
+		    					String queryResult = pafAccMstService.queryReference(pafAccMstReport.getAcctNo(),refMax);					
+		    					if(queryResult!=null){	    			
+		    						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的核心流水号：[" + reference + "] 已经存在，不处理本条数据");
+		    						continue;
+		    					}else{
+		    						
+		    					}
+		    				}
+		    			} catch (RuntimeException e) {
+		    				myLog.error(logger,"流水号信息异常，原流水[" + reference + "] 最新流水[" + pafAccMstReport.getReference() + "]");
+		    				continue;
+		    			}
+	                }
+
 	                
 	                pafAccMstService.save(pafAccMstReport);
 	                
