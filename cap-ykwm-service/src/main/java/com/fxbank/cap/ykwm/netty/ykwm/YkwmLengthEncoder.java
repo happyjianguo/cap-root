@@ -37,7 +37,7 @@ public class YkwmLengthEncoder extends MessageToByteEncoder<Object> {
 	protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
 		String msgStr = (String) msg;
 		StringBuffer sb = new StringBuffer();
-		sb.append(String.format("%04d", msgStr.getBytes(YkwmClient.CODING).length));
+		//sb.append(String.format("%04d", msgStr.getBytes(YkwmClient.CODING).length));
 		sb.append(msgStr);
 		String reqPack = sb.toString();
 		//String reqPack = scrtUtil.encrypt3DES(sb.toString().getBytes(YkwmClient.CODING));

@@ -45,11 +45,38 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 		if (in == null) {
 			return null;
 		}
-		int readableLen = in.readableBytes();
-		byte[] lenBytes0 = new byte[readableLen];
-		ByteBuf buf0 = in.readBytes(readableLen);
-		buf0.readBytes(lenBytes0);
-		return new String(lenBytes0, YkwmClient.CODING);
+		int readLength = in.readableBytes();
+
+		// 读取数据超时后关闭客户端连接，丢弃已读取的报文
+		if (!ctx.channel().isActive()) {
+			return null;
+		}
+		StringBuffer msgbuf = new StringBuffer(1024);
+		// 一次做多只能读取1024个字节
+		int onceLen = 1024;
+		if (readLength > onceLen) {
+			while (in.readableBytes() > 0) {
+				int readLen = in.readableBytes() > onceLen ? onceLen: in.readableBytes();
+				ByteBuf buf = in.readBytes(readLen);
+				byte[] data = new byte[readLen];
+				buf.readBytes(data);
+				msgbuf.append(new String(data, YkwmClient.CODING));
+				ReferenceCountUtil.release(buf);
+				this.myLog.info(logger, "剩余字节数量"+in.readableBytes());
+			}
+		} else {
+			ByteBuf buf = in.readBytes(readLength);
+			byte[] req = new byte[buf.readableBytes()];
+			buf.readBytes(req);
+			msgbuf.append(new String(req, YkwmClient.CODING));
+			ReferenceCountUtil.release(buf);
+		}
+		String body = msgbuf.toString();
+		
+		this.myLog.info(logger, "接收到客户端请求["+body+"]");
+
+		return body;
+		
 		/**
 		if ( readableLen < DATALENGTH ) {
 			byte[] lenBytes = new byte[readableLen];
