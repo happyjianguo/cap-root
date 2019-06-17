@@ -1,12 +1,8 @@
 package com.fxbank.cap.ykwm.trade.ykwm;
 
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Resource;
-
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cap.ykwm.dto.ykwm.REP_ERROR;
@@ -19,7 +15,6 @@ import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -59,8 +54,7 @@ public class Query implements TradeExecutionStrategy {
 		rep.setAddress("北京");
 		rep.setMinPayment(new Double(100));
 		rep.setTotal(new Double(500));
-		rep.setUnit("aa");
-		rep.setArea(new Double("120"));
+		rep.setOtherParams("0");
 		List<AccountDetail> data = new ArrayList<AccountDetail>();
 		AccountDetail accountDetail = new AccountDetail();
 		accountDetail.setChargeYear("2015-2016");

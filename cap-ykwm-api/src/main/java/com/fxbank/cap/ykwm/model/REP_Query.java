@@ -28,31 +28,28 @@ public class REP_Query extends REP_BASE {
 	@FixedField(order = 5, len = 15,scale = 2, desc = "缴费金额")
 	private Double total;
 
-	@FixedField(order = 6, len = 100, desc = "工作单位")
-	private String unit;
-
-	@FixedField(order = 7, len = 10,scale = 2, desc = "面积")
-	private Double area;
-	
-	@FixedField(order = 8, len = 4, cyc = "data", desc = "循环次数")
+	@FixedField(order = 6, len = 4, cyc = "data", desc = "循环次数")
 	private Integer cyc;
 
-	@FixedField(order = 9, desc = "欠费明细")
+	@FixedField(order = 7, desc = "欠费明细")
 	private List<AccountDetail> data;
 
-	@FixedField(order = 10, len = 100, desc = "业务类型")
+	@FixedField(order = 8, len = 100, desc = "描述")
 	private String description;
 
-	@FixedField(order = 11, len = 16, desc = "查询流水号")
+	@FixedField(order = 9, len = 16, desc = "查询流水号")
 	private String checkNum;
+	
+	@FixedField(order = 10, len = 100, desc = "缴费时需要填写的其他信息，如发票信息等")
+	private String ohterParams;
 
-	@FixedField(order = 12, len = 20, desc = "扩展信息")
+	@FixedField(order = 11, len = 20, desc = "扩展信息")
 	private String extend;
 	
-	@FixedField(order = 13, len = 4, cyc = "expressList", desc = "循环次数")
+	@FixedField(order = 12, len = 4, cyc = "expressList", desc = "循环次数")
 	private Integer cyc1;
 
-	@FixedField(order = 14, desc = "快递公司列表")
+	@FixedField(order = 13, desc = "快递公司列表")
 	private List<Express> expressList;
 	
 	
@@ -104,20 +101,12 @@ public class REP_Query extends REP_BASE {
 		this.total = total;
 	}
 
-	public String getUnit() {
-		return unit;
+	public String getOhterParams() {
+		return ohterParams;
 	}
 
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
-
-	public Double getArea() {
-		return area;
-	}
-
-	public void setArea(Double area) {
-		this.area = area;
+	public void setOhterParams(String ohterParams) {
+		this.ohterParams = ohterParams;
 	}
 
 	public List<AccountDetail> getData() {

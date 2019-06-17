@@ -66,8 +66,8 @@ public class QR_Account extends TradeBase implements TradeExecutionStrategy {
 		rep.getRepBody().setUserAddr(repQuery.getAddress());
 		rep.getRepBody().setMinPayFeeAmt(repQuery.getMinPayment().toString());
 		rep.getRepBody().setPyFeeAmtT(repQuery.getTotal().toString());
-		rep.getRepBody().setEmployerName(repQuery.getUnit());
-		rep.getRepBody().setHeatAreaT(repQuery.getArea().toString());
+		rep.getRepBody().setEmployerName("");
+		rep.getRepBody().setHeatAreaT("");
 		List<DbtInfo> accountArray = new ArrayList<DbtInfo>();
 		for(AccountDetail detail:repQuery.getData())
 		{
