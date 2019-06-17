@@ -47,7 +47,8 @@ public class BASE_TEST {
         String repData = null;
         try {
             os = socket.getOutputStream();
-            byte[] encryptMsg = scrtUtil.encrypt3DES(reqData.getBytes(BASE_TEST.CODING)).getBytes(BASE_TEST.CODING);
+            //byte[] encryptMsg = scrtUtil.encrypt3DES(reqData.getBytes(BASE_TEST.CODING)).getBytes(BASE_TEST.CODING);
+            byte[] encryptMsg = reqData.getBytes(BASE_TEST.CODING);
             int len = encryptMsg.length;
             logger.info("发送请求报文长度["+len+"]");
             String reqLen = String.format("%04d", len);
@@ -62,7 +63,8 @@ public class BASE_TEST {
             int retLen = Integer.valueOf(slen);
             byte[] dataByte = new byte[retLen];
             is.read(dataByte);
-            repData = scrtUtil.decrypt3DES(dataByte);
+            //repData = scrtUtil.decrypt3DES(dataByte);
+            repData = new String(dataByte);
             logger.info("接收应答报文[" + repData + "]");
         } catch (Exception e) {
            logger.error("处理连接异常", e);

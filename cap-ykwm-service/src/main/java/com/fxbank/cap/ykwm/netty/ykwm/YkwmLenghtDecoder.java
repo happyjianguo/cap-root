@@ -93,8 +93,9 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 			ReferenceCountUtil.release(buf);
 		}
 
-		String body = scrtUtil.decrypt3DES(ScrtUtil.hexStringToBytes(msgbuf.toString()));
-
+		//String body = scrtUtil.decrypt3DES(ScrtUtil.hexStringToBytes(msgbuf.toString()));
+		String body = msgbuf.toString();
+		
 		this.myLog.info(logger, "接收到客户端请求["+body+"]");
 
 		return body;
