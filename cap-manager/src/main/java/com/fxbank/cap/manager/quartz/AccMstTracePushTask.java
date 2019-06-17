@@ -131,29 +131,6 @@ public class AccMstTracePushTask {
 				throw new RuntimeException("核心返回数据异常[" + esb_rep_30015700901.getRepBody().getQueryArray().size() + "]");
 			}
 			String refMax = esb_rep_30015700901.getRepBody().getQueryArray().get(0).getRefMax();
-
-		    //hotfix_15修改流水信息异常
-			try {
-				//原账号核心流水号
-				long oldRef = Long.parseLong(reference.substring(3));
-				//当前核心返回的最新流水
-				long newRef = Long.parseLong(refMax.substring(3));
-				myLog.info(logger,"判断最新流水号与当前流水号大小关系");
-				if(oldRef>newRef){
-					myLog.info(logger,"查询流水号是否存在:"+refMax);
-					//查询获取的最大流水号，判断是否存在，如果存在说明之前已经处理过本笔业务
-					String queryResult = pafAccMstService.queryReference(refMax);					
-					if(queryResult!=null){
-						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的核心流水号：[" + reference + "] 已经存在，不处理本条数据");
-						continue;
-					}else{
-						
-					}
-				}
-			} catch (RuntimeException e) {
-				e.printStackTrace();
-				throw new RuntimeException("流水号信息异常，原流水[" + reference + "] 最新流水[" + refMax + "]");
-			}
 			
 			
 			// 3、从文件传输平台获取核心文件
@@ -165,7 +142,7 @@ public class AccMstTracePushTask {
 			
 			//将成功记录插入数据库中
 			String buffer = InsertPafAccMst(myLog,fileName,centerNo,departCode,String.format("%08d", sysDate)
-					+ String.format("%06d", sysTime),localFile,pafAcNoInfo);
+					+ String.format("%06d", sysTime),localFile,pafAcNoInfo,reference);
 			setMaxRef(myLog, centerNo, pafAcNoInfo.getAcNo(), refMax);
 			//4、判断是否核心返回账户变动信息，如果有则推送变动通知，如果没有跳出处理
 			if(buffer==null||buffer.length()==0){
@@ -194,7 +171,8 @@ public class AccMstTracePushTask {
 	 * @param localFile 本地文件路径
 	 * @param pafAcNoInfo 
 	 */
-	private String InsertPafAccMst(MyLog myLog,String fileName, String centerNo, String departCode, String reportTime, String localFile, PafAcNoInfo pafAcNoInfo) {
+	private String InsertPafAccMst(MyLog myLog,String fileName, String centerNo, String departCode, String reportTime,
+			String localFile, PafAcNoInfo pafAcNoInfo, String reference) {
 		BufferedReader br = null;
 		StringBuffer buffer = new StringBuffer();
 		RandomAccessFile rf = null;
@@ -211,9 +189,6 @@ public class AccMstTracePushTask {
 	        long start = rf.getFilePointer();// 返回此文件中的当前偏移量
 	        long readIndex = start + fileLength -1;
 	        
-//			br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(localFile)),"UTF-8"));
-//			String lineTxt=null;
-//			while ((lineTxt = br.readLine()) != null) {
 	        String line;
 	        rf.seek(readIndex);// 设置偏移量为文件末尾
 	        int c = -1;
@@ -282,6 +257,41 @@ public class AccMstTracePushTask {
 	                pafAccMstReport.setSerialNum(array[21]); //笔号
 	                pafAccMstReport.setVolumeNum(array[22]); //册号
 
+	                //账户变动核心流水号
+	                String refMax = pafAccMstReport.getReference();
+	                //判断核心流水号是否有ENS前缀，如果有说明是变动信息，如果没有说明是冲正流水
+	                if(refMax.indexOf("ENS")!=-1){
+		    		    //hotfix_15修改流水信息异常
+		    			try {
+		    				//原账号核心流水号
+		    				long oldRef = Long.parseLong(reference.substring(3));
+		    				//当前变动文件返回的核心最新流水	    				
+		    				long newRef = Long.parseLong(refMax.substring(3));
+		    				myLog.info(logger,"判断最新流水号与当前流水号大小关系");
+		    				if(oldRef>newRef){
+		    					myLog.info(logger,"查询流水号是否存在:"+refMax);
+		    					//查询获取的最大流水号，判断是否存在，如果存在说明之前已经处理过本笔业务
+		    					String queryResult = pafAccMstService.queryReference(pafAccMstReport.getAcctNo(),refMax);					
+		    					if(queryResult!=null){	    			
+		    						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的核心流水号：[" + refMax + "] 已经存在，不处理本条数据");
+		    						continue;
+		    					}
+		    				}
+		    			} catch (RuntimeException e) {
+		    				myLog.error(logger,"流水号信息异常，原流水[" + reference + "] 最新流水[" + pafAccMstReport.getReference() + "]");
+		    				continue;
+		    			}
+	                }else{
+	                	//冲正情况判断
+	                	String queryResult = pafAccMstService.queryReference(pafAccMstReport.getAcctNo(),refMax);
+	                	if(queryResult!=null){	    			
+    						myLog.info(logger, "账号[" + pafAcNoInfo.getAcNo() + "]返回的冲正流水号：[" + refMax + "] 已经存在，不处理本条数据");
+    						continue;
+    					}
+	                	myLog.info(logger,"本条记录为冲正流水，返回账户变动信息，流水号【"+refMax+"");
+	                }
+
+	                
 	                pafAccMstService.save(pafAccMstReport);
 	                
 	                buffer.append(num).append("|");

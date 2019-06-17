@@ -100,7 +100,7 @@
   </select>
 
   <select id="queryReference" parameterType="string" resultType="String" >
-    select reference from paf_acct_mst_report where rownum = 1 and reference = #{reference}
+    select reference from paf_acct_mst_report where rownum = 1 and acct_no=#{acctNo} and reference = #{reference}
   </select>
 
 </mapper>
