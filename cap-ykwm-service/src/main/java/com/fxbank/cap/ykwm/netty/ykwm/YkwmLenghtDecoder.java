@@ -46,6 +46,11 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 			return null;
 		}
 		int readableLen = in.readableBytes();
+		byte[] lenBytes0 = new byte[readableLen];
+		ByteBuf buf0 = in.readBytes(readableLen);
+		buf0.readBytes(lenBytes0);
+		return new String(lenBytes0, YkwmClient.CODING);
+		/**
 		if ( readableLen < DATALENGTH ) {
 			byte[] lenBytes = new byte[readableLen];
 			ByteBuf buf = in.readBytes(readableLen);
@@ -105,6 +110,7 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 		this.myLog.info(logger, "接收到客户端请求["+body+"]");
 
 		return body;
+		**/
 	}
 
 	public boolean isInteger(String str) {
