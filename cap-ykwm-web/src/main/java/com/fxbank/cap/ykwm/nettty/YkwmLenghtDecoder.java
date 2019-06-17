@@ -55,7 +55,17 @@ public class YkwmLenghtDecoder extends ByteToMessageDecoder {
 		}
 		in.markReaderIndex();
 		
-		Integer len = in.readInt();
+		ByteBuf lenbuf = in.readBytes(DATALENGTH);
+		byte[] lenbyte = new byte[DATALENGTH];
+		lenbuf.readBytes(lenbyte); 
+		ReferenceCountUtil.release(lenbuf);
+		String lenStr = new String(lenbyte,ServerInitializer.CODING);
+		if (!isInteger(lenStr)) {
+			Exception e = new RuntimeException("报文长度不合法");
+			this.myLog.error(logger, "报文长度不合法"+lenStr, e);
+			throw e;
+		}
+		Integer len = new Integer(lenStr);
 		// 判断是否分包,数据长度大于等于总长度或者本次读取数据长度与上次相同认为分包结束
 		int readLength = in.readableBytes();
 		if (readLength < len) {

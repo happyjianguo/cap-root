@@ -4,18 +4,14 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
-
 import javax.annotation.Resource;
-
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.ykwm.common.ScrtUtil;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.netty.NettySyncSlot;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -59,7 +55,17 @@ public class YkwmLenghtDecoder<T> extends ByteToMessageDecoder {
 		}
 		in.markReaderIndex();
 		
-		Integer len = in.readInt();
+		ByteBuf lenbuf = in.readBytes(DATALENGTH);
+		byte[] lenbyte = new byte[DATALENGTH];
+		lenbuf.readBytes(lenbyte); 
+		ReferenceCountUtil.release(lenbuf);
+		String lenStr = new String(lenbyte,YkwmClient.CODING);
+		if (!isInteger(lenStr)) {
+			Exception e = new RuntimeException("报文长度不合法");
+			this.myLog.error(logger, "报文长度不合法"+lenStr, e);
+			throw e;
+		}
+		Integer len = new Integer(lenStr);
 		// 判断是否分包,数据长度大于等于总长度或者本次读取数据长度与上次相同认为分包结束
 		int readLength = in.readableBytes();
 		if (readLength < len) {
