@@ -78,7 +78,7 @@ class Run implements Runnable {
             rep.setResult("0");
             rep.setOwnerName("张三");
             String repData = FixedUtil.toFixed(rep, "|");;
-            repData = repData + "FFFFFFFFFFFFFFFF";
+            //repData = repData + "FFFFFFFFFFFFFFFF";
             os = socket.getOutputStream();
             String repLen = String.format("%08d", repData.getBytes(SimuYkwmServer.CODING).length);
             this.logger.info("发送应答报文[" + repData + "]");

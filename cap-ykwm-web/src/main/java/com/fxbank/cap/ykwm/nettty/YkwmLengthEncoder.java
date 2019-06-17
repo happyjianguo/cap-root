@@ -42,7 +42,8 @@ public class YkwmLengthEncoder extends MessageToByteEncoder<Object> {
 		sb.append(msgStr);
 		//String reqPack = scrtUtil.encrypt3DES(sb.toString().getBytes(ServerInitializer.CODING));
 		String reqPack = sb.toString();
-		myLog.info(logger, "发送应答报文=[" + String.format("%04d", reqPack.length()) + reqPack + "]");
+		//myLog.info(logger, "发送应答报文=[" + String.format("%04d", reqPack.length()) + reqPack + "]");
+		myLog.info(logger, "发送应答报文=[" + reqPack + "]");
 		byte[] data=reqPack.getBytes(ServerInitializer.CODING);
 		out.writeInt(data.length);
 		out.writeBytes(data);

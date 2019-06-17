@@ -51,9 +51,9 @@ public class BASE_TEST {
             byte[] encryptMsg = reqData.getBytes(BASE_TEST.CODING);
             int len = encryptMsg.length;
             logger.info("发送请求报文长度["+len+"]");
-            String reqLen = String.format("%04d", len);
+           // String reqLen = String.format("%04d", len);
             logger.info("发送请求报文密文十六进制[" + reqData + "]");
-            os.write(reqLen.getBytes(BASE_TEST.CODING));
+          //  os.write(reqLen.getBytes(BASE_TEST.CODING));
             os.write(encryptMsg);
 
             is = socket.getInputStream();

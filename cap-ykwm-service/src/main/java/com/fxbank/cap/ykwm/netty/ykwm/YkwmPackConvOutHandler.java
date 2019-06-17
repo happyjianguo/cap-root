@@ -33,7 +33,7 @@ public class YkwmPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		REQ_BASE reqBase = (REQ_BASE)msg;
 		StringBuffer fixPack = new StringBuffer(FixedUtil.toFixed(reqBase, "|",YkwmClient.CODING));
 		//TODO 生成MAC
-		fixPack.append("FFFFFFFFFFFFFFFF");
+		//fixPack.append("FFFFFFFFFFFFFFFF");
 		ctx.writeAndFlush(fixPack.toString(), promise);
 	}
 
