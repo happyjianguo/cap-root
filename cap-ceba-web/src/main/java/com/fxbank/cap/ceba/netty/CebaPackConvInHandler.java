@@ -62,7 +62,8 @@ public class CebaPackConvInHandler extends ChannelInboundHandlerAdapter {
 			reqBase.chanFixPack(strMsg);
 			reqBase.setTxCode(txCode);
 			reqBase.setSourceType("CEBA");
-			reqBase.setOthDate(20190527);
+			reqBase.setOthDate(0);
+			reqBase.setOthTraceno("");
 			ctx.fireChannelRead(reqBase);
 		} finally {
 			ReferenceCountUtil.release(msg);

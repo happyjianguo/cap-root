@@ -44,6 +44,10 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		Map<String, DataTransObject> dtoMap = (Map<String, DataTransObject>) msg;
 		DataTransObject dto = dtoMap.get("repDto");
 		DataTransObject reqDto = dtoMap.get("reqDto");
+		if(reqDto.getTxCode().equals("BJCEBBCNotify")||reqDto.getTxCode().equals("BJCEBOANotice")) {
+			ctx.close();
+			return;
+		}
 		String rspTyp = null;
 		String rspCode = null;
 		String rspMsg = null;
