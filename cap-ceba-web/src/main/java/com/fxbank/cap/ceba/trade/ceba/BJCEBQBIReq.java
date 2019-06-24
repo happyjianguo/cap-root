@@ -83,7 +83,7 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 			dataList.add(data);
 			Data data1 = new Data();
 			data1.setContractNo("654321");
-			data1.setCustomerName("李四");
+			data1.setCustomerName("张三");
 			data1.setBalance(new BigDecimal(0));
 			data1.setPayAmount(new BigDecimal(55.55));
 			data1.setBeginDate("20190429");
@@ -100,7 +100,7 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 			dataList.add(data);
 			Data data1 = new Data();
 			data1.setContractNo("654321");
-			data1.setCustomerName("李四");
+			data1.setCustomerName("张三");
 			data1.setBalance(new BigDecimal(0));
 			data1.setPayAmount(new BigDecimal(55.55));
 			data1.setBeginDate("201905");
