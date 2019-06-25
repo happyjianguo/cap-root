@@ -77,11 +77,6 @@ public abstract class BaseTradeT2 {
 	private static final String ESB_TIMEOUT_CODE1 = "ESB_E_000052";
 	
 	/** 
-	* @Fields ESB_TIMEOUT_CODE2 :  核心超时ESB响应码
-	*/ 
-	private static final String ESB_TIMEOUT_CODE2 = "ES000033";
-	
-	/** 
 	* @Title: updateHostUndoTimeout 
 	* @Description: 核心冲正超时更新日志 
 	* @param @param dto
@@ -207,8 +202,7 @@ public abstract class BaseTradeT2 {
 			model = undoHostCharge(dto);
 		} catch (SysTradeExecuteException e) {
 			//ESB超时
-			if (e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e.getRspCode().equals(ESB_TIMEOUT_CODE1)
-					|| e.getRspCode().equals(ESB_TIMEOUT_CODE2)) {
+			if (e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e.getRspCode().equals(ESB_TIMEOUT_CODE1)) {
 				updateHostUndoTimeout(dto);
 				myLog.error(logger,TRADE_DESC+"核心冲正超时，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno());
 				throw hostUndoTimeoutException; 

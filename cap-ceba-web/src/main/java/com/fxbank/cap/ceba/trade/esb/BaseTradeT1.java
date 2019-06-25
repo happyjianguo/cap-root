@@ -265,11 +265,6 @@ public abstract class BaseTradeT1 {
 	private static final String ESB_TIMEOUT_CODE1 = "ESB_E_000052";
 	
 	/** 
-	* @Fields ESB_TIMEOUT_CODE2 :  核心超时ESB响应码
-	*/ 
-	private static final String ESB_TIMEOUT_CODE2 = "ES000033";
-	
-	/** 
 	* @Fields othTimeoutQuery : 第三方记账超时，是否发起查询该笔交易 
 	*/ 
 	public Boolean othTimeoutQuery = false;
@@ -286,8 +281,7 @@ public abstract class BaseTradeT1 {
 			myLog.info(logger,TRADE_DESC+"核心记账成功，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno());
 		} catch (SysTradeExecuteException e) {
 			// 超时
-			if (e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e.getRspCode().equals(ESB_TIMEOUT_CODE1)
-					|| e.getRspCode().equals(ESB_TIMEOUT_CODE2)) {
+			if (e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e.getRspCode().equals(ESB_TIMEOUT_CODE1)) {
 				// 超时登记
 				hostTimeoutInitLog(dto); 
 				myLog.error(logger,TRADE_DESC+"核心记账超时，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno(),e);
@@ -334,8 +328,7 @@ public abstract class BaseTradeT1 {
 						model = undoHostCharge(dto, e);
 					} catch (SysTradeExecuteException e2) {
 						//ESB超时
-						if (e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e.getRspCode().equals(ESB_TIMEOUT_CODE1)
-								|| e.getRspCode().equals(ESB_TIMEOUT_CODE2)) {
+						if (e.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e.getRspCode().equals(ESB_TIMEOUT_CODE1)) {
 							updateHostUndoTimeout(dto);
 							myLog.error(logger,TRADE_DESC+"核心冲正超时，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno(),e2);
 							throw hostUndoTimeoutException(e); // 提示第三方错误信息
@@ -363,8 +356,7 @@ public abstract class BaseTradeT1 {
 						//核心冲正
 						model = undoHostCharge(dto, e);
 					} catch (SysTradeExecuteException e1) {
-						if (e1.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e1.getRspCode().equals(ESB_TIMEOUT_CODE1)
-								|| e1.getRspCode().equals(ESB_TIMEOUT_CODE2)) {
+						if (e1.getRspCode().equals(SysTradeExecuteException.CIP_E_000004) || e1.getRspCode().equals(ESB_TIMEOUT_CODE1)) {
 							updateHostUndoTimeout(dto);
 							myLog.error(logger,TRADE_DESC+"核心冲正超时，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno(),e1);
 							throw hostUndoTimeoutException(e); // 提示第三方错误信息
