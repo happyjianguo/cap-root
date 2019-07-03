@@ -50,6 +50,7 @@ public class PaymentService implements IPaymentService {
         log.setCourierCmpnyIdT(record.getCourierCmpnyIdT());
         log.setTeCheckNum(record.getTeCheckNum());
         log.setBillGetTpT(record.getBillGetTpT());
+        if(record.getInvoiceList()!=null) {
         List<Invoice> list = record.getInvoiceList();
         if(list.size()>=1) {
         	Invoice invoice = list.get(0);
@@ -86,6 +87,7 @@ public class PaymentService implements IPaymentService {
         	log.setInvoicenum4(invoice.getInvoiceNum());
         	log.setBanknum4(invoice.getBankNum());
         	log.setArea4(new BigDecimal(invoice.getArea()));
+        }
         }
 		ykwmTracelogMapper.insertSelective(log);
 	}

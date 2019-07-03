@@ -31,7 +31,7 @@ public class REQ_Payment extends REQ_BASE {
 	@FixedField(order = 7, len = 1, desc = "发票处理方式")
 	private Integer invoiceStyle;
 	@FixedField(order = 8, len = 8, desc = "快递公司id")
-	private Integer expressID;
+	private String expressID;
 	@FixedField(order = 9, len = 200, desc = "邮寄地址")
 	private String address;
 	@FixedField(order = 10, len = 20, desc = "联系电话")
@@ -155,10 +155,10 @@ public class REQ_Payment extends REQ_BASE {
 	public void setInvoiceStyle(Integer invoiceStyle) {
 		this.invoiceStyle = invoiceStyle;
 	}
-	public Integer getExpressID() {
+	public String getExpressID() {
 		return expressID;
 	}
-	public void setExpressID(Integer expressID) {
+	public void setExpressID(String expressID) {
 		this.expressID = expressID;
 	}
 	public String getAddress() {
