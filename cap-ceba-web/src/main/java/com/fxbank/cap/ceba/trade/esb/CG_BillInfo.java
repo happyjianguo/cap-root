@@ -106,18 +106,19 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		MyLog myLog = logPool.get();
 		ESB_REQ_30011000101 esbReq_30011000101 = new ESB_REQ_30011000101(myLog, reqDto.getSysDate(),
 				reqDto.getSysTime(), reqDto.getSysTraceno());
-		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30011000101.getReqSysHead(), reqDto).build();
+		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30011000101.getReqSysHead(), reqDto)
+				.setSourceType("MB").build();
 		esbReq_30011000101.setReqSysHead(reqSysHead);
   
 		ESB_REQ_30011000101.REQ_BODY reqBody_30011000101 = esbReq_30011000101.getReqBody();
 		REQ_30062001001.REQ_BODY reqBody = reqDto.getReqBody();
 		// 账号/卡号
 		reqBody_30011000101.setBaseAcctNo(reqBody.getPayAcctNo());
-		reqBody_30011000101.setOthBaseAcctNo("623166001015670786");
+		reqBody_30011000101.setOthBaseAcctNo("3421200000022014");
 		// 账户名称
 		reqBody_30011000101.setAcctName(reqBody.getClientNnae());
 		// 交易类型
-		reqBody_30011000101.setTranType("GJ03");
+		reqBody_30011000101.setTranType("DEBT");
 		// 交易币种
 		reqBody_30011000101.setTranCcy("CNY");
 		//密码
@@ -125,7 +126,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		// 交易金额
 		reqBody_30011000101.setTranAmt(new BigDecimal(reqBody.getUnpaidAmt()).toString());
 		// 记账渠道类型
-		reqBody_30011000101.setChannelType("GJ");
+		reqBody_30011000101.setChannelType("GD");
 		// 清算日期
 		reqBody_30011000101.setSettlementDate(reqDto.getSysDate().toString());
 		// 对账标识,Y-参与对账;N-不参与对账
