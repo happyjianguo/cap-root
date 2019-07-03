@@ -26,7 +26,7 @@ public class REQ_Payment extends REQ_BASE {
 	private String batchNum;// 批次号，银行方提供的对账批次号 需和查询一致
 	@FixedField(order = 5, len = 16, desc = "交易流水号")
 	private String checkNum;// 交易流水号,此流水号为查询时返回的查询流水号
-	@FixedField(order = 6, len = 15, desc = "用户缴费金额")
+	@FixedField(order = 6, len = 15, scale = 2, desc = "用户缴费金额")
 	private double payment;// 账号
 	@FixedField(order = 7, len = 1, desc = "发票处理方式")
 	private Integer invoiceStyle;
