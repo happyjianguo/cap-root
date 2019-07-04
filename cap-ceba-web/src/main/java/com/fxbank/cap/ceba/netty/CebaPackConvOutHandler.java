@@ -73,7 +73,7 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 
 
 		//生成MAC TODO
-		String mac = "FFFFFFFFFFFFFFFF";
+		String mac = "";
 
 		StringBuffer fixPack = new StringBuffer(repDto.creaFixPack());
 		fixPack.append(mac);

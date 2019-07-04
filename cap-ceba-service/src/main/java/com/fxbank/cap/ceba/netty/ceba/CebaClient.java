@@ -23,7 +23,7 @@ public class CebaClient {
 
     private static Logger logger = LoggerFactory.getLogger(CebaClient.class);
 
-    public static final String CODING = "UTF-8";
+    public static final String CODING = "GBK";
     public static final String PREFIX = "ceba.";
     public static final String CEBA_IP_KEY = PREFIX + "ceba_ip";
     public static final String CEBA_PORT_KEY = PREFIX + "ceba_port";

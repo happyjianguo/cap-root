@@ -54,7 +54,7 @@ public class CebaPackConvInHandler extends ChannelInboundHandlerAdapter {
 		MyLog myLog = logPool.get();
 		try {
 			String strMsg = (String) msg;
-			strMsg = strMsg.substring(0, strMsg.length() - 16);
+			strMsg = strMsg.substring(0, strMsg.length() );
 			if (strMsg.contains("<in>")) {
 				REQ_BASE baseBean = null;
 				try {

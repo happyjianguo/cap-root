@@ -32,7 +32,7 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		
 		StringBuffer fixPack = new StringBuffer((String)msg);
 		//TODO 生成MAC
-		fixPack.append("FFFFFFFFFFFFFFFF");
+		//fixPack.append("FFFFFFFFFFFFFFFF");
 		ctx.writeAndFlush(fixPack.toString(), promise);
 	}
 
