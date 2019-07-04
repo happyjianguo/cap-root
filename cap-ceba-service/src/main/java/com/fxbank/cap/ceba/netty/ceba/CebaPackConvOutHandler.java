@@ -29,8 +29,8 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 	
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-		REQ_BASE2 reqBase = (REQ_BASE2)msg;
-		StringBuffer fixPack = new StringBuffer(reqBase.creaFixPack());
+		
+		StringBuffer fixPack = new StringBuffer((String)msg);
 		//TODO 生成MAC
 		fixPack.append("FFFFFFFFFFFFFFFF");
 		ctx.writeAndFlush(fixPack.toString(), promise);

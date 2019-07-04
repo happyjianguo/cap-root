@@ -8,6 +8,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fxbank.cap.ceba.model.ErrorInfo;
+import com.fxbank.cap.ceba.model.MODEL_BASE;
 import com.fxbank.cap.ceba.model.REP_BASE;
 import com.fxbank.cap.ceba.model.REP_ERROR;
 import com.fxbank.cap.ceba.model.REQ_BASE2;
@@ -48,11 +49,10 @@ public class ForwardToCebaService implements IForwardToCebaService {
 	private MyJedis myJedis;
 
 	@Override
-	public <T extends REP_BASE> T sendToCeba(REQ_BASE2 reqBase, Class<T> clazz) throws SysTradeExecuteException {
+	public MODEL_BASE sendToCeba(MODEL_BASE reqBase) throws SysTradeExecuteException {
 		MyLog myLog = reqBase.getMylog();
-		T repModel = null;
 		try {
-			repModel = cebaClient.comm(myLog, reqBase, clazz);
+			cebaClient.comm(myLog, reqBase.creaFixPack());
 		} catch (SysTradeExecuteException e) {
 			myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg(), e);
 			throw e;
@@ -62,39 +62,7 @@ public class ForwardToCebaService implements IForwardToCebaService {
 			myLog.error(logger, e1.getRspCode() + " | " + e1.getRspMsg(), e);
 			throw e1;
 		}
-		REP_BASE repBase = repModel;
-		if (repBase == null) {
-			SysTradeExecuteException e = new SysTradeExecuteException(SysTradeExecuteException.CIP_E_999999);
-			myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg(), e);
-			throw e;
-		} else {
-			String rspCode = repBase.getHead().getAnsTranCode();
-			if (ERROR.equals(rspCode)) { 
-				REP_ERROR repError = (REP_ERROR)repBase;
-				String errorCode = repError.getTout().getErrorCode();
-				String jsonStr = null;
-				try(Jedis jedis = myJedis.connect()){
-					jsonStr = jedis.get(COMMON_PREFIX+"ceba_error_list");
-		        }
-				if(jsonStr==null||jsonStr.length()==0){
-					logger.error("渠道未配置["+COMMON_PREFIX + "ceba_error_list"+"]");
-					throw new RuntimeException("渠道未配置["+COMMON_PREFIX + "ceba_error_list"+"]");
-				}
-				Map<String,ErrorInfo> map = (Map)JSONObject.parse(jsonStr);
-				ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(map.get(errorCode)),ErrorInfo.class);
-		        String errorMsg = null;
-						if(reqBase.getHead().getAnsTranCode().startsWith(CHARGE_PREFIX)) {
-							errorMsg = errorInfo.getCgErrorMsg();
-						}else {
-							errorMsg = errorInfo.getQrErrorMsg();
-						}
-					
-				
-				SysTradeExecuteException e = new SysTradeExecuteException(errorCode,errorMsg);
-				myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
-				throw e;
-			}
-		}
-		return repModel;
+	
+		return reqBase;
 	}
 }

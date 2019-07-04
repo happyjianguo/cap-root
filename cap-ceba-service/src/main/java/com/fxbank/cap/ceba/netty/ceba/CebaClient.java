@@ -5,12 +5,10 @@ import javax.annotation.Resource;
 import com.fxbank.cip.base.common.MyJedis;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
-import com.fxbank.cip.base.netty.NettySyncClient;
-
+import com.fxbank.cip.base.netty.NettyAsyncClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import redis.clients.jedis.Jedis;
 
 /** 
@@ -34,7 +32,7 @@ public class CebaClient {
     @Resource
     private MyJedis myJedis;
 
-    public <T> T comm(MyLog myLog, Object req, Class<T> clazz) throws SysTradeExecuteException {
+    public void comm(MyLog myLog, Object req) throws SysTradeExecuteException {
         String ip = null;
         Integer port = 0;
         Integer timeOut = 0;
@@ -57,10 +55,9 @@ public class CebaClient {
         }
         myLog.info(logger, "连接信息：IP[" + ip + "],PORT[" + port + "],TIMEOUT[" + timeOut + "]");
 
-        CebaInitializer<T> initializer = new CebaInitializer<T>(myLog, req, clazz);
-        NettySyncClient<T> clientSync = new NettySyncClient<T>(myLog, initializer);
-        T repData = clientSync.comm(ip, port, timeOut);
-        return repData;
+        CebaInitializer initializer = new CebaInitializer(myLog);
+        NettyAsyncClient clientAsync = new NettyAsyncClient(myLog, initializer);
+        clientAsync.comm(ip, port,(String)req);
     }
 
 }

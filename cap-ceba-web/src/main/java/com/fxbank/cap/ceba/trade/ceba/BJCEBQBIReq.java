@@ -11,10 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBQBIRes;
-import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBQBIRes.Tout.Data;
-import com.fxbank.cap.ceba.dto.ceba.REP_ERROR;
+import com.fxbank.cap.ceba.service.IForwardToCebaService;
 import com.fxbank.cap.ceba.dto.ceba.REQ_BJCEBQBIReq;
+import com.fxbank.cap.ceba.model.REP_BJCEBQBIRes;
+import com.fxbank.cap.ceba.model.REP_BJCEBQBIRes.Tout.Data;
+import com.fxbank.cap.ceba.model.REP_ERROR;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.common.MyJedis;
@@ -50,6 +51,9 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 	private static final Integer COUNT = 2;
 	
 	private static final String ERR_BILLKEY = "12345";
+	
+	@Reference(version = "1.0.0")
+	private IForwardToCebaService forwardToCebaService;
 
 	@Override
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
@@ -57,14 +61,15 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 		REQ_BJCEBQBIReq req = (REQ_BJCEBQBIReq) dto;
 		
 		if(ERR_BILLKEY.equals(req.getTin().getBillKey())) {
-			REP_ERROR repError = new REP_ERROR();
+			REP_ERROR repError = new REP_ERROR(myLog,null,null,null);
 			repError.getHead().setInstId(req.getHead().getInstId());
 			repError.getHead().setAnsTranCode("Error");
 			repError.getHead().setTrmSeqNum(req.getHead().getTrmSeqNum());
 			repError.getTout().setErrorCode("DEF0002");
-			return repError;
+			forwardToCebaService.sendToCeba(repError);
+			return req;
 		}
-		REP_BJCEBQBIRes rep = new REP_BJCEBQBIRes();
+		REP_BJCEBQBIRes rep = new REP_BJCEBQBIRes(myLog,0,0,0);
 		rep.getHead().setInstId(req.getHead().getInstId());
 		rep.getHead().setAnsTranCode("BJCEBQBIRes");
 		rep.getHead().setTrmSeqNum(req.getHead().getTrmSeqNum());
@@ -118,7 +123,8 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 		}
 		rep.getTout().setTotalNum(String.valueOf(dataList.size()));
 		rep.getTout().setData(dataList);
-		return rep;
+		forwardToCebaService.sendToCeba(rep);
+		return req;
 	}
 	
 	

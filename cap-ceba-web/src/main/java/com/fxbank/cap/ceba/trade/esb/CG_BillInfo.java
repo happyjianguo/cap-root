@@ -169,8 +169,9 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		tin.setPayAmount(new BigDecimal(reqBody.getUnpaidAmt()));
 		tin.setAcType(reqBody.getAcctType());
 		tin.setContractNo(reqBody.getContractNo());
-		REP_BJCEBBCRes res = forwardToCebaService.sendToCeba(req, REP_BJCEBBCRes.class);
-		return res;
+		//TODO
+		//REP_BJCEBBCRes res = forwardToCebaService.sendToCeba(req, REP_BJCEBBCRes.class);
+		return null;
 	}
 
 	/** 
@@ -567,8 +568,8 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		req.getTin().setBillKey(reqDto.getReqBody().getBillKey());
 		req.getTin().setCompanyId(reqDto.getReqBody().getPyCityCode()+reqDto.getReqBody().getPyCreditNo());
 		req.getTin().setQueryNum("1");
-		forwardToCebaService.sendToCeba(req, 
-				REP_BJCEBQBIRes.class);
+		//TODO
+		//forwardToCebaService.sendToCeba(req, REP_BJCEBQBIRes.class);
 	}
 
 }

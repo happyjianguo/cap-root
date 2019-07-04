@@ -1,5 +1,6 @@
 package com.fxbank.cap.ceba.service;
 
+import com.fxbank.cap.ceba.model.MODEL_BASE;
 import com.fxbank.cap.ceba.model.REP_BASE;
 import com.fxbank.cap.ceba.model.REQ_BASE2;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
@@ -24,7 +25,7 @@ public interface IForwardToCebaService {
 	* @return T    返回类型 
 	* @throws 
 	*/
-	public <T extends REP_BASE> T sendToCeba(REQ_BASE2 reqBase, Class<T> clazz) throws SysTradeExecuteException; 
+	public MODEL_BASE sendToCeba(MODEL_BASE reqBase) throws SysTradeExecuteException; 
 	
 
 }

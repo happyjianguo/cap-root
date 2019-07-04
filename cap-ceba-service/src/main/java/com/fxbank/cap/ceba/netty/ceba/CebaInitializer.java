@@ -18,23 +18,19 @@ import io.netty.channel.socket.SocketChannel;
 public class CebaInitializer<T> extends ChannelInitializer<SocketChannel> {
 
     private MyLog myLog;
-    private Object reqData;
-    private Class<T> clazz;
 
-    public CebaInitializer(MyLog myLog, Object reqData, Class<T> clazz) {
+    public CebaInitializer(MyLog myLog) {
         this.myLog = myLog;
-        this.reqData = reqData;
-        this.clazz = clazz;
     }
     
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline p = ch.pipeline();
-        p.addLast(new CebaLenghtDecoder<T>(this.myLog));
+       // p.addLast(new CebaLenghtDecoder<T>(this.myLog));
         p.addLast(new CebaLengthEncoder(this.myLog));
-        p.addLast(new CebaPackConvInHandler<T>(this.myLog,clazz));
+        //p.addLast(new CebaPackConvInHandler<T>(this.myLog));
         p.addLast(new CebaPackConvOutHandler(this.myLog));
-        p.addLast(new NettySyncHandler<T>(this.myLog,this.reqData));
+       // p.addLast(new NettySyncHandler<T>(this.myLog,reqData));
     }
 
 }

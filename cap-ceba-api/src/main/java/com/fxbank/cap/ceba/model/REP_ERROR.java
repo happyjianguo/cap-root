@@ -19,7 +19,7 @@ import com.fxbank.cip.base.log.MyLog;
 */
 @XmlRootElement(name = "out")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class REP_ERROR extends REP_BASE{
+public class REP_ERROR extends MODEL_BASE{
 
 	private static final long serialVersionUID = -6652288226005628489L;
 

@@ -1,21 +1,16 @@
 package com.fxbank.cap.ceba.netty;
 
 import java.util.Map;
-
 import javax.annotation.Resource;
-
-import com.fxbank.cap.ceba.dto.ceba.REP_BASE;
+import com.fxbank.cap.ceba.dto.ceba.DTO_BASE;
 import com.fxbank.cap.ceba.dto.ceba.REP_ERROR;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
-import com.fxbank.cip.base.model.FIXP_SERIAL;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
@@ -51,7 +46,7 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		String rspTyp = null;
 		String rspCode = null;
 		String rspMsg = null;
-		REP_BASE repDto = null;
+		DTO_BASE repDto = null;
 		REP_ERROR repErr = null;
 		if (dto.getStatus().equals(DataTransObject.SUCCESS)) { 
 			if (dto instanceof REP_ERROR) {
@@ -61,7 +56,7 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 				rspMsg = repErr.getTout().getErrorMessage();
 			} else {
 				myLog.error(logger, "生成成功应答报文");
-				repDto = (REP_BASE) dtoMap.get("repDto");
+				repDto = (DTO_BASE) dtoMap.get("repDto");
 				rspTyp = "N";
 				rspCode = "FX0000";
 				rspMsg = "交易成功";
@@ -80,7 +75,7 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		//生成MAC TODO
 		String mac = "FFFFFFFFFFFFFFFF";
 
-		StringBuffer fixPack = new StringBuffer(dto instanceof REP_ERROR?repErr.creaFixPack():repDto.creaFixPack());
+		StringBuffer fixPack = new StringBuffer(repDto.creaFixPack());
 		fixPack.append(mac);
 
 		ctx.writeAndFlush(fixPack.toString(),promise);

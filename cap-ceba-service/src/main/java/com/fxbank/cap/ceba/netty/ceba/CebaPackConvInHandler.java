@@ -33,9 +33,8 @@ public class CebaPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 
 	private static final String ERRORCODE = "Error";
 
-	public CebaPackConvInHandler(MyLog myLog, Class<T> clazz) {
+	public CebaPackConvInHandler(MyLog myLog) {
 		this.myLog = myLog;
-		this.clazz = clazz;
 	}
 
 	@Override

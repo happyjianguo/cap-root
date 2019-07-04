@@ -50,14 +50,6 @@ public class BJCEBBRQReq implements TradeExecutionStrategy {
 		MyLog myLog = logPool.get();
 		REQ_BJCEBBRQReq req = (REQ_BJCEBBRQReq) dto;
 		
-		if(ERR_BILL_NO.equals(req.getTin().getBillNo())) {
-			REP_ERROR repError = new REP_ERROR();
-			repError.getHead().setInstId(req.getHead().getInstId());
-			repError.getHead().setAnsTranCode("Error");
-			repError.getHead().setTrmSeqNum(req.getHead().getTrmSeqNum());
-			repError.getTout().setErrorCode("DEF0002");
-			return repError;
-		}
 		REP_BJCEBBRQRes rep = new REP_BJCEBBRQRes();
 		rep.getHead().setInstId(req.getHead().getInstId());
 		rep.getHead().setAnsTranCode("BJCEBBRQRes");

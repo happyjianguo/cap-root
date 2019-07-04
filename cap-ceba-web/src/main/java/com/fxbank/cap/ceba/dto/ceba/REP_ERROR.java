@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import com.fxbank.cap.ceba.util.CebaXmlUtil;
+import com.fxbank.cip.base.dto.DataTransObject;
 
 
 /** 
@@ -18,8 +19,9 @@ import com.fxbank.cap.ceba.util.CebaXmlUtil;
 */
 @XmlRootElement(name = "out")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class REP_ERROR extends REP_BASE{
+public class REP_ERROR extends DTO_BASE implements Serializable{
 
+	private static final long serialVersionUID = -5671619413087019211L;
 	private Tout tout = new Tout();
 
 	public Tout getTout() {
@@ -82,7 +84,9 @@ public class REP_ERROR extends REP_BASE{
 	*/
 	@Override
 	public String creaFixPack() {
-		return CebaXmlUtil.objectToXml(this);
+		// TODO Auto-generated method stub
+		return null;
 	}
+
 
 }

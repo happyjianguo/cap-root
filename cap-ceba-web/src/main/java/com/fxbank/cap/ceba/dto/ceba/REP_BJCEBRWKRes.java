@@ -18,7 +18,7 @@ import com.fxbank.cap.ceba.util.CebaXmlUtil;
 */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "out")
-public class REP_BJCEBRWKRes extends REP_BASE {
+public class REP_BJCEBRWKRes extends DTO_BASE {
 
 	private Tout tout = new Tout();
 

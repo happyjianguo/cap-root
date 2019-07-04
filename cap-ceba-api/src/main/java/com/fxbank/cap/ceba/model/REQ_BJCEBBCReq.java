@@ -20,7 +20,7 @@ import com.fxbank.cip.base.log.MyLog;
 */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "in")
-public class REQ_BJCEBBCReq extends REQ_BASE2 {
+public class REQ_BJCEBBCReq extends MODEL_BASE {
 
 	private static final long serialVersionUID = -5970071351047001526L;
 

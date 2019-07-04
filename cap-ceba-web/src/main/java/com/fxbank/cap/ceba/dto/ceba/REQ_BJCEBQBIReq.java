@@ -16,7 +16,7 @@ import com.fxbank.cap.ceba.util.CebaXmlUtil;
 */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "in")
-public class REQ_BJCEBQBIReq extends REQ_BASE2 {
+public class REQ_BJCEBQBIReq extends DTO_BASE {
 
 	private Tin tin = new Tin();
 
