@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.fxbank.cap.ceba.CebaApp;
 import com.fxbank.cap.ceba.dto.ceba.DTO_BASE;
 import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBQBIRes;
 import com.fxbank.cap.ceba.dto.ceba.REP_ERROR;
@@ -36,6 +37,7 @@ import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
 import com.fxbank.cip.base.util.JsonUtil;
 import com.fxbank.cip.pub.service.IPublicService;
 
+import cebenc.softenc.SoftEnc;
 import redis.clients.jedis.Jedis;
 
 
@@ -75,44 +77,11 @@ public class QR_CityInfo extends TradeBase implements TradeExecutionStrategy {
 		REP_30063001404 rep = new REP_30063001404();	
 		REP_30063001404.REP_BODY repBody = rep.getRepBody();
 		
-		REQ_BJCEBRWKReq reqW = new REQ_BJCEBRWKReq(myLog, reqDto.getSysDate(), reqDto.getSysTime(),
-				reqDto.getSysTraceno()); 
-		String instld = null;
-		try (Jedis jedis = myJedis.connect()) {
-			instld = jedis.get(COMMON_PREFIX + "ceba_instld");
-		}
-		reqW.getHead().setInstId(instld);
-		reqW.getHead().setAnsTranCode("BJCEBRWKReq");
-		reqW.getHead().setTrmSeqNum(publicService.getSysDate("CIP").toString() + publicService.getSysTraceno());
-		reqW.getTin().setPartnerCode("746");
-		reqW.getTin().setOperationDate(reqDto.getSysDate().toString());
-		reqW = (REQ_BJCEBRWKReq) forwardToCebaService.sendToCeba(reqW);
-		String channel = reqW.getHead().getTrmSeqNum();
-		myLog.info(logger, "查询工作密钥报文发送通道编号=[" + channel);
-		DTO_BASE dtoBase = syncCom.get(myLog, channel, 55, TimeUnit.SECONDS);
-		if (dtoBase.getHead().getAnsTranCode().equals("Error")) {
-			REP_ERROR repError = (REP_ERROR) dtoBase;
-			String errorCode = repError.getTout().getErrorCode();
-			String jsonStr = null;
-			try (Jedis jedis = myJedis.connect()) {
-				jsonStr = jedis.get(COMMON_PREFIX + "ceba_error_list");
-			}
-			if (jsonStr == null || jsonStr.length() == 0) {
-				logger.error("渠道未配置[" + COMMON_PREFIX + "ceba_error_list" + "]");
-				throw new RuntimeException("渠道未配置[" + COMMON_PREFIX + "ceba_error_list" + "]");
-			}
-			Map<String, ErrorInfo> map = (Map) JSONObject.parse(jsonStr);
-			ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(map.get(errorCode)), ErrorInfo.class);
-			String errorMsg = null;
-			errorMsg = errorInfo.getQrErrorMsg();
-			SysTradeExecuteException e = new SysTradeExecuteException(errorCode, errorMsg);
-			myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
-			throw e;
-		} else if (dtoBase.getHead().getAnsTranCode().equals("BJCEBRWKRes")) {
-			REP_BJCEBRWKRes res = (REP_BJCEBRWKRes) dtoBase;
-			myLog.info(logger,"工作密钥"+res.getTout().getKeyName()+","+res.getTout().getKeyValue()+","+
-			res.getTout().getVerifyValue()+","+res.getTout().getKeyName1()+","+res.getTout().getKeyValue1()+","+
-			res.getTout().getVerifyValue1());
+        try {
+			System.out.println(CebaApp.softEnc.GenMac("aaa".getBytes()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		String jsonStr = null;

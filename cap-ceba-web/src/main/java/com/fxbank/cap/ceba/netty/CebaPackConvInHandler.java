@@ -7,10 +7,12 @@ import javax.annotation.Resource;
 import javax.xml.bind.JAXBException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.fxbank.cap.ceba.CebaApp;
 import com.fxbank.cap.ceba.dto.ceba.DTO_BASE;
 import com.fxbank.cap.ceba.dto.ceba.REP_BASE;
 import com.fxbank.cap.ceba.dto.ceba.REP_ERROR;
 import com.fxbank.cap.ceba.dto.ceba.REQ_BASE;
+import com.fxbank.cap.ceba.exception.CebaTradeExecuteException;
 import com.fxbank.cap.ceba.model.ErrorInfo;
 import com.fxbank.cap.ceba.util.JAXBUtils;
 import com.fxbank.cap.ceba.util.SerializeUtil;
@@ -19,6 +21,7 @@ import com.fxbank.cip.base.common.MyJedis;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.util.JsonUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -54,7 +57,17 @@ public class CebaPackConvInHandler extends ChannelInboundHandlerAdapter {
 		MyLog myLog = logPool.get();
 		try {
 			String strMsg = (String) msg;
-			strMsg = strMsg.substring(0, strMsg.length() );
+			if(!strMsg.toString().contains("BJCEBRWKRes")&&!strMsg.toString().contains("BJCEBRWKReq")) {
+				String mac = strMsg.substring(strMsg.length() - 16);
+				strMsg = strMsg.substring(0, strMsg.length() - 16);
+				myLog.info(logger, "校验MAC  mac=[" + mac + "]");
+				// 校验MAC		
+				if(!CebaApp.softEnc.GenMac(strMsg.getBytes(ServerInitializer.CODING)).equals(mac)) {
+					myLog.error(logger, "MAC校验失败");
+					throw new CebaTradeExecuteException(CebaTradeExecuteException.CIP_E_000008);
+				}
+			}
+			
 			if (strMsg.contains("<in>")) {
 				REQ_BASE baseBean = null;
 				try {

@@ -16,5 +16,15 @@
 			<artifactId>cip-base-api</artifactId>
 			<version>1.3.0</version>
 		</dependency>
+		<dependency>
+			<groupId>ceb.bouncycastle</groupId>
+			<artifactId>bcprov</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ceb.bouncycastle</groupId>
+			<artifactId>cebenc</artifactId>
+			<version>1.0</version>
+		</dependency>		
 	</dependencies>
 </project>

@@ -2,6 +2,8 @@ package com.fxbank.cap.ceba.netty;
 
 import java.util.Map;
 import javax.annotation.Resource;
+
+import com.fxbank.cap.ceba.CebaApp;
 import com.fxbank.cap.ceba.dto.ceba.DTO_BASE;
 import com.fxbank.cap.ceba.dto.ceba.REP_ERROR;
 import com.fxbank.cip.base.common.LogPool;
@@ -74,8 +76,10 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 
 		//生成MAC TODO
 		String mac = "";
-
 		StringBuffer fixPack = new StringBuffer(repDto.creaFixPack());
+		if(!repDto.getHead().getAnsTranCode().equals("BJCEBRWKRes")&&!repDto.getHead().getAnsTranCode().equals("BJCEBRWKReq")) {
+			mac = CebaApp.softEnc.GenMac(fixPack.toString().getBytes(ServerInitializer.CODING));
+		}
 		fixPack.append(mac);
 
 		ctx.writeAndFlush(fixPack.toString(),promise);

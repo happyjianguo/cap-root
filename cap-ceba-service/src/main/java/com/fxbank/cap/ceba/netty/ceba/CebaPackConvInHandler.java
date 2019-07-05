@@ -41,11 +41,17 @@ public class CebaPackConvInHandler<T> extends ChannelInboundHandlerAdapter {
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		try {
 			StringBuffer pack = new StringBuffer((String) msg);
-			String mac = pack.substring(pack.length());
-			this.myLog.info(logger, "mac=[" + mac + "]");
-			// TODO 校验MAC
+			String mac = "";
+			String fixPack = "";
+			if(pack.toString().contains("BJCEBRWKReq")||pack.toString().contains("BJCEBRWKRes")) {
+				fixPack = pack.toString();
+			}else {
+				mac = pack.substring(pack.length() - 16);
+				this.myLog.info(logger, "mac=[" + mac + "]");
+				
+				fixPack = pack.substring(0, pack.length() - 16);
+			}
 
-			String fixPack = pack.substring(0, pack.length() );
 			REP_BASE repBase = (REP_BASE) this.clazz.newInstance();
 			repBase.chanFixPack(fixPack);
 			if (ERRORCODE.equals(repBase.getHead().getAnsTranCode())) {

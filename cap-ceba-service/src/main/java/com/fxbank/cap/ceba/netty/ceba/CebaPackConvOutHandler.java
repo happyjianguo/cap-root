@@ -1,5 +1,6 @@
 package com.fxbank.cap.ceba.netty.ceba;
 
+import com.fxbank.cap.ceba.CebaServer;
 import com.fxbank.cap.ceba.model.REQ_BASE2;
 import com.fxbank.cip.base.log.MyLog;
 
@@ -32,7 +33,9 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 		
 		StringBuffer fixPack = new StringBuffer((String)msg);
 		//TODO 生成MAC
-		//fixPack.append("FFFFFFFFFFFFFFFF");
+		if(!fixPack.toString().contains("BJCEBRWKReq")&&!fixPack.toString().contains("BJCEBRWKRes")) {
+			fixPack.append(CebaServer.softEnc.GenMac(fixPack.toString().getBytes(CebaClient.CODING)));
+		}
 		ctx.writeAndFlush(fixPack.toString(), promise);
 	}
 
