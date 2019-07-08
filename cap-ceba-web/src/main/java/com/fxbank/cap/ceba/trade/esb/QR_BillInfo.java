@@ -88,6 +88,7 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		req.getTin().setBillKey(reqBody.getBillKey());
 		req.getTin().setCompanyId(reqBody.getPyCityCode() + reqBody.getPyCreditNo());
 		req.getTin().setQueryNum(reqBody.getQueryNum());
+		req.getTin().setBeginNum(reqBody.getStartNum());
 		req = (REQ_BJCEBQBIReq) forwardToCebaService.sendToCeba(req);
 		String channel = req.getHead().getTrmSeqNum();
 		myLog.info(logger, "查询缴费单信息报文发送通道编号=[" + channel);

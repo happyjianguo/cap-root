@@ -1,22 +1,31 @@
 package com.fxbank.cap.ceba.trade.esb;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Resource;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.fxbank.cap.ceba.dto.ceba.DTO_BASE;
+import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBBCRes;
+import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBQBIRes;
+import com.fxbank.cap.ceba.dto.ceba.REP_ERROR;
+import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBQBIRes.Tout.Data;
 import com.fxbank.cap.ceba.dto.esb.REP_30062001001;
 import com.fxbank.cap.ceba.dto.esb.REQ_30062001001;
+import com.fxbank.cap.ceba.dto.esb.REP_30063001401.DataInfo;
 import com.fxbank.cap.ceba.exception.CebaTradeExecuteException;
 import com.fxbank.cap.ceba.model.CebaChargeLogModel;
 import com.fxbank.cap.ceba.model.ErrorInfo;
-import com.fxbank.cap.ceba.model.REP_BJCEBBCRes;
-import com.fxbank.cap.ceba.model.REP_BJCEBQBIRes;
 import com.fxbank.cap.ceba.model.REQ_BJCEBBCReq;
 import com.fxbank.cap.ceba.model.REQ_BJCEBQBIReq;
 import com.fxbank.cap.ceba.service.ICebaChargeLogService;
 import com.fxbank.cap.ceba.service.IForwardToCebaService;
+import com.fxbank.cap.ceba.sync.SyncCom;
 import com.fxbank.cap.esb.model.ses.ESB_REP_30011000101;
 import com.fxbank.cap.esb.model.ses.ESB_REP_30014000101;
 import com.fxbank.cap.esb.model.ses.ESB_REQ_30011000101;
@@ -68,6 +77,9 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 
 	@Resource
 	private MyJedis myJedis;
+	
+	@Resource
+	private SyncCom syncCom;
 	
 	private final static String COMMON_PREFIX = "ceba.";
 	
@@ -146,7 +158,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 	* @throws 
 	*/
 	@Override
-	public ModelBase othCharge(DataTransObject dto) throws SysTradeExecuteException {
+	public DTO_BASE othCharge(DataTransObject dto) throws SysTradeExecuteException {
 		REQ_30062001001 reqDto = (REQ_30062001001) dto;
 		MyLog myLog = logPool.get();
 		REQ_30062001001.REQ_BODY reqBody = reqDto.getReqBody();
@@ -169,7 +181,32 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		tin.setPayAmount(new BigDecimal(reqBody.getUnpaidAmt()));
 		tin.setAcType(reqBody.getAcctType());
 		tin.setContractNo(reqBody.getContractNo());
-		//TODO
+		req = (REQ_BJCEBBCReq) forwardToCebaService.sendToCeba(req);
+		String channel = req.getHead().getTrmSeqNum();
+		myLog.info(logger, "缴费单销账报文发送通道编号=[" + channel);
+		DTO_BASE dtoBase = syncCom.get(myLog, channel, 55, TimeUnit.SECONDS);
+		if (dtoBase.getHead().getAnsTranCode().equals("Error")) {
+			REP_ERROR repError = (REP_ERROR) dtoBase;
+			String errorCode = repError.getTout().getErrorCode();
+			String jsonStr = null;
+			try (Jedis jedis = myJedis.connect()) {
+				jsonStr = jedis.get(COMMON_PREFIX + "ceba_error_list");
+			}
+			if (jsonStr == null || jsonStr.length() == 0) {
+				logger.error("渠道未配置[" + COMMON_PREFIX + "ceba_error_list" + "]");
+				throw new RuntimeException("渠道未配置[" + COMMON_PREFIX + "ceba_error_list" + "]");
+			}
+			Map<String, ErrorInfo> map = (Map) JSONObject.parse(jsonStr);
+			ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(map.get(errorCode)), ErrorInfo.class);
+			String errorMsg = null;
+			errorMsg = errorInfo.getQrErrorMsg();
+			SysTradeExecuteException e = new SysTradeExecuteException(errorCode, errorMsg);
+			myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
+			throw e;
+		} else if (dtoBase.getHead().getAnsTranCode().equals("BJCEBQBIRes")) {
+			REP_BJCEBBCRes res = (REP_BJCEBBCRes) dtoBase;
+		    return res;
+		}
 		//REP_BJCEBBCRes res = forwardToCebaService.sendToCeba(req, REP_BJCEBBCRes.class);
 		return null;
 	}
@@ -356,7 +393,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 	* @throws 
 	*/
 	@Override
-	public void updateOthSuccess(DataTransObject dto, ModelBase model) throws SysTradeExecuteException {
+	public void updateOthSuccess(DataTransObject dto, DTO_BASE model) throws SysTradeExecuteException {
 		REQ_30062001001 reqDto = (REQ_30062001001) dto;
 		MyLog myLog = logPool.get();
 		REP_BJCEBBCRes res = (REP_BJCEBBCRes)model;
@@ -452,7 +489,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 	* @throws 
 	*/
 	@Override
-	public DataTransObject backMsg(DataTransObject dto,ModelBase model) throws SysTradeExecuteException {
+	public DataTransObject backMsg(DataTransObject dto,DTO_BASE model) throws SysTradeExecuteException {
 		REQ_30062001001 reqDto = (REQ_30062001001) dto;
 		REP_30062001001 rep = new REP_30062001001();
 		rep.getRepBody().setChannelDate(reqDto.getSysDate().toString());
@@ -568,8 +605,44 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		req.getTin().setBillKey(reqDto.getReqBody().getBillKey());
 		req.getTin().setCompanyId(reqDto.getReqBody().getPyCityCode()+reqDto.getReqBody().getPyCreditNo());
 		req.getTin().setQueryNum("1");
-		//TODO
-		//forwardToCebaService.sendToCeba(req, REP_BJCEBQBIRes.class);
+		req = (REQ_BJCEBQBIReq) forwardToCebaService.sendToCeba(req);
+		String channel = req.getHead().getTrmSeqNum();
+		myLog.info(logger, "查询缴费单信息报文发送通道编号=[" + channel);
+		DTO_BASE dtoBase = syncCom.get(myLog, channel, 55, TimeUnit.SECONDS);
+		if (dtoBase.getHead().getAnsTranCode().equals("Error")) {
+			REP_ERROR repError = (REP_ERROR) dtoBase;
+			String errorCode = repError.getTout().getErrorCode();
+			String jsonStr = null;
+			try (Jedis jedis = myJedis.connect()) {
+				jsonStr = jedis.get(COMMON_PREFIX + "ceba_error_list");
+			}
+			if (jsonStr == null || jsonStr.length() == 0) {
+				logger.error("渠道未配置[" + COMMON_PREFIX + "ceba_error_list" + "]");
+				throw new RuntimeException("渠道未配置[" + COMMON_PREFIX + "ceba_error_list" + "]");
+			}
+			Map<String, ErrorInfo> map = (Map) JSONObject.parse(jsonStr);
+			ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(map.get(errorCode)), ErrorInfo.class);
+			String errorMsg = null;
+			errorMsg = errorInfo.getQrErrorMsg();
+			SysTradeExecuteException e = new SysTradeExecuteException(errorCode, errorMsg);
+			myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
+			throw e;
+		} else if (dtoBase.getHead().getAnsTranCode().equals("BJCEBQBIRes")) {
+			REP_BJCEBQBIRes res = (REP_BJCEBQBIRes) dtoBase;
+			List<DataInfo> dataList = new ArrayList<DataInfo>();
+			if (dataList != null) {
+				for (Data data : res.getTout().getData()) {
+					DataInfo temp = new DataInfo();
+					temp.setContractNo(data.getContractNo());
+					temp.setClientNnae(data.getCustomerName());
+					temp.setBalance(data.getBalance().toString());
+					temp.setUnpaidAmt(data.getPayAmount().toString());
+					temp.setStartDate(data.getBeginDate());
+					temp.setEndDate(data.getEndDate());
+					dataList.add(temp);
+				}
+			}
+		}
 	}
 
 }

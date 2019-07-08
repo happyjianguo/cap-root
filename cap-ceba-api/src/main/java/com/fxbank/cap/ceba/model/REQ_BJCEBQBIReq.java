@@ -48,7 +48,7 @@ public class REQ_BJCEBQBIReq extends MODEL_BASE {
 		private String billKey = null;
 		private String companyId = null;
 		private String beginNum = "1";
-		private String queryNum = "";
+		private String queryNum = "1";
 		private String filed1 = "";
 		private String filed2 = "";
 		private String filed3 = "";

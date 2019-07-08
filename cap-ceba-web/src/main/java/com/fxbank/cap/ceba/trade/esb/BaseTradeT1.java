@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 
+import com.fxbank.cap.ceba.dto.ceba.DTO_BASE;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
@@ -54,7 +55,7 @@ public abstract class BaseTradeT1 {
 	* @return ModelBase    返回类型 
 	* @throws 
 	*/
-	public abstract ModelBase othCharge(DataTransObject dto) throws SysTradeExecuteException;
+	public abstract DTO_BASE othCharge(DataTransObject dto) throws SysTradeExecuteException;
 	
 	/** 
 	* @Title: queryOth 
@@ -132,7 +133,7 @@ public abstract class BaseTradeT1 {
 	* @return void    返回类型 
 	* @throws 
 	*/
-	public abstract void updateOthSuccess(DataTransObject dto, ModelBase model) throws SysTradeExecuteException;
+	public abstract void updateOthSuccess(DataTransObject dto, DTO_BASE model) throws SysTradeExecuteException;
 
 	/** 
 	* @Title: updateHostUndoSuccess 
@@ -186,7 +187,7 @@ public abstract class BaseTradeT1 {
 	* @return DataTransObject    返回类型 
 	* @throws 
 	*/
-	public abstract DataTransObject backMsg(DataTransObject dto,ModelBase model) throws SysTradeExecuteException;
+	public abstract DataTransObject backMsg(DataTransObject dto,DTO_BASE model) throws SysTradeExecuteException;
 
 	/** 
 	* @Title: updateHostUndoError 
@@ -293,10 +294,10 @@ public abstract class BaseTradeT1 {
 		}
 		// 主机成功登记
 		hostSuccessInitLog(dto, model); 
-		ModelBase model1 = null;
+		DTO_BASE dtoBase = null;
 		try {
 			//第三方记账
-			model1 = othCharge(dto);
+			dtoBase = othCharge(dto);
 		} catch (SysTradeExecuteException e) {
 			if (othTimeout(e)) { 
 				updateOthTimeout(dto);
@@ -375,8 +376,8 @@ public abstract class BaseTradeT1 {
 
 			}
 		}
-		updateOthSuccess(dto, model1);
+		updateOthSuccess(dto, dtoBase);
 		myLog.info(logger,TRADE_DESC+"第三方记账成功，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno());
-		return backMsg(dto,model1);
+		return backMsg(dto,dtoBase);
 	}
 }
