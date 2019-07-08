@@ -102,7 +102,10 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 			}
 			if (jsonStr == null || jsonStr.length() == 0) {
 				logger.error("渠道未配置[" + COMMON_PREFIX + "ceba_error_list" + "]");
-				throw new RuntimeException("渠道未配置[" + COMMON_PREFIX + "ceba_error_list" + "]");
+				String errorMsg = repError.getTout().getErrorMessage();
+				SysTradeExecuteException e = new SysTradeExecuteException(errorCode, errorMsg);
+				myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
+				throw e;
 			}
 			Map<String, ErrorInfo> map = (Map) JSONObject.parse(jsonStr);
 			ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(map.get(errorCode)), ErrorInfo.class);
