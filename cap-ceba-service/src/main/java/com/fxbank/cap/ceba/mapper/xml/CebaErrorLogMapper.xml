@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ceba.mapper.CebaErrorLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ceba.entity.CebaErrorLog">
+    <id column="PLAT_DATE" jdbcType="DECIMAL" property="platDate" />
+    <id column="PLAT_TRACE" jdbcType="DECIMAL" property="platTrace" />
+    <result column="PLAT_TIME" jdbcType="DECIMAL" property="platTime" />
+    <result column="PRE_PAY_STATE" jdbcType="VARCHAR" property="prePayState" />
+    <result column="RE_PAY_STATE" jdbcType="VARCHAR" property="rePayState" />
+    <result column="CHECK_FLAG" jdbcType="VARCHAR" property="checkFlag" />
+    <result column="TX_AMT" jdbcType="DECIMAL" property="txAmt" />
+    <result column="BANK_BILL_NO" jdbcType="VARCHAR" property="bankBillNo" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, PLAT_TIME, PRE_PAY_STATE, RE_PAY_STATE, CHECK_FLAG, 
+    TX_AMT, BANK_BILL_NO, REMARK
+    from CEBA_ERROR_LOG
+  </select>
+  <select id="deleteByDate" >
+    delete from CEBA_ERROR_LOG where plat_date = #{date}
+  </select>
+</mapper>

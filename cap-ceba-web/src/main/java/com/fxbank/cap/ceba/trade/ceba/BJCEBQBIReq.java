@@ -60,6 +60,13 @@ public class BJCEBQBIReq implements TradeExecutionStrategy {
 		MyLog myLog = logPool.get();
 		REQ_BJCEBQBIReq req = (REQ_BJCEBQBIReq) dto;
 		
+		try {
+			Thread.sleep(60000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if(ERR_BILLKEY.equals(req.getTin().getBillKey())) {
 			REP_ERROR repError = new REP_ERROR(myLog,null,null,null);
 			repError.getHead().setInstId(req.getHead().getInstId());

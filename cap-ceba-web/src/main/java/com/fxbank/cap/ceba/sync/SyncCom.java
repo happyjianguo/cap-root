@@ -2,19 +2,15 @@ package com.fxbank.cap.ceba.sync;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Resource;
-
 import com.fxbank.cap.ceba.exception.CebaTradeExecuteException;
 import com.fxbank.cap.ceba.util.SerializeUtil;
 import com.fxbank.cip.base.common.MyJedis;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import redis.clients.jedis.BinaryJedisPubSub;
 import redis.clients.jedis.Jedis;
 
@@ -65,10 +61,14 @@ public class SyncCom {
 			t = (T) SerializeUtil.unserialize(repData);
 			myLog.info(logger, "收到实时应答["+channel+"]["+t+"]...");
 		} catch (InterruptedException e) {
+			myLog.error(logger, "等待服务端应答被中断", e);
+			CebaTradeExecuteException e1 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10009);
+			throw e1;
+		} catch (Exception e) {
 			myLog.error(logger, "等待服务端应答超时", e);
 			CebaTradeExecuteException e1 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10007);
 			throw e1;
-		} finally {
+		}finally {
 			try (Jedis jedis = myJedis.connect()) {
 				myLog.info(logger, "确保订阅线程退出["+channel+"]");
 				jedis.publish(channel.getBytes(), "QUIT".getBytes());

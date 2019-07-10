@@ -98,7 +98,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		super.hostTimeoutException = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10006);
 		super.othTimeoutException = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10003);
 		super.TRADE_DESC = "缴费单销账";
-		super.othTimeoutQuery = true;
+		super.othTimeoutQuery = false;
 		super.logger = logger;
 		REQ_30062001001 reqDto = (REQ_30062001001) dto;
 		return super.execute(reqDto);
@@ -181,10 +181,27 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		tin.setPayAmount(new BigDecimal(reqBody.getUnpaidAmt()));
 		tin.setAcType(reqBody.getAcctType());
 		tin.setContractNo(reqBody.getContractNo());
+		if("414".equals(reqBody.getPyCityCode())) {
+		tin.setFiled3(reqBody.getPyCityCode());
+		}
 		req = (REQ_BJCEBBCReq) forwardToCebaService.sendToCeba(req);
 		String channel = req.getHead().getTrmSeqNum();
 		myLog.info(logger, "缴费单销账报文发送通道编号=[" + channel);
-		DTO_BASE dtoBase = syncCom.get(myLog, channel, 55, TimeUnit.SECONDS);
+		Integer timeout = 0;
+		try (Jedis jedis = myJedis.connect()) {
+			String stimeout = jedis.get(COMMON_PREFIX+"ceba_timeout");
+			if (stimeout == null) {
+				timeout = 60;
+			} else {
+				try {
+					timeout = Integer.valueOf(stimeout);
+				} catch (Exception e) {
+					myLog.error(logger, "报文同步等待超时时间配置异常，取默认值60");
+					timeout = 60;
+				}
+			}
+		}	
+		DTO_BASE dtoBase = syncCom.get(myLog, channel, timeout, TimeUnit.SECONDS);
 		if (dtoBase.getHead().getAnsTranCode().equals("Error")) {
 			REP_ERROR repError = (REP_ERROR) dtoBase;
 			String errorCode = repError.getTout().getErrorCode();
@@ -200,13 +217,19 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 				throw e;
 			}
 			Map<String, ErrorInfo> map = (Map) JSONObject.parse(jsonStr);
+			if(map.get(errorCode)==null) {
+				String errorMsg = repError.getTout().getErrorMessage();
+				SysTradeExecuteException e = new SysTradeExecuteException(errorCode, errorMsg);
+				myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
+				throw e;
+			}
 			ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(map.get(errorCode)), ErrorInfo.class);
 			String errorMsg = null;
 			errorMsg = errorInfo.getQrErrorMsg();
 			SysTradeExecuteException e = new SysTradeExecuteException(errorCode, errorMsg);
 			myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
 			throw e;
-		} else if (dtoBase.getHead().getAnsTranCode().equals("BJCEBQBIRes")) {
+		} else if (dtoBase.getHead().getAnsTranCode().equals("BJCEBBCRes")) {
 			REP_BJCEBBCRes res = (REP_BJCEBBCRes) dtoBase;
 		    return res;
 		}
@@ -319,7 +342,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		// 需要将jsonObject转换为ErrorInfo
 		ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(errorMap.get(e.getRspCode())), ErrorInfo.class);
 		// cgErrorType 0 退款 1暂不退款
-		return errorInfo.getCgErrorType().equals(UNDO_CODE);
+		return errorInfo==null?false:errorInfo.getCgErrorType().equals(UNDO_CODE);
 	}
 	/** 
 	* @Title: getErrorList 
@@ -363,7 +386,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		Map<String,ErrorInfo> errorMap = getErrorMap();
 		//需要将jsonObject转换为ErrorInfo
 		ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(errorMap.get(e.getRspCode())),ErrorInfo.class);
-		reqBody_30014000101.setReversalReason(errorInfo.getCgErrorMsg());
+		reqBody_30014000101.setReversalReason(errorInfo==null?e.getRspMsg():errorInfo.getCgErrorMsg());
 
 		ESB_REP_30014000101 esbRep_30014000101 = forwardToESBService.sendToESB(esbReq_30014000101, reqBody_30014000101,
 				ESB_REP_30014000101.class);
@@ -531,7 +554,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 	public SysTradeExecuteException othErrorException(SysTradeExecuteException e) {
 		Map<String,ErrorInfo> errorMap = getErrorMap();
 		ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(errorMap.get(e.getRspCode())),ErrorInfo.class);
-		String errorMsg = errorInfo.getCgErrorMsg();
+		String errorMsg = errorInfo==null?e.getRspMsg():errorInfo.getCgErrorMsg();
 		SysTradeExecuteException e1 = new SysTradeExecuteException(e.getRspCode(), errorMsg);
 		return e1;
 	}
@@ -547,7 +570,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 	public SysTradeExecuteException hostUndoSuccessException(SysTradeExecuteException e) {
 		Map<String,ErrorInfo> errorMap = getErrorMap();
 		ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(errorMap.get(e.getRspCode())),ErrorInfo.class);
-		String errorMsg = errorInfo.getCgErrorMsg();
+		String errorMsg = errorInfo==null?e.getRspMsg():errorInfo.getCgErrorMsg();
 		SysTradeExecuteException e1 = new SysTradeExecuteException(e.getRspCode(), errorMsg+"(退款成功)");
 		return e1;
 	}
@@ -563,7 +586,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 	public SysTradeExecuteException hostUndoTimeoutException(SysTradeExecuteException e) {
 		Map<String,ErrorInfo> errorMap = getErrorMap();
 		ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(errorMap.get(e.getRspCode())),ErrorInfo.class);
-		String errorMsg = errorInfo.getCgErrorMsg();
+		String errorMsg = errorInfo==null?e.getRspMsg():errorInfo.getCgErrorMsg();
 		SysTradeExecuteException e1 = new SysTradeExecuteException(e.getRspCode(), errorMsg+"(退款超时，请确认账务状态)");
 		return e1;
 	}
@@ -580,7 +603,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 	public SysTradeExecuteException hostUndoErrorException(SysTradeExecuteException e, SysTradeExecuteException e1) {
 		Map<String,ErrorInfo> errorMap = getErrorMap();
 		ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(errorMap.get(e.getRspCode())),ErrorInfo.class);
-		String errorMsg = errorInfo.getCgErrorMsg();
+		String errorMsg = errorInfo==null?e.getRspMsg():errorInfo.getCgErrorMsg();
 		SysTradeExecuteException e2 = new SysTradeExecuteException(e.getRspCode(), errorMsg+"("+e1.getRspMsg()+",退款失败)");
 		return e2;
 	}
@@ -608,10 +631,27 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		req.getTin().setBillKey(reqDto.getReqBody().getBillKey());
 		req.getTin().setCompanyId(reqDto.getReqBody().getPyCityCode()+reqDto.getReqBody().getPyCreditNo());
 		req.getTin().setQueryNum("1");
+		if("414".equals(reqDto.getReqBody().getPyCityCode())) {
+		req.getTin().setFiled3(reqDto.getReqBody().getPyCityCode());
+		}
 		req = (REQ_BJCEBQBIReq) forwardToCebaService.sendToCeba(req);
 		String channel = req.getHead().getTrmSeqNum();
 		myLog.info(logger, "查询缴费单信息报文发送通道编号=[" + channel);
-		DTO_BASE dtoBase = syncCom.get(myLog, channel, 55, TimeUnit.SECONDS);
+		Integer timeout = 0;
+		try (Jedis jedis = myJedis.connect()) {
+			String stimeout = jedis.get(COMMON_PREFIX+"ceba_timeout");
+			if (stimeout == null) {
+				timeout = 60;
+			} else {
+				try {
+					timeout = Integer.valueOf(stimeout);
+				} catch (Exception e) {
+					myLog.error(logger, "报文同步等待超时时间配置异常，取默认值60");
+					timeout = 60;
+				}
+			}
+		}	
+		DTO_BASE dtoBase = syncCom.get(myLog, channel, timeout, TimeUnit.SECONDS);
 		if (dtoBase.getHead().getAnsTranCode().equals("Error")) {
 			REP_ERROR repError = (REP_ERROR) dtoBase;
 			String errorCode = repError.getTout().getErrorCode();
@@ -627,6 +667,12 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 				throw e;
 			}
 			Map<String, ErrorInfo> map = (Map) JSONObject.parse(jsonStr);
+			if(map.get(errorCode)==null) {
+				String errorMsg = repError.getTout().getErrorMessage();
+				SysTradeExecuteException e = new SysTradeExecuteException(errorCode, errorMsg);
+				myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
+				throw e;
+			}
 			ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(map.get(errorCode)), ErrorInfo.class);
 			String errorMsg = null;
 			errorMsg = errorInfo.getQrErrorMsg();

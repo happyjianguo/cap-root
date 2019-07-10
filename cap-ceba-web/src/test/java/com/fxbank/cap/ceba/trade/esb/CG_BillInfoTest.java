@@ -91,15 +91,15 @@ public class CG_BillInfoTest {
 	public void payOk() throws Exception {
 		logger.info("缴费单销账测试");
 		//billKey等于12345时，报错,12346超时
-		reqBody.setBillKey("12345678999");
-		reqBody.setPyCityCode("001");
-		reqBody.setPyCreditNo("001");
-		reqBody.setClientNnae("测试");
-		reqBody.setPayAcctNo("623166001015087122");
+		reqBody.setBillKey("0171793363");
+		reqBody.setPyCityCode("414");
+		reqBody.setPyCreditNo("001301");
+		reqBody.setClientNnae("李萍(黎明7 2*1-8-23)");
+		reqBody.setPayAcctNo("12009000094950");
 		reqBody.setPassword("147258");
-		reqBody.setUnpaidAmt("95.55");
+		reqBody.setUnpaidAmt("0.01");
 		reqBody.setAcctType("1");
-		reqBody.setContractNo("1111");
+		reqBody.setContractNo("");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("缴费单销账测试请求");

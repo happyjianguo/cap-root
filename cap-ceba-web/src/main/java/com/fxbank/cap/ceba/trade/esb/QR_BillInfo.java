@@ -89,10 +89,27 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		req.getTin().setCompanyId(reqBody.getPyCityCode() + reqBody.getPyCreditNo());
 		req.getTin().setQueryNum(reqBody.getQueryNum());
 		req.getTin().setBeginNum(reqBody.getStartNum());
+		if("414".equals(reqBody.getPyCityCode())) {
+		req.getTin().setFiled3(reqBody.getPyCityCode());
+		}
 		req = (REQ_BJCEBQBIReq) forwardToCebaService.sendToCeba(req);
 		String channel = req.getHead().getTrmSeqNum();
 		myLog.info(logger, "查询缴费单信息报文发送通道编号=[" + channel);
-		DTO_BASE dtoBase = syncCom.get(myLog, channel, 55, TimeUnit.SECONDS);
+		Integer timeout = 0;
+		try (Jedis jedis = myJedis.connect()) {
+			String stimeout = jedis.get(COMMON_PREFIX+"ceba_timeout");
+			if (stimeout == null) {
+				timeout = 60;
+			} else {
+				try {
+					timeout = Integer.valueOf(stimeout);
+				} catch (Exception e) {
+					myLog.error(logger, "报文同步等待超时时间配置异常，取默认值60");
+					timeout = 60;
+				}
+			}
+		}	
+		DTO_BASE dtoBase = syncCom.get(myLog, channel, timeout, TimeUnit.SECONDS);
 		if (dtoBase.getHead().getAnsTranCode().equals("Error")) {
 			REP_ERROR repError = (REP_ERROR) dtoBase;
 			String errorCode = repError.getTout().getErrorCode();
@@ -108,6 +125,12 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 				throw e;
 			}
 			Map<String, ErrorInfo> map = (Map) JSONObject.parse(jsonStr);
+			if(map.get(errorCode)==null) {
+				String errorMsg = repError.getTout().getErrorMessage();
+				SysTradeExecuteException e = new SysTradeExecuteException(errorCode, errorMsg);
+				myLog.error(logger, e.getRspCode() + " | " + e.getRspMsg());
+				throw e;
+			}
 			ErrorInfo errorInfo = JsonUtil.toBean(JSON.toJSONString(map.get(errorCode)), ErrorInfo.class);
 			String errorMsg = null;
 			errorMsg = errorInfo.getQrErrorMsg();
@@ -136,5 +159,4 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		myLog.info(logger, "查询缴费单信息成功，渠道日期" + reqDto.getSysDate() + "渠道流水号" + reqDto.getSysTraceno());
 		return rep;
 	}
-
 }

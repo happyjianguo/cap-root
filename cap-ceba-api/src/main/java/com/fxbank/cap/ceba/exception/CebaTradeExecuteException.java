@@ -25,7 +25,10 @@ public class CebaTradeExecuteException extends SysTradeExecuteException {
 	public final static String CEBA_E_10006 = "FX0006";
 	public final static String CEBA_E_10007 = "FX0007";
 	public final static String CEBA_E_10008 = "FX0008";
-
+	public final static String CEBA_E_10009 = "FX0009";
+	public final static String CEBA_E_10010 = "FX0010";
+	public final static String CEBA_E_10011 = "FX0011";
+	
 	public final static Map<String, String> TCEXERRCODECONV = new HashMap<String, String>() {
 
 		private static final long serialVersionUID = -3713497985727043375L;
@@ -39,6 +42,9 @@ public class CebaTradeExecuteException extends SysTradeExecuteException {
 			put(CEBA_E_10006, "核心记账超时，请查账");
 			put(CEBA_E_10007, "同步等待光大银行响应超时");
 			put(CEBA_E_10008, "MAC校验失败");
+			put(CEBA_E_10009, "等待服务端应答被中断");
+			put(CEBA_E_10010, "下载ESB文件失败");
+			put(CEBA_E_10011, "对账失败");
 			
 		}
 	};

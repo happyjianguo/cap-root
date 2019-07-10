@@ -77,13 +77,6 @@ public class QR_CityInfo extends TradeBase implements TradeExecutionStrategy {
 		REP_30063001404 rep = new REP_30063001404();	
 		REP_30063001404.REP_BODY repBody = rep.getRepBody();
 		
-        try {
-			System.out.println(CebaApp.softEnc.GenMac("aaa".getBytes()));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		String jsonStr = null;
 		try(Jedis jedis = myJedis.connect()){
 			jsonStr = jedis.get(COMMON_PREFIX+"ceba_city_list");

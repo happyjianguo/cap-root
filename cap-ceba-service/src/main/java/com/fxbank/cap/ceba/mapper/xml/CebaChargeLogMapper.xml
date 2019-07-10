@@ -35,4 +35,25 @@
     HOST_STATE, HOST_RET_CODE, HOST_RET_MSG
     from CEBA_CHARGE_LOG
   </select>
+   <select id="selectCheckedTrace" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, PLAT_TIME, SOURCE_TYPE, TX_BRANCH,TX_TEL, BILL_KEY, COMPANY_ID, 
+    CUSTOMER_NAME, PAY_ACCOUNT, PAY_AMOUNT, AC_TYPE, CONTRACT_NO, BANK_BILL_NO, RECEIPT_NO, 
+    ACCT_DATE, PAY_STATE, ERROR_CODE, CHECK_STATE, SEQ_NO, HOST_DATE, HOST_TRACENO, 
+    HOST_STATE, HOST_RET_CODE, HOST_RET_MSG
+    from CEBA_CHARGE_LOG where cap_date=#{date} and pay_state=2 and check_state in ('2','3')
+  </select>
+   <select id="selectTotalNum" resultType="java.lang.String" >
+     select count(t.pay_amount) as num from CEBA_CHARGE_LOG t where 
+     t.plat_date=#{date} and t.pay_state=2 and check_state in ('2','3')
+  </select>
+   <select id="selectTotalSum" resultType="java.lang.String" >
+     select sum(t.pay_amount) as num from CEBA_CHARGE_LOG t where 
+     t.plat_date=#{date} and t.pay_state=2 and check_state in ('2','3')
+  </select>
+   <select id="selectTraceNum" resultType="java.lang.String" >
+    select count(*) as num from CEBA_CHARGE_LOG where plat_date=#{date}  
+     <if test='capResult != null and capResult != ""'>
+        and check_state = #{capResult}
+      </if>
+  </select>  
 </mapper>

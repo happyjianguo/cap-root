@@ -1,5 +1,6 @@
 package com.fxbank.cap.ceba.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -167,6 +168,169 @@ public class CebaChargeLogService implements ICebaChargeLogService{
 			return result;
 		}
 		return null;
+	}
+	@Override
+	public List<CebaChargeLogModel> getCheckTrace(MyLog myLog, Integer sysDate, Integer sysTime, Integer sysTraceno,
+			String date) throws SysTradeExecuteException {
+		CebaChargeLog log = new CebaChargeLog();
+		log.setPlatDate(Integer.parseInt(date));
+		log.setCheckState("1");
+		List<CebaChargeLog> dataList = cebaChargeLogMapper.select(log);
+		List<CebaChargeLogModel> modelList = new ArrayList<>();
+		for(CebaChargeLog data : dataList) {
+			CebaChargeLogModel model = new CebaChargeLogModel(myLog, data.getPlatDate(), sysTime, data.getPlatTrace());
+			model.setSourceType(data.getSourceType());
+			model.setTxBranch(data.getTxBranch());
+			model.setTxTel(data.getTxTel());
+			model.setBillKey(data.getBillKey());
+			model.setCompanyId(data.getCompanyId());
+			model.setCustomerName(data.getCustomerName());
+			model.setPayAccount(data.getPayAccount());
+			model.setPayAmount(data.getPayAmount());
+			model.setAcType(data.getAcType());
+			model.setContractNo(data.getContractNo());
+			model.setBankBillNo(data.getBankBillNo());
+			model.setReceiptNo(data.getReceiptNo());
+			model.setAcctDate(data.getAcctDate());
+			model.setPayState(data.getPayState());
+			model.setErrorCode(data.getErrorCode());
+			model.setCheckState(data.getCheckState());
+			model.setSeqNo(data.getSeqNo());
+			model.setHostDate(data.getHostDate());
+			model.setHostTraceNo(data.getHostTraceno());
+			model.setHostState(data.getHostState());
+			model.setHostRetCode(data.getHostRetCode());
+			model.setHostRetMsg(data.getHostRetMsg());
+			modelList.add(model);
+		}
+		
+		return modelList;
+	}
+	
+	@Override
+	public void updateCheck(@Valid CebaChargeLogModel record) throws SysTradeExecuteException {
+		CebaChargeLog log = new CebaChargeLog();
+		log.setPlatDate(record.getSysDate());
+		log.setPlatTrace(record.getSysTraceno());
+		if(null!=record.getHostState()) {
+			log.setHostState(record.getHostState());
+		}
+		if(null!=record.getCheckState()) {
+			log.setCheckState(record.getCheckState());
+		}
+		cebaChargeLogMapper.updateByPrimaryKeySelective(log);
+		
+	}
+	
+	/** 
+	* @Title: getTotalNum 
+	* @Description: 查询对账完成的交易总笔数 
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
+	@Override
+	public String getTotalNum(String date) throws SysTradeExecuteException {
+		return cebaChargeLogMapper.selectTotalNum(date);
+	}
+
+	/** 
+	* @Title: getTotalAmt 
+	* @Description: 查询对账完成的交易总金额  
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
+	@Override
+	public String getTotalAmt(String date) throws SysTradeExecuteException {
+		return cebaChargeLogMapper.selectTotalSum(date);
+	}
+	@Override
+	public List<CebaChargeLogModel> getUploadCheckSndTrace(MyLog myLog, Integer sysDate, Integer sysTime,
+			Integer sysTraceno, String date) throws SysTradeExecuteException {
+		List<CebaChargeLog> dataList = cebaChargeLogMapper.selectCheckedTrace(date);
+		List<CebaChargeLogModel> modelList = new ArrayList<>();
+		for(CebaChargeLog data : dataList) {
+			CebaChargeLogModel model = new CebaChargeLogModel(myLog, data.getPlatDate(), sysTime, data.getPlatTrace());
+			model.setSourceType(data.getSourceType());
+			model.setTxBranch(data.getTxBranch());
+			model.setTxTel(data.getTxTel());
+			model.setBillKey(data.getBillKey());
+			model.setCompanyId(data.getCompanyId());
+			model.setCustomerName(data.getCustomerName());
+			model.setPayAccount(data.getPayAccount());
+			model.setPayAmount(data.getPayAmount());
+			model.setAcType(data.getAcType());
+			model.setContractNo(data.getContractNo());
+			model.setBankBillNo(data.getBankBillNo());
+			model.setReceiptNo(data.getReceiptNo());
+			model.setAcctDate(data.getAcctDate());
+			model.setPayState(data.getPayState());
+			model.setErrorCode(data.getErrorCode());
+			model.setCheckState(data.getCheckState());
+			model.setSeqNo(data.getSeqNo());
+			model.setHostDate(data.getHostDate());
+			model.setHostTraceNo(data.getHostTraceno());
+			model.setHostState(data.getHostState());
+			model.setHostRetCode(data.getHostRetCode());
+			model.setHostRetMsg(data.getHostRetMsg());
+			modelList.add(model);
+		}
+		
+		return modelList;
+	}
+	@Override
+	public String getTraceNum(String date, String capResult) throws SysTradeExecuteException {
+		return cebaChargeLogMapper.selectTraceNum(date, capResult);
+	}
+
+	/** 
+	* @Title: queryLogByPk 
+	* @Description: TODO(这里用一句话描述这个方法的作用) 
+	* @param @param myLog
+	* @param @param sysDate
+	* @param @param sysTime
+	* @param @param sysTraceno
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
+	@Override
+	public CebaChargeLogModel queryLogByPk(MyLog myLog, Integer sysDate, Integer sysTime, Integer sysTraceno)
+			throws SysTradeExecuteException {
+		CebaChargeLogModel record = new CebaChargeLogModel(myLog, sysDate, sysTime, sysTraceno);
+		CebaChargeLog log = new CebaChargeLog();
+		log.setPlatDate(record.getSysDate());
+		log.setPlatTrace(record.getSysTraceno());
+		CebaChargeLog data = cebaChargeLogMapper.selectOne(log);
+		if(null!=data) {
+			CebaChargeLogModel model = new CebaChargeLogModel(myLog, data.getPlatDate(), sysTime, data.getPlatTrace());
+			record.setSourceType(data.getSourceType());
+			record.setTxBranch(data.getTxBranch());
+			record.setTxTel(data.getTxTel());
+			record.setBillKey(data.getBillKey());
+			record.setCompanyId(data.getCompanyId());
+			record.setCustomerName(data.getCustomerName());
+			record.setPayAccount(data.getPayAccount());
+			record.setPayAmount(data.getPayAmount());
+			record.setAcType(data.getAcType());
+			record.setContractNo(data.getContractNo());
+			record.setBankBillNo(data.getBankBillNo());
+			record.setReceiptNo(data.getReceiptNo());
+			record.setAcctDate(data.getAcctDate());
+			record.setPayState(data.getPayState());
+			record.setErrorCode(data.getErrorCode());
+			record.setCheckState(data.getCheckState());
+			record.setSeqNo(data.getSeqNo());
+			record.setHostDate(data.getHostDate());
+			record.setHostTraceNo(data.getHostTraceno());
+			record.setHostState(data.getHostState());
+			record.setHostRetCode(data.getHostRetCode());
+			record.setHostRetMsg(data.getHostRetMsg());
+		}else {
+			return null;
+		}
+		return record;
 	}
 
 }
