@@ -98,17 +98,10 @@ public class PY_MentTest {
 		reqBody.setAcctNo("12009000094950");// 账号
 		reqBody.setPyFeeAmtT("55.55");//缴费金额
 		reqBody.setUserDbtAmtT("100");//用户欠费金额
-		reqBody.setCourierFeeT("10");//快递金额
 		reqBody.setUserCardNoT("11111");//用户卡号
-		reqBody.setContactTel("18210224456");//联系电话
-		reqBody.setLnmT1("张三");//联系人
 		reqBody.setPyFeeTpT("2");//缴费方式
 		reqBody.setHeatCompanyIdT("2222");//供暖公司ID
-		reqBody.setMailAddrT("沈阳市");//邮寄地址
 		reqBody.setPassword("147258");//密码
-		reqBody.setHeatCompanyNmT("热电公司");//供暖公司名
-		reqBody.setPostno("111000");//邮编
-		reqBody.setCourierCmpnyIdT("333333");//快递公司ID
 		//TODO 不是数字 报错
 		reqBody.setChannelRefNo("44444");//查询流水号
 		List<Invoice> list = new ArrayList<Invoice>();

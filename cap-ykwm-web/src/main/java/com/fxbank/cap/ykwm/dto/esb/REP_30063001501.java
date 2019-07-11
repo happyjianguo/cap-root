@@ -60,18 +60,10 @@ public class REP_30063001501 extends REP_BASE {
 		private String minPayFeeAmt;// 最低交费金额
 		@JSONField(name = "PY_FEE_AMT_T")
 		private String pyFeeAmtT;// 缴费金额
-		@JSONField(name = "EMPLOYER_NAME")
-		private String employerName;// 工作单位
-		@JSONField(name = "HEAT_AREA_T")
-		private String heatAreaT;// 供暖面积
-		@JSONField(name = "RESERVE_FIELD1")
-		private String reserveField1;// 备用字段1
 		@JSONField(name = "CHANNEL_REF_NO")
 		private String channelRefNo;// 渠道业务流水号
 		@JSONField(name = "DBT_INFO_ARRAY")
 		private List<DbtInfo> dbtInfoArray;// 欠费明细数组
-		@JSONField(name = "COURIER_CMPNY_ARRAY")
-		private List<CourierCmpny> courierCmpnyArray;// 快递公司数组
 
 		public String getUsername() {
 			return username;
@@ -105,30 +97,6 @@ public class REP_30063001501 extends REP_BASE {
 			this.pyFeeAmtT = pyFeeAmtT;
 		}
 
-		public String getEmployerName() {
-			return employerName;
-		}
-
-		public void setEmployerName(String employerName) {
-			this.employerName = employerName;
-		}
-
-		public String getHeatAreaT() {
-			return heatAreaT;
-		}
-
-		public void setHeatAreaT(String heatAreaT) {
-			this.heatAreaT = heatAreaT;
-		}
-
-		public String getReserveField1() {
-			return reserveField1;
-		}
-
-		public void setReserveField1(String reserveField1) {
-			this.reserveField1 = reserveField1;
-		}
-
 		public String getChannelRefNo() {
 			return channelRefNo;
 		}
@@ -143,14 +111,6 @@ public class REP_30063001501 extends REP_BASE {
 
 		public void setDbtInfoArray(List<DbtInfo> dbtInfoArray) {
 			this.dbtInfoArray = dbtInfoArray;
-		}
-
-		public List<CourierCmpny> getCourierCmpnyArray() {
-			return courierCmpnyArray;
-		}
-
-		public void setCourierCmpnyArray(List<CourierCmpny> courierCmpnyArray) {
-			this.courierCmpnyArray = courierCmpnyArray;
 		}
 
 	}

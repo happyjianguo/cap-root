@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cap.ykwm.dto.esb.REP_30063001501;
-import com.fxbank.cap.ykwm.dto.esb.REP_30063001501.CourierCmpny;
 import com.fxbank.cap.ykwm.dto.esb.REP_30063001501.DbtInfo;
 import com.fxbank.cap.ykwm.dto.esb.REQ_30063001501;
 import com.fxbank.cap.ykwm.model.REP_Query;
@@ -66,8 +65,6 @@ public class QR_Account extends TradeBase implements TradeExecutionStrategy {
 		rep.getRepBody().setUserAddr(repQuery.getAddress());
 		rep.getRepBody().setMinPayFeeAmt(repQuery.getMinPayment().toString());
 		rep.getRepBody().setPyFeeAmtT(repQuery.getTotal().toString());
-		rep.getRepBody().setEmployerName("");
-		rep.getRepBody().setHeatAreaT("");
 		List<DbtInfo> accountArray = new ArrayList<DbtInfo>();
 		for(AccountDetail detail:repQuery.getData())
 		{
@@ -84,19 +81,7 @@ public class QR_Account extends TradeBase implements TradeExecutionStrategy {
 			
 		}
 		rep.getRepBody().setDbtInfoArray(accountArray);
-		rep.getRepBody().setReserveField1(repQuery.getDescription());
 		rep.getRepBody().setChannelRefNo(repQuery.getCheckNum());
-		List<CourierCmpny> expressArray = new ArrayList<CourierCmpny>();
-		for(com.fxbank.cap.ykwm.model.REP_Query.Express temp:repQuery.getExpressList())
-		{
-			CourierCmpny express = new CourierCmpny();
-			express.setCourierCmpnyIdT(temp.getExpressID().toString());
-			express.setCourierCmpyAddsT(temp.getExpress());
-			express.setCourierFeeT(temp.getPrice().toString());
-			expressArray.add(express);
-			
-		}
-		rep.getRepBody().setCourierCmpnyArray(expressArray);
 		
 		return rep;
 	}

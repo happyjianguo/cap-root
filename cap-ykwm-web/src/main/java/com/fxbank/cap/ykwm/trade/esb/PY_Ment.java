@@ -12,7 +12,6 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.esb.model.ses.ESB_REP_30011000101;
 import com.fxbank.cap.esb.model.ses.ESB_REP_30014000101;
 import com.fxbank.cap.esb.model.ses.ESB_REQ_30011000101;
-import com.fxbank.cap.esb.model.ses.ESB_REQ_30011000101.ServDetail;
 import com.fxbank.cap.esb.model.ses.ESB_REQ_30014000101;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cap.ykwm.dto.esb.REP_30061001201;
@@ -142,16 +141,9 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		record.setAcctNoT(reqBody.getAcctNo());
 		record.setPyFeeAmtT(reqBody.getPyFeeAmtT());
 		record.setUserDbtAmtT(reqBody.getUserDbtAmtT());
-		record.setCourierAmtT(reqBody.getCourierFeeT());
 		record.setUserCardNoT(reqBody.getUserCardNoT());
-        record.setCnttPhnT(reqBody.getContactTel());
-        record.setLnmT3(reqBody.getLnmT1());
         record.setPyFeeTpT(reqBody.getPyFeeTpT());
         record.setHeatCompanyIdT(reqBody.getHeatCompanyIdT());
-        record.setMailAddrT(reqBody.getMailAddrT());
-        record.setHeatCompanyNmT(reqBody.getHeatCompanyNmT());
-        record.setPostNoT5(reqBody.getPostno());
-        record.setCourierCmpnyIdT(reqBody.getCourierCmpnyIdT());
         record.setTeCheckNum(reqBody.getChannelRefNo());
         List<YkwmTraceLogModel.Invoice> list = new ArrayList<YkwmTraceLogModel.Invoice>();
         for(com.fxbank.cap.ykwm.dto.esb.REQ_30061001201.Invoice temp:reqBody.getInvoiceArray()) {
@@ -189,16 +181,9 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		record.setAcctNoT(reqBody.getAcctNo());
 		record.setPyFeeAmtT(reqBody.getPyFeeAmtT());
 		record.setUserDbtAmtT(reqBody.getUserDbtAmtT());
-		record.setCourierAmtT(reqBody.getCourierFeeT());
 		record.setUserCardNoT(reqBody.getUserCardNoT());
-        record.setCnttPhnT(reqBody.getContactTel());
-        record.setLnmT3(reqBody.getLnmT1());
         record.setPyFeeTpT(reqBody.getPyFeeTpT());
         record.setHeatCompanyIdT(reqBody.getHeatCompanyIdT());
-        record.setMailAddrT(reqBody.getMailAddrT());
-        record.setHeatCompanyNmT(reqBody.getHeatCompanyNmT());
-        record.setPostNoT5(reqBody.getPostno());
-        record.setCourierCmpnyIdT(reqBody.getCourierCmpnyIdT());
         record.setTeCheckNum(reqBody.getChannelRefNo());
         if(null!=reqBody.getInvoiceArray()) {
         List<YkwmTraceLogModel.Invoice> list = new ArrayList<YkwmTraceLogModel.Invoice>();
@@ -249,18 +234,9 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 
 		reqPayment.setCheckNum(reqBody.getChannelRefNo());// 流水号 柜面需要处理，将查询的流水送给缴费的接口
         BigDecimal payment = new BigDecimal(reqBody.getPyFeeAmtT());
-        //用户缴费金额如果选择邮寄，需包含邮寄费,发票处理方式，0未选择，1邮寄，2自取，3电子发票
-        if(reqBody.getInvoiceArray()!=null&&"1".equals(reqBody.getInvoiceArray().get(0).getInvoiceDealMode())) {
-        	payment=payment.add(new BigDecimal(reqBody.getCourierFeeT()));
-        }
 		reqPayment.setPayment(Double.parseDouble(payment.toString()));// 缴费金额 加上快递费 不带邮寄费
 		
 		reqPayment.setInvoiceStyle(reqBody.getInvoiceArray()==null?0:Integer.parseInt(reqBody.getInvoiceArray().get(0).getInvoiceDealMode()));
-		reqPayment.setExpressID(reqBody.getCourierCmpnyIdT());// 快递公司
-		reqPayment.setAddress(reqBody.getMailAddrT());// 邮寄地址
-		reqPayment.setPhone(reqBody.getContactTel());// 联系电话
-		reqPayment.setUserName(reqBody.getLnmT1());// 联系人
-		reqPayment.setPostCode(reqBody.getPostno());// 邮编
 		reqPayment.setInvoiceCount(reqBody.getInvoiceArray()==null?0:reqBody.getInvoiceArray().size());
 		List<Invoice> list = new ArrayList<Invoice>();
 		// 数据类型 变量名 ： 数组名
@@ -484,12 +460,14 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	* @throws 
 	*/
 	@Override
-	public DataTransObject backMsg(DataTransObject dto,ModelBase model) throws SysTradeExecuteException {
+	public DataTransObject backMsg(DataTransObject dto,ModelBase model,ModelBase model1) throws SysTradeExecuteException {
 		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		REP_30061001201 rep = new REP_30061001201();
-		REP_Payment repPayment = (REP_Payment)model;
+		ESB_REP_30011000101 rep30011000101 = (ESB_REP_30011000101)model;
+		REP_Payment repPayment = (REP_Payment)model1;
 		rep.getRepBody().setChannelDate(reqDto.getSysDate().toString());
 		rep.getRepBody().setChannelSeqNo(reqDto.getSysTraceno().toString());
+		rep.getRepBody().setHostTraceNo(rep30011000101.getRepBody().getReference());
 		List<TicketCode> list = new ArrayList<TicketCode>();
 		for(String temp:repPayment.getCode().split("\\^")) {
 			TicketCode c = new TicketCode();

@@ -22,6 +22,7 @@ public class YkwmTradeExecuteException extends SysTradeExecuteException {
 	public final static String YKWM_E_10004 = "fx10004";
 	public final static String YKWM_E_10005 = "fx10005";
 	public final static String YKWM_E_10006 = "fx10006";
+	public final static String YKWM_E_10007 = "fx10007";
 
 	public final static Map<String, String> YKWMERRCODECONV = new HashMap<String, String>() {
 		private static final long serialVersionUID = -8667135437237760216L;
@@ -33,6 +34,7 @@ public class YkwmTradeExecuteException extends SysTradeExecuteException {
 			put(YKWM_E_10004, "待冲正信息不存在");
 			put(YKWM_E_10005, "下载ESB文件失败");
 			put(YKWM_E_10006, "营口热电对账失败");
+			put(YKWM_E_10007, "缴费金额不能大于欠费金额");
 			
 		}
 	};

@@ -186,7 +186,7 @@ public abstract class BaseTradeT1 {
 	* @return DataTransObject    返回类型 
 	* @throws 
 	*/
-	public abstract DataTransObject backMsg(DataTransObject dto,ModelBase model) throws SysTradeExecuteException;
+	public abstract DataTransObject backMsg(DataTransObject dto,ModelBase model,ModelBase model1) throws SysTradeExecuteException;
 
 	/** 
 	* @Title: updateHostUndoError 
@@ -377,6 +377,6 @@ public abstract class BaseTradeT1 {
 		}
 		updateOthSuccess(dto, model1);
 		myLog.info(logger,TRADE_DESC+"第三方记账成功，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno());
-		return backMsg(dto,model1);
+		return backMsg(dto,model,model1);
 	}
 }

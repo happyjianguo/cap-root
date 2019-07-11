@@ -62,28 +62,14 @@ public class REQ_30061001201 extends REQ_BASE {
 		private String pyFeeAmtT;// 缴费金额
 		@JSONField(name = "USER_DBT_AMT_T")
 		private String userDbtAmtT;// 用户欠费金额
-		@JSONField(name = "COURIER_FEE_T")
-		private String courierFeeT;// 快递费
 		@JSONField(name = "USER_CARD_NO_T")
 		private String userCardNoT;// 用户卡号
-		@JSONField(name = "CONTACT_TEL")
-		private String contactTel;// 联系电话
-		@JSONField(name = "LNM_T1")
-		private String lnmT1;// 联系人
 		@JSONField(name = "PY_FEE_TP_T")
 		private String pyFeeTpT;// 缴费方式
 		@JSONField(name = "HEAT_COMPANY_ID_T")
 		private String heatCompanyIdT;// 供暖公司ID
-		@JSONField(name = "MAIL_ADDR_T")
-		private String mailAddrT;// 邮寄地址
 		@JSONField(name = "PASSWORD")
 		private String password;// 密码
-		@JSONField(name = "HEAT_COMPANY_NM_T")
-		private String heatCompanyNmT;// 供暖公司名
-		@JSONField(name = "POSTNO")
-		private String postno;// 邮编号码
-		@JSONField(name = "COURIER_CMPNY_ID_T")
-		private String courierCmpnyIdT;// 快递公司ID
 		@JSONField(name = "CHANNEL_REF_NO")
 		private String channelRefNo;// 渠道业务流水号
 		@JSONField(name = "BLL_QNTTY_T")
@@ -115,36 +101,12 @@ public class REQ_30061001201 extends REQ_BASE {
 			this.userDbtAmtT = userDbtAmtT;
 		}
 
-		public String getCourierFeeT() {
-			return courierFeeT;
-		}
-
-		public void setCourierFeeT(String courierFeeT) {
-			this.courierFeeT = courierFeeT;
-		}
-
 		public String getUserCardNoT() {
 			return userCardNoT;
 		}
 
 		public void setUserCardNoT(String userCardNoT) {
 			this.userCardNoT = userCardNoT;
-		}
-
-		public String getContactTel() {
-			return contactTel;
-		}
-
-		public void setContactTel(String contactTel) {
-			this.contactTel = contactTel;
-		}
-
-		public String getLnmT1() {
-			return lnmT1;
-		}
-
-		public void setLnmT1(String lnmT1) {
-			this.lnmT1 = lnmT1;
 		}
 
 		public String getPyFeeTpT() {
@@ -163,44 +125,12 @@ public class REQ_30061001201 extends REQ_BASE {
 			this.heatCompanyIdT = heatCompanyIdT;
 		}
 
-		public String getMailAddrT() {
-			return mailAddrT;
-		}
-
-		public void setMailAddrT(String mailAddrT) {
-			this.mailAddrT = mailAddrT;
-		}
-
 		public String getPassword() {
 			return password;
 		}
 
 		public void setPassword(String password) {
 			this.password = password;
-		}
-
-		public String getHeatCompanyNmT() {
-			return heatCompanyNmT;
-		}
-
-		public void setHeatCompanyNmT(String heatCompanyNmT) {
-			this.heatCompanyNmT = heatCompanyNmT;
-		}
-
-		public String getPostno() {
-			return postno;
-		}
-
-		public void setPostno(String postno) {
-			this.postno = postno;
-		}
-
-		public String getCourierCmpnyIdT() {
-			return courierCmpnyIdT;
-		}
-
-		public void setCourierCmpnyIdT(String courierCmpnyIdT) {
-			this.courierCmpnyIdT = courierCmpnyIdT;
 		}
 
 		public String getChannelRefNo() {

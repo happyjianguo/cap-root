@@ -54,11 +54,21 @@ public class REP_30061001201 extends REP_BASE {
 		private String channelDate;// 渠道日期
 		@JSONField(name = "CHANNEL_SEQ_NO")
 		private String channelSeqNo;// 渠道流水号
+		@JSONField(name = "HOST_TRACE_NO")
+		private String hostTraceNo;// 核心流水号
 		@JSONField(name = "TICKET_CODE_ARRAY")
 		private List<TicketCode> ticketCodeArray;// 取票码数组
 
 		public String getChannelDate() {
 			return channelDate;
+		}
+
+		public String getHostTraceNo() {
+			return hostTraceNo;
+		}
+
+		public void setHostTraceNo(String hostTraceNo) {
+			this.hostTraceNo = hostTraceNo;
 		}
 
 		public void setChannelDate(String channelDate) {
