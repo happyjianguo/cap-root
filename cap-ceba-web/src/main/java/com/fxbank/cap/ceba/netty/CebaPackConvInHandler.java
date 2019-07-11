@@ -64,7 +64,7 @@ public class CebaPackConvInHandler extends ChannelInboundHandlerAdapter {
 				// 校验MAC		
 				if(!CebaApp.softEnc.GenMac(strMsg.getBytes(ServerInitializer.CODING)).equals(mac)) {
 					myLog.error(logger, "MAC校验失败");
-					throw new CebaTradeExecuteException(CebaTradeExecuteException.CIP_E_000008);
+					throw new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10008);
 				}
 			}
 			

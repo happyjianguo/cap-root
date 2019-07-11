@@ -1,12 +1,17 @@
 package com.fxbank.cap.ceba.netty;
 
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Resource;
 
 import com.fxbank.cap.ceba.CebaApp;
 import com.fxbank.cap.ceba.dto.ceba.DTO_BASE;
 import com.fxbank.cap.ceba.dto.ceba.REP_ERROR;
+import com.fxbank.cap.ceba.util.SerializeUtil;
 import com.fxbank.cip.base.common.LogPool;
+import com.fxbank.cip.base.common.MyJedis;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
@@ -14,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import io.netty.channel.ChannelHandler.Sharable;
+import redis.clients.jedis.Jedis;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -33,6 +39,9 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 
 	@Resource
 	private LogPool logPool;
+	
+	@Resource
+	private MyJedis myJedis;
 
 	@Override
 	public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
@@ -81,9 +90,36 @@ public class CebaPackConvOutHandler extends ChannelOutboundHandlerAdapter {
 			mac = CebaApp.softEnc.GenMac(fixPack.toString().getBytes(ServerInitializer.CODING));
 		}
 		fixPack.append(mac);
-
+		jedisPublish(myLog, repDto.getHead().getTrmSeqNum().getBytes(),  SerializeUtil.serialize(repDto));
 		ctx.writeAndFlush(fixPack.toString(),promise);
 		ctx.close();
+	}
+	
+	public void jedisPublish(MyLog myLog, byte[] key, byte[] value) {
+		Integer timeout = 55;
+		try (Jedis jedis = myJedis.connect()) {
+
+			myLog.info(logger, "异步回执总超时时间=[" + timeout + "]");
+
+			String sKey = new String(key);
+			myLog.info(logger, "发布的key=[" + sKey + "]");
+			while (true) {
+				// 查看通道是否备订阅，如果没有，则等待一段时间后，重新检查
+				List<String> channels = jedis.pubsubChannels(sKey);
+				if (channels.size() > 0 || timeout == 0) {
+					break;
+				} else {
+					timeout--;
+					myLog.info(logger, "未找到订阅通道,等待1s后再试,一共还剩[" + timeout + "]");
+					try {
+						TimeUnit.SECONDS.sleep(1);
+					} catch (InterruptedException e) {
+						myLog.error(logger, "发布等待异常", e);
+					}
+				}
+			}
+			jedis.publish(key, value);
+		}
 	}
 
 	@Override

@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.dcfs.esb.ftp.client.FtpClientConfigSet;
+import com.dcfs.esb.ftp.client.FtpGet;
+import com.dcfs.esb.ftp.server.error.FtpException;
 import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBBCNotify;
 import com.fxbank.cap.ceba.dto.ceba.REQ_BJCEBBCNotify;
 import com.fxbank.cap.ceba.exception.CebaTradeExecuteException;
@@ -21,13 +24,18 @@ import com.fxbank.cap.ceba.model.DayCheckLogInitModel;
 import com.fxbank.cap.ceba.service.ICebaChargeLogService;
 import com.fxbank.cap.ceba.service.ICheckErrorService;
 import com.fxbank.cap.ceba.service.IDayCheckLogService;
+import com.fxbank.cap.esb.model.ses.ESB_REP_50015000101;
+import com.fxbank.cap.esb.model.ses.ESB_REQ_50015000101;
 import com.fxbank.cap.esb.service.IForwardToESBService;
+import com.fxbank.cip.base.common.EsbReqHeaderBuilder;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.common.MyJedis;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
+import com.fxbank.cip.base.model.ESB_REQ_SYS_HEAD;
 import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
+
 import redis.clients.jedis.Jedis;
 
 /** 
@@ -67,18 +75,39 @@ public class BJCEBBCNotify implements TradeExecutionStrategy {
 		MyLog myLog = logPool.get();
 		REQ_BJCEBBCNotify req = (REQ_BJCEBBCNotify) dto;
 		//对账日期
-		String date = req.getTin().getDate();
+		String date = req.getTin().getSignDate();
+		myLog.info(logger, "核心与外围对账开始");
+		checkErrorService.delete(date);
+		List<DayCheckLogInitModel> checkLogList = getCheckLogList(myLog,date,dto);
+		checkTraceLog(myLog, date, checkLogList);
+		myLog.info(logger, "核心与外围对账结束");
+		myLog.info(logger, "外围与核心对账开始");
+		//获取未对账的缴费记录
+		List<CebaChargeLogModel> traceList = cebaChargeLogService.getCheckTrace(myLog,dto.getSysDate(),dto.getSysTime(),dto.getSysTraceno(), date);
+		for(CebaChargeLogModel model:traceList) {
+			CebaChargeLogModel record = new CebaChargeLogModel(myLog, model.getSysDate(), model.getSysTime(), model.getSysTraceno());
+			record.setCheckState("4");
+			cebaChargeLogService.updateCheck(record);
+			if(model.getPayState().equals("1")) {
+				myLog.error(logger,"光大云缴费【"+date+"】对账失败: 多出记录，渠道流水号【"+model.getSysTraceno()+"】，核心记账状态【"+model.getPayState()+"】");
+				CebaTradeExecuteException e = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10008);
+				throw e;
+			}else {
+				myLog.info(logger, "渠道多出往账数据，渠道日期【"+model.getSysDate()+"】，渠道流水【"+model.getSysTraceno()+"】，核心记账状态【"+model.getPayState()+"】");
+			}
+		}
+		myLog.info(logger, "外围与核心对账结束");
 		//对账文件名称
 		String fileName = req.getTin().getFileName();
 		myLog.info(logger, "光大银行与外围对账开始");
 		checkErrorService.delete(date);
-		List<DayCheckLogInitModel> checkLogList = getCheckLogList(myLog,fileName,date,dto);
-		checkTraceLog(myLog, date, checkLogList);
+		List<DayCheckLogInitModel> checkLogList1 = getCheckLogList(myLog,fileName,date,dto);
+		checkTraceLog(myLog, date, checkLogList1);
 		myLog.info(logger, "光大银行与外围对账结束");
 		myLog.info(logger, "外围与光大银行对账开始");
 		//获取未对账的缴费记录
-		List<CebaChargeLogModel> traceList = cebaChargeLogService.getCheckTrace(myLog,dto.getSysDate(),dto.getSysTime(),dto.getSysTraceno(), date);
-		for(CebaChargeLogModel model:traceList) {
+		List<CebaChargeLogModel> traceList1 = cebaChargeLogService.getCheckTrace(myLog,dto.getSysDate(),dto.getSysTime(),dto.getSysTraceno(), date);
+		for(CebaChargeLogModel model:traceList1) {
 			CebaChargeLogModel record = new CebaChargeLogModel(myLog, model.getSysDate(), model.getSysTime(), model.getSysTraceno());
 			record.setCheckState("4");
 			cebaChargeLogService.updateCheck(record);
@@ -155,6 +184,71 @@ public class BJCEBBCNotify implements TradeExecutionStrategy {
 	}
 	private List<DayCheckLogInitModel> getCheckLogList(MyLog myLog,String fileName,String date,DataTransObject dto) throws SysTradeExecuteException{
 		String localFile = getCheckFile(myLog,date,fileName);
+		//对账文件入库
+		initCheckLog(localFile,myLog,date);
+		//取对账文件数据
+		List<DayCheckLogInitModel> dayCheckLogList = dayCheckLogService.getDayCheckLog(myLog, dto.getSysTime(), dto.getSysTraceno(), dto.getSysDate());
+		return 	dayCheckLogList;
+	}
+	private String getEsbCheckFile(MyLog myLog, String date,DataTransObject dto) throws SysTradeExecuteException {
+		ESB_REQ_50015000101 esbReq_50015000101 = new ESB_REQ_50015000101(myLog, dto.getSysDate(),dto.getSysTime(),dto.getSysTraceno());
+		String txBrno = null,txTel = null;
+		try (Jedis jedis = myJedis.connect()) {
+			txBrno = jedis.get(COMMON_PREFIX+"txbrno");
+			txTel = jedis.get(COMMON_PREFIX+"txtel");
+		}
+		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_50015000101.getReqSysHead(),dto).setBranchId(txBrno).setUserId(txTel).setSourceType("MB").build();
+		esbReq_50015000101.setReqSysHead(reqSysHead);
+		ESB_REQ_50015000101.REQ_BODY esbReqBody_50015000101 = esbReq_50015000101.getReqBody();
+		esbReqBody_50015000101.setChannelType("GD");
+		esbReqBody_50015000101.setStartDate(date);
+		esbReqBody_50015000101.setEndDate(date);
+		esbReqBody_50015000101.setDirection("O");
+		
+		ESB_REP_50015000101 esbRep_50015000101 = forwardToESBService.sendToESB(esbReq_50015000101, esbReqBody_50015000101, ESB_REP_50015000101.class);
+		String remoteFile = esbRep_50015000101.getRepSysHead().getFilePath();
+		String fileName = esbRep_50015000101.getRepBody().getFileName();
+		String localPath="";
+		try (Jedis jedis = myJedis.connect()) {
+			localPath = jedis.get(COMMON_PREFIX+"txt_path");
+		}
+		loadTraceLogFile(myLog, remoteFile, localPath+File.separator+"_"+fileName);
+		return localPath+File.separator+"_"+fileName;
+	}
+	/**
+	 * @Title: loadFile @Description: 从文件传输平台下载文件 @param @param
+	 * myLog @param @param remoteFile 文件传输平台路径+文件名 @param @param localFile
+	 * 文件本地路径+文件名 @param @throws PafTradeExecuteException 设定文件 @return void
+	 * 返回类型 @throws
+	 */
+	private void loadTraceLogFile(MyLog myLog, String remoteFile, String localFile) throws SysTradeExecuteException {
+		FtpClientConfigSet configSet = new FtpClientConfigSet();
+		FtpGet ftpGet = null;
+		try {
+			ftpGet = new FtpGet(remoteFile, localFile, configSet);
+			boolean result = ftpGet.doGetFile();
+			if (!result) {
+				myLog.error(logger, "文件[" + remoteFile + "]TO[" + localFile + "下载失败！");
+				CebaTradeExecuteException e = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10010);
+				throw e;
+			}
+			myLog.info(logger, "文件[" + remoteFile + "]TO[" + localFile + "下载成功！");
+		} catch (Exception e) {
+			myLog.error(logger, "文件[" + remoteFile + "]TO[" + localFile + "下载失败！", e);
+			CebaTradeExecuteException e1 = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10010,e.getMessage());
+			throw e1;
+		} finally {
+			if (ftpGet != null) {
+				try {
+					ftpGet.close();
+				} catch (FtpException e) {
+					myLog.error(logger, "文件传输关闭连接失败！", e);
+				}
+			}
+		}
+	}
+	private List<DayCheckLogInitModel> getCheckLogList(MyLog myLog,String date,DataTransObject dto) throws SysTradeExecuteException{
+		String localFile = getEsbCheckFile(myLog,date,dto);
 		//对账文件入库
 		initCheckLog(localFile,myLog,date);
 		//取对账文件数据
