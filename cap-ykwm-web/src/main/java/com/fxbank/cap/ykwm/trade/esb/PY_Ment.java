@@ -76,7 +76,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		//用户欠费金额
 		BigDecimal userDbtAmtT = new BigDecimal(reqDto.getReqBody().getUserDbtAmtT());
 		if(pyFeeAmtT.compareTo(userDbtAmtT)>0) {
-			YkwmTradeExecuteException e = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10003);
+			YkwmTradeExecuteException e = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10007);
 			throw e;
 		}
 		return super.execute(reqDto);
