@@ -71,6 +71,14 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		super.othTimeoutQuery = false;
 		super.logger = logger;
 		REQ_30061001201 reqDto = (REQ_30061001201) dto;
+		//缴费金额
+		BigDecimal pyFeeAmtT = new BigDecimal(reqDto.getReqBody().getPyFeeAmtT());
+		//用户欠费金额
+		BigDecimal userDbtAmtT = new BigDecimal(reqDto.getReqBody().getUserDbtAmtT());
+		if(pyFeeAmtT.compareTo(userDbtAmtT)>0) {
+			YkwmTradeExecuteException e = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10003);
+			throw e;
+		}
 		return super.execute(reqDto);
 	}
 
