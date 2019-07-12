@@ -213,7 +213,7 @@ public class BJCEBBCNotify implements TradeExecutionStrategy {
 			localPath = jedis.get(COMMON_PREFIX+"txt_path");
 		}
 		loadTraceLogFile(myLog, remoteFile, localPath+File.separator+fileName);
-		return localPath+File.separator+"_"+fileName;
+		return localPath+File.separator+fileName;
 	}
 	/**
 	 * @Title: loadFile @Description: 从文件传输平台下载文件 @param @param
