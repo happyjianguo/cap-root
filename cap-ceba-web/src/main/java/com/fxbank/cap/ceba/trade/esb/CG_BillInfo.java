@@ -173,7 +173,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		REQ_BJCEBBCReq.Tin tin = req.getTin();
 		tin.setBillKey(reqBody.getBillKey());
 		tin.setCompanyId(reqBody.getPyCityCode()+reqBody.getPyCreditNo());
-		tin.setBillNo(reqDto.getSysTraceno().toString());
+		tin.setBillNo(reqDto.getSysDate().toString()+reqDto.getSysTraceno().toString());
 		tin.setPayDate(reqDto.getSysDate().toString()+reqDto.getSysTime().toString());
 		tin.setCustomerName(reqBody.getClientNnae());
 		tin.setPayAccount(reqBody.getPayAcctNo());
