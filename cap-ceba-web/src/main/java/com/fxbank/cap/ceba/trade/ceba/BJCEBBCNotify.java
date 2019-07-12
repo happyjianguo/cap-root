@@ -267,7 +267,7 @@ public class BJCEBBCNotify implements TradeExecutionStrategy {
 				lineTxt += "*|";
 				String[] array = lineTxt.split("\\|");
                 if(array.length==6){
-                    DayCheckLogInitModel model = new DayCheckLogInitModel(myLog, Integer.parseInt(array[2].substring(0, 8)),Integer.parseInt(array[2].substring(8, 14)),Integer.parseInt(array[0]));
+                    DayCheckLogInitModel model = new DayCheckLogInitModel(myLog, Integer.parseInt(array[2].substring(0, 8)),Integer.parseInt(array[2].length()<14?"0":array[2].substring(8, 14)),Integer.parseInt(array[0]));
                     BigDecimal bg = new BigDecimal(array[1]==null?"0":array[1]);
                     model.setTxAmt(bg.movePointLeft(2).setScale(2, BigDecimal.ROUND_HALF_UP)); //交易金额
                     model.setBankBillNo(array[3]);
