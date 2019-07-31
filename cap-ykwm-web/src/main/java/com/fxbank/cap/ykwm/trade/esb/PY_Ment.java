@@ -124,6 +124,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		esb_reqBody.setOthBaseAcctNo(reqBody.getAcctNo());// 对方账号
 		esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
 		esb_reqBody.setSettlementDate(reqDto.getSysDate().toString());// 渠道日期
+		esb_reqBody.setWithdrawalType("P");
 		// 捕获异常 对核心记账结果进行判断
 		// *****************************
 
