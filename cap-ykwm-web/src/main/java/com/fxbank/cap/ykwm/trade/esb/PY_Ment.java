@@ -104,7 +104,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		req_30011000101.setReqSysHead(reqSysHead);
 
 		ESB_REQ_30011000101.REQ_BODY esb_reqBody = req_30011000101.getReqBody();
-		esb_reqBody.setBaseAcctNo("34128070020000004");// 卡号
+		esb_reqBody.setBaseAcctNo(reqBody.getAcctNo());// 卡号
 		// 缴费方式 属于 ServDetail List 一部分，得new个对象，然后回传是一个对象
 		/**
 		ESB_REQ_30011000101.ServDetail servDetail = new ESB_REQ_30011000101.ServDetail();
@@ -121,7 +121,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		
 		esb_reqBody.setTranAmt(reqBody.getPyFeeAmtT());// 缴费金额
 		esb_reqBody.setPassword(reqBody.getPassword());
-		esb_reqBody.setOthBaseAcctNo(reqBody.getAcctNo());// 对方账号
+		esb_reqBody.setOthBaseAcctNo("34128070020000004");// 对方账号
 		esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
 		esb_reqBody.setSettlementDate(reqDto.getSysDate().toString());// 渠道日期
 		esb_reqBody.setWithdrawalType("P");
