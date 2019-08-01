@@ -100,7 +100,8 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(req_30011000101.getReqSysHead(), reqDto)
 				.setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
 		reqSysHead.setProgramId(reqDto.getReqSysHead().getProgramId());
-		reqSysHead.setSourceBranchNo("CIP|cipToesb|RZAK|");
+		//reqSysHead.setSourceBranchNo("CIP|cipToesb|RZAK|");
+		reqSysHead.setSourceBranchNo("HOST|hostToesb|RZPK||");
 		req_30011000101.setReqSysHead(reqSysHead);
 
 		ESB_REQ_30011000101.REQ_BODY esb_reqBody = req_30011000101.getReqBody();
