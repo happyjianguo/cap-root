@@ -103,26 +103,19 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		//reqSysHead.setSourceBranchNo("CIP|cipToesb|RZAK|");
 		reqSysHead.setSourceBranchNo("HOST|hostToesb|RZPK||");
 		req_30011000101.setReqSysHead(reqSysHead);
-
 		ESB_REQ_30011000101.REQ_BODY esb_reqBody = req_30011000101.getReqBody();
-		esb_reqBody.setBaseAcctNo(reqBody.getAcctNo());// 卡号
-		// 缴费方式 属于 ServDetail List 一部分，得new个对象，然后回传是一个对象
-		/**
-		ESB_REQ_30011000101.ServDetail servDetail = new ESB_REQ_30011000101.ServDetail();
-		// servDetail.setChargeMode(reqBody.getPyFeeTpT());
-		servDetail.setChargeMode("C");
-		servDetail.setFeeType("1");
-		servDetail.setFeeAmt("20");
-		List<ServDetail> servDeailList = new ArrayList<ServDetail>();
-		servDeailList.add(servDetail);
-		esb_reqBody.setServDetail(servDeailList);// 缴费方式(对象)
-		**/
-		esb_reqBody.setTranType(reqBody.getPyFeeTpT().equals("1") ? "BH13" : "BH15");
+		String pyFeeTpT = reqBody.getPyFeeTpT();
+		esb_reqBody.setTranType("1".equals(pyFeeTpT)? "BH13" : "BH15");
 		esb_reqBody.setTranCcy("CNY");
-		
 		esb_reqBody.setTranAmt(reqBody.getPyFeeAmtT());// 缴费金额
 		esb_reqBody.setPassword(reqBody.getPassword());
-		esb_reqBody.setOthBaseAcctNo("34128070020000004");// 对方账号
+		if("1".equals(pyFeeTpT)) {
+			esb_reqBody.setBaseAcctNo("34128070020000004");// 卡号
+			esb_reqBody.setOthBaseAcctNo(reqBody.getAcctNo());// 对方账号
+		}else{
+			esb_reqBody.setBaseAcctNo(reqBody.getAcctNo());// 卡号
+			esb_reqBody.setOthBaseAcctNo("34128070020000004");// 对方账号
+		}
 		esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
 		esb_reqBody.setSettlementDate(reqDto.getSysDate().toString());// 渠道日期
 		esb_reqBody.setWithdrawalType("P");
