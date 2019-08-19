@@ -111,7 +111,6 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		esb_reqBody.setPassword(reqBody.getPassword());
 		if("1".equals(pyFeeTpT)) {
 			esb_reqBody.setBaseAcctNo("34128070020000004");// 卡号
-			esb_reqBody.setOthBaseAcctNo(reqBody.getAcctNo());// 对方账号
 		}else{
 			esb_reqBody.setBaseAcctNo(reqBody.getAcctNo());// 卡号
 			esb_reqBody.setOthBaseAcctNo("34128070020000004");// 对方账号
