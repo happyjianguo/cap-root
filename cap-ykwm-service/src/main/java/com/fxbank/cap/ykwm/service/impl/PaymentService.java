@@ -310,6 +310,7 @@ public class PaymentService implements IPaymentService {
 			YkwmTraceLogModel model = new YkwmTraceLogModel(myLog, Integer.parseInt(data.getCapDate()), sysTime, Integer.parseInt(data.getCapTransactionno()));
 			model.setCoDate(data.getCoDate());
 			model.setCoTransactionno(data.getCoTransactionno());
+			model.setCoResult(data.getCoResult());
 			model.setPyFeeAmtT(data.getPyFeeAmtT());
 			model.setUserCardNoT(data.getUserCardNoT());
 			model.setAcctNoT(data.getAcctNoT());
