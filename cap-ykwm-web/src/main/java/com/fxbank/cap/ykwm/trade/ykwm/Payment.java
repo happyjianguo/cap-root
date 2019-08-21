@@ -39,6 +39,12 @@ public class Payment implements TradeExecutionStrategy {
 	@Override
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
         REQ_Payment req = (REQ_Payment) dto;
+        try {
+			Thread.sleep(60000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(!req.getCheckNum().matches(NUM_REG)) {
 			REP_ERROR repErr = new REP_ERROR();
 			repErr.setResult("1");
