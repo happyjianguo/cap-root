@@ -323,7 +323,7 @@ public class PaymentService implements IPaymentService {
 			List<Invoice> list = new ArrayList<Invoice>();
 			Invoice invoice1 = new Invoice();
 			invoice1.setInvoiceTitle(data.getInvoicetitle1());
-			invoice1.setArea(data.getArea1().toString());
+			invoice1.setArea(null==data.getArea1()?"":data.getArea1().toString());
 			invoice1.setInvoiceName(data.getInvoicename1());
 			invoice1.setInvoiceNum(data.getInvoicenum1());
 			invoice1.setBankNum(data.getBanknum1());
@@ -331,7 +331,7 @@ public class PaymentService implements IPaymentService {
 			list.add(invoice1);
 			Invoice invoice2 = new Invoice();
 			invoice2.setInvoiceTitle(data.getInvoicetitle2());
-			invoice2.setArea(data.getArea2().toString());
+			invoice2.setArea(null==data.getArea2()?"":data.getArea2().toString());
 			invoice2.setInvoiceName(data.getInvoicename2());
 			invoice2.setInvoiceNum(data.getInvoicenum2());
 			invoice2.setBankNum(data.getBanknum2());
@@ -339,7 +339,7 @@ public class PaymentService implements IPaymentService {
 			list.add(invoice2);
 			Invoice invoice3 = new Invoice();
 			invoice3.setInvoiceTitle(data.getInvoicetitle3());
-			invoice3.setArea(data.getArea3().toString());
+			invoice3.setArea(null==data.getArea3()?"":data.getArea3().toString());
 			invoice3.setInvoiceName(data.getInvoicename3());
 			invoice3.setInvoiceNum(data.getInvoicenum3());
 			invoice3.setBankNum(data.getBanknum3());
@@ -347,7 +347,7 @@ public class PaymentService implements IPaymentService {
 			list.add(invoice3);
 			Invoice invoice4 = new Invoice();
 			invoice4.setInvoiceTitle(data.getInvoicetitle4());
-			invoice4.setArea(data.getArea4().toString());
+			invoice4.setArea(null==data.getArea4()?"":data.getArea4().toString());
 			invoice4.setInvoiceName(data.getInvoicename4());
 			invoice4.setInvoiceNum(data.getInvoicenum4());
 			invoice4.setBankNum(data.getBanknum4());
@@ -496,7 +496,7 @@ public class PaymentService implements IPaymentService {
 			List<Invoice> list = new ArrayList<Invoice>();
 			Invoice invoice1 = new Invoice();
 			invoice1.setInvoiceTitle(data.getInvoicetitle1());
-			invoice1.setArea(data.getArea1().toString());
+			invoice1.setArea(null==data.getArea1()?"":data.getArea1().toString());
 			invoice1.setInvoiceName(data.getInvoicename1());
 			invoice1.setInvoiceNum(data.getInvoicenum1());
 			invoice1.setBankNum(data.getBanknum1());
@@ -504,7 +504,7 @@ public class PaymentService implements IPaymentService {
 			list.add(invoice1);
 			Invoice invoice2 = new Invoice();
 			invoice2.setInvoiceTitle(data.getInvoicetitle2());
-			invoice2.setArea(data.getArea2().toString());
+			invoice2.setArea(null==data.getArea2()?"":data.getArea2().toString());
 			invoice2.setInvoiceName(data.getInvoicename2());
 			invoice2.setInvoiceNum(data.getInvoicenum2());
 			invoice2.setBankNum(data.getBanknum2());
@@ -512,7 +512,7 @@ public class PaymentService implements IPaymentService {
 			list.add(invoice2);
 			Invoice invoice3 = new Invoice();
 			invoice3.setInvoiceTitle(data.getInvoicetitle3());
-			invoice3.setArea(data.getArea3().toString());
+			invoice3.setArea(null==data.getArea3()?"":data.getArea3().toString());
 			invoice3.setInvoiceName(data.getInvoicename3());
 			invoice3.setInvoiceNum(data.getInvoicenum3());
 			invoice3.setBankNum(data.getBanknum3());
@@ -520,7 +520,7 @@ public class PaymentService implements IPaymentService {
 			list.add(invoice3);
 			Invoice invoice4 = new Invoice();
 			invoice4.setInvoiceTitle(data.getInvoicetitle4());
-			invoice4.setArea(data.getArea4().toString());
+			invoice4.setArea(null==data.getArea4()?"":data.getArea4().toString());
 			invoice4.setInvoiceName(data.getInvoicename4());
 			invoice4.setInvoiceNum(data.getInvoicenum4());
 			invoice4.setBankNum(data.getBanknum4());
