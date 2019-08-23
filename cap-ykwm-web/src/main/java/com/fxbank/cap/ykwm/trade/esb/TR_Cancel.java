@@ -58,6 +58,7 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 		REQ_30064000201 reqDto = (REQ_30064000201) dto;
 		super.notExistException = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10004);
 		super.hostUndoTimeoutException = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10002);
+		super.othTimeoutException = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10008);
 		return super.execute(reqDto);
 	}
 
