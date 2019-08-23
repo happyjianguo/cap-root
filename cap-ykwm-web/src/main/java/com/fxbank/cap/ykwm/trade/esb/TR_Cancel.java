@@ -16,7 +16,6 @@ import com.fxbank.cap.ykwm.service.IPaymentService;
 import com.fxbank.cip.base.common.EsbReqHeaderBuilder;
 import com.fxbank.cip.base.common.LogPool;
 import com.fxbank.cip.base.common.MyJedis;
-import com.fxbank.cip.base.constant.CIP;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
@@ -130,6 +129,7 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30014000101.getReqSysHead(), reqDto).
 				setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
 		esbReq_30014000101.setReqSysHead(reqSysHead);
+		reqSysHead.setProgramId(reqDto.getReqSysHead().getProgramId());
 		ESB_REQ_30014000101.REQ_BODY reqBody_30014000101 = esbReq_30014000101.getReqBody();
 
 		reqBody_30014000101.setReference(record.getCoTransactionno());
