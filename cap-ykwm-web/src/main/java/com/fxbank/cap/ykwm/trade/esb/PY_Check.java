@@ -85,7 +85,7 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 			record.setCapResult("4");
 			paymentService.updateCheck(record);
 			
-			if(model.getCoResult().equals("1")) {
+			if(model.getCoResult().equals("0")||model.getCoResult().equals("2")) {
 				myLog.error(logger,"营口热电【"+date+"】对账失败: 多出记录，渠道流水号【"+model.getSysTraceno()+"】，核心状态【"+model.getCoResult()+"】");
 				YkwmTradeExecuteException e = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10006);
 				throw e;
