@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ceba.mapper.CebaRefundeLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ceba.entity.CebaRefundeLog">
+    <id column="PLAT_DATE" jdbcType="DECIMAL" property="platDate" />
+    <id column="PLAT_TRACENO" jdbcType="DECIMAL" property="platTraceno" />
+    <result column="FLAG" jdbcType="VARCHAR" property="flag" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="HOST_CODE" jdbcType="VARCHAR" property="hostCode" />
+    <result column="HOST_MSG" jdbcType="VARCHAR" property="hostMsg" />
+    <result column="REQ_DATE" jdbcType="DECIMAL" property="reqDate" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACENO, FLAG, STATUS,HOST_CODE,HOST_MSG,REQ_DATE 
+    from CEBA_REFUNDE_LOG
+  </select>
+  <select id="selectRefundeFileLog" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACENO, FLAG, STATUS,HOST_CODE,HOST_MSG,REQ_DATE  
+    from CEBA_REFUNDE_LOG where STATUS = '0' and to_date(plat_date,'yyyy-MM-dd') <![CDATA[ > ]]> trunc(to_date(#{date},'yyyy-MM-dd'))-3 
+      and to_date(plat_date,'yyyy-MM-dd') <![CDATA[ <= ]]> trunc(to_date(#{date},'yyyy-MM-dd'))  
+  </select>
+</mapper>

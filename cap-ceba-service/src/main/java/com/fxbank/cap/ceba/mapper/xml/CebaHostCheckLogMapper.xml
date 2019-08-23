@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ceba.mapper.CebaHostCheckLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ceba.entity.CebaHostCheckLog">
+    <id column="PLAT_DATE" jdbcType="DECIMAL" property="platDate" />
+    <id column="PLAT_TRACE" jdbcType="DECIMAL" property="platTrace" />
+    <result column="TRAN_TYPE" jdbcType="NVARCHAR" property="tranType" />
+    <result column="SETTLE_DATE" jdbcType="DECIMAL" property="settleDate" />
+    <result column="SETTLE_BRANCH" jdbcType="NVARCHAR" property="settleBranch" />
+    <result column="HOST_DATE" jdbcType="DECIMAL" property="hostDate" />
+    <result column="HOST_TRACENO" jdbcType="NVARCHAR" property="hostTraceno" />
+    <result column="CCY" jdbcType="NVARCHAR" property="ccy" />
+    <result column="TX_AMT" jdbcType="DECIMAL" property="txAmt" />
+    <result column="ACCOUNTNO" jdbcType="NVARCHAR" property="accountno" />
+    <result column="REVERSAL" jdbcType="NVARCHAR" property="reversal" />
+    <result column="TX_STATUS" jdbcType="NVARCHAR" property="txStatus" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, TRAN_TYPE, SETTLE_DATE, SETTLE_BRANCH, HOST_DATE, HOST_TRACENO, 
+    CCY, TX_AMT, ACCOUNTNO, REVERSAL, TX_STATUS
+    from CEBA_HOST_CHECK_LOG
+  </select>
+    <select id="deleteAll" >
+    delete from CEBA_HOST_CHECK_LOG where plat_date = #{platDate}
+  </select>
+</mapper>

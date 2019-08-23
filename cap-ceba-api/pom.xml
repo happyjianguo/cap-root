@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.fxbank.cap</groupId>
+		<artifactId>cap-root</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>cap-ceba-api</artifactId>
+	<name>cap-ceba-api</name>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.fxbank.cip</groupId>
+			<artifactId>cip-base-api</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ceb.bouncycastle</groupId>
+			<artifactId>bcprov</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ceb.bouncycastle</groupId>
+			<artifactId>cebenc</artifactId>
+			<version>1.0</version>
+		</dependency>		
+	</dependencies>
+</project>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ceba.mapper.CebaSettleLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ceba.entity.CebaSettleLog">
+    <id column="CHK_DATE" jdbcType="DECIMAL" property="chkDate" />
+    <result column="TX_AMT" jdbcType="DECIMAL" property="txAmt" />
+    <result column="TX_STS" jdbcType="VARCHAR" property="txSts" />
+    <result column="CNAPS_DATE" jdbcType="DECIMAL" property="cnapsDate" />
+    <result column="CNAPS_TRACENO" jdbcType="VARCHAR" property="cnapsTraceno" />
+    <result column="CNAPS_CODE" jdbcType="VARCHAR" property="cnapsCode" />
+    <result column="CNAPS_MSG" jdbcType="VARCHAR" property="cnapsMsg" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select CHK_DATE, TX_AMT, TX_STS, CNAPS_DATE, CNAPS_TRACENO, CNAPS_CODE, CNAPS_MSG
+    from CEBA_SETTLE_LOG
+  </select>
+   <select id="selectSettleLog" resultMap="BaseResultMap" >
+      select * from ceba_settle_log WHERE 
+      tx_sts in (0,1,2) and 
+      to_date(chk_date,'yyyy-MM-dd') <![CDATA[ > ]]> trunc(to_date(#{date},'yyyy-MM-dd'))-10 
+      and to_date(chk_date,'yyyy-MM-dd') <![CDATA[ <= ]]> trunc(to_date(#{date},'yyyy-MM-dd'))  
+  </select>
+</mapper>
