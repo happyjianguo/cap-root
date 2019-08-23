@@ -313,7 +313,7 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 		REQ_30062001201 reqDto = (REQ_30062001201) dto;
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_50015000101.getReqSysHead(),dto)
 				.setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).
-				setSourceType("BH").build();
+				build();
 		esbReq_50015000101.setReqSysHead(reqSysHead);
 		ESB_REQ_50015000101.REQ_BODY esbReqBody_50015000101 = esbReq_50015000101.getReqBody();
 		esbReqBody_50015000101.setChannelType("BH");
