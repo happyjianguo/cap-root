@@ -43,6 +43,12 @@ public class Cancel implements TradeExecutionStrategy {
 	public DataTransObject execute(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
 		REQ_Cancel req = (REQ_Cancel) dto;
+        try {
+			Thread.sleep(60000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(!req.getCheckNum().matches(NUM_REG)) {
 			REP_ERROR repErr = new REP_ERROR();
 			repErr.setResult("1");
