@@ -127,9 +127,9 @@ public class TR_Cancel extends BaseTradeT2 implements TradeExecutionStrategy {
 		ESB_REQ_30014000101 esbReq_30014000101 = new ESB_REQ_30014000101(myLog, reqDto.getSysDate(),
 				reqDto.getSysTime(), reqDto.getSysTraceno());
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30014000101.getReqSysHead(), reqDto).
-				setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
-		esbReq_30014000101.setReqSysHead(reqSysHead);
+				setBranchId(reqDto.getReqSysHead().getBranchId()).setSourceType("BH").setUserId(reqDto.getReqSysHead().getUserId()).build();
 		reqSysHead.setProgramId(reqDto.getReqSysHead().getProgramId());
+		esbReq_30014000101.setReqSysHead(reqSysHead);
 		ESB_REQ_30014000101.REQ_BODY reqBody_30014000101 = esbReq_30014000101.getReqBody();
 
 		reqBody_30014000101.setReference(record.getCoTransactionno());
