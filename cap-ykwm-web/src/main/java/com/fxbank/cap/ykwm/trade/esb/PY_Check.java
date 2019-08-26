@@ -27,8 +27,8 @@ import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.model.ESB_REQ_SYS_HEAD;
 import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
 import com.fxbank.cip.base.util.FtpUtil;
-import com.fxbank.cap.esb.model.ses.ESB_REP_50015000101;
-import com.fxbank.cap.esb.model.ses.ESB_REQ_50015000101;
+import com.fxbank.cap.esb.model.ses.ESB_REP_30065001401;
+import com.fxbank.cap.esb.model.ses.ESB_REQ_30065001401;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cap.ykwm.dto.esb.REP_30062001201;
 import com.fxbank.cap.ykwm.dto.esb.REQ_30062001201;
@@ -126,7 +126,7 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 		
 		//生成本地对账文件并上传至FTP服务器
 		String fileName=companyName+date+".txt";
-		String localFile = ftpUpload(myLog, fileName, sb.toString());
+		ftpUpload(myLog, fileName, sb.toString());
 		String num2 = paymentService.getTraceNum(date, "2");
 		String num3 = paymentService.getTraceNum(date, "3");
 		String num4 = paymentService.getTraceNum(date, "4");
@@ -308,21 +308,18 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 	}
 	
 	private String getEsbCheckFile(MyLog myLog, DataTransObject dto) throws SysTradeExecuteException {
-		ESB_REQ_50015000101 esbReq_50015000101 = new ESB_REQ_50015000101(myLog, dto.getSysDate(),dto.getSysTime(),dto.getSysTraceno());
+		ESB_REQ_30065001401 esbReq_30065001401 = new ESB_REQ_30065001401(myLog, dto.getSysDate(),dto.getSysTime(),dto.getSysTraceno());
 		REQ_30062001201 reqDto = (REQ_30062001201) dto;
-		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_50015000101.getReqSysHead(),dto)
-				.setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).
-				setSourceType("YKWM").build();
-		esbReq_50015000101.setReqSysHead(reqSysHead);
-		ESB_REQ_50015000101.REQ_BODY esbReqBody_50015000101 = esbReq_50015000101.getReqBody();
-		esbReqBody_50015000101.setChannelType("BH");
-		esbReqBody_50015000101.setStartDate(reqDto.getReqBody().getCollateDt());
-		esbReqBody_50015000101.setEndDate(reqDto.getReqBody().getCollateDt());
-		esbReqBody_50015000101.setDirection("O");
+		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30065001401.getReqSysHead(),dto)
+				.setBranchId(reqDto.getReqSysHead().getBranchId()).setUserId(reqDto.getReqSysHead().getUserId()).build();
+		esbReq_30065001401.setReqSysHead(reqSysHead);
+		ESB_REQ_30065001401.REQ_BODY esbReqBody_30065001401 = esbReq_30065001401.getReqBody();
+		esbReqBody_30065001401.setBusiType("ykjf");
+		esbReqBody_30065001401.setSettlementDate(reqDto.getReqBody().getCollateDt());
 		
-		ESB_REP_50015000101 esbRep_50015000101 = forwardToESBService.sendToESB(esbReq_50015000101, esbReqBody_50015000101, ESB_REP_50015000101.class);
-		String remoteFile = esbRep_50015000101.getRepSysHead().getFilePath();
-		String fileName = esbRep_50015000101.getRepBody().getFileName();
+		ESB_REP_30065001401 esbRep_30065001401 = forwardToESBService.sendToESB(esbReq_30065001401, esbReqBody_30065001401, ESB_REP_30065001401.class);
+		String remoteFile = esbRep_30065001401.getRepSysHead().getFilePath();
+		String fileName = esbRep_30065001401.getRepBody().getFileName();
 		String localPath="";
 		try (Jedis jedis = myJedis.connect()) {
 			localPath = jedis.get(COMMON_PREFIX+"txt_path");

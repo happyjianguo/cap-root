@@ -39,7 +39,7 @@ public class PY_CheckTest {
 	
 	private static Logger logger = LoggerFactory.getLogger(PY_CheckTest.class);
 	
-     private static final String URL="http://127.0.0.1:7006/esb/ykwm.do";
+     private static final String URL="http://127.0.0.1:7015/esb/ykwm.do";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -84,7 +84,7 @@ public class PY_CheckTest {
 	public void payOk() throws Exception {
 		logger.info("对账测试"); 
 		
-		reqBody.setCollateDt("20190530");
+		reqBody.setCollateDt("20190823");
 		
 		String reqContent = JSON.toJSONString(req);
 		logger.info("对账测试请求");
