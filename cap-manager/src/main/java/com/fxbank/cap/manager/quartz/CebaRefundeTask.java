@@ -1,10 +1,3 @@
-/*
- * @Description: In User Settings Edit
- * @Author: your name
- * @Date: 2019-08-19 10:39:01
- * @LastEditTime: 2019-08-19 10:53:21
- * @LastEditors: Please set LastEditors
- */
 package com.fxbank.cap.manager.quartz;
 
 import java.io.BufferedReader;
@@ -13,9 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import org.quartz.Trigger;
@@ -122,6 +112,8 @@ public class CebaRefundeTask {
 				myLog.error(logger, "销账流水日志未查到该条流水，渠道日期"+model.getSysDate()+",渠道流水"+model.getSysTraceno());
 				continue;
 			}
+			model.setStatus("*");	//退款中
+			cebaRefundeLogService.updateRefundeLog(myLog, model);
 			ESB_REP_30011000101 esbRep30011000101 = null;
 			try {
 				 esbRep30011000101 = hostRefunde(myLog, chargeLog);

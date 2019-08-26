@@ -42,9 +42,12 @@ import com.fxbank.cap.esb.model.ses.ESB_REP_30011000101;
 import com.fxbank.cap.esb.model.ses.ESB_REP_50015000101;
 import com.fxbank.cap.esb.model.ses.ESB_REQ_30011000101;
 import com.fxbank.cap.esb.model.ses.ESB_REQ_50015000101;
+import com.fxbank.cap.esb.model.sms.ESB_REP_50022000401;
+import com.fxbank.cap.esb.model.sms.ESB_REQ_50022000401;
 import com.fxbank.cap.esb.service.IForwardToESBService;
 import com.fxbank.cip.base.common.EsbReqHeaderBuilder;
 import com.fxbank.cip.base.common.MyJedis;
+import com.fxbank.cip.base.constant.CIP;
 import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
@@ -99,6 +102,10 @@ public class CebaCheckTask {
 	public void exec() throws Exception {
 		MyLog myLog = new MyLog();
 		myLog.info(logger, "开始进行对账处理");
+		String mobNos;
+		try (Jedis jedis = myJedis.connect()) {
+			mobNos = jedis.get(COMMON_PREFIX + "checkNoticeMobNos");
+		}
 		// 渠道日期前一天对账
 		Integer date = getPreDateByDate(getReqDto().getSysDate());
 		myLog.info(logger, "核心与外围对账开始");
@@ -139,13 +146,25 @@ public class CebaCheckTask {
 		String checkSuccNum = cebaChargeLogService.getCheckSuccNum(date.toString());
 		//核心对账标志不为2并且光大银行对账标志不为2的缴费流水总金额
 		BigDecimal checkSuccAmt = new BigDecimal(cebaChargeLogService.getCheckSuccAmt(date.toString()));
+		//对账成功标志，以光大银行对账文件为准
+		Boolean checkFlag = false;
 		String checkMsg = "光大云缴费【" + date + "】对账统计：共【" + totalCheckNum + "】笔，" + "其中已对账【" + checkSuccNum + "】笔，比核心多出【"
-				+ hostCheckNum + "】笔，" + "比光大银行多出【" + cebaCheckNum + "】笔";
+				+ hostCheckNum + "】笔，" + "比光大银行多出【" + cebaCheckNum + "】笔，";
+		if(checkLogList1.size() == Integer.parseInt(checkSuccNum)) {
+			checkFlag = true;
+			checkMsg += "对账成功";
+		}else {
+			checkMsg += "对账失败";
+		}
 		myLog.info(logger, checkMsg);
 		try {
+			sendMessage(mobNos, checkMsg);
+		}catch(SysTradeExecuteException e) {
+			myLog.error(logger, "缴费清算短信通知发送失败",e);
+		}
+		try {
 			//如果光大银行对账文件成功笔数和对账成功笔数相同并且清算日志没有该对账日期流水，登记清算流水表
-			if (checkLogList1.size() == Integer.parseInt(checkSuccNum)
-					&& null == cebaSettleLogService.querySettleLogByPk(myLog, date)) {
+			if (checkFlag && null == cebaSettleLogService.querySettleLogByPk(myLog, date)) {
 				cebaSettleLogService.initSettleLog(myLog, date, checkSuccAmt);
 				myLog.info(logger, "登记清算流水表成功，渠道日期" + date);
 			}
@@ -636,6 +655,48 @@ public class CebaCheckTask {
 			}
 			myLog.info(logger, "核心对账信息入库结束");
 		}
+	}
+	
+	private void sendMessage(String mobNo, String message) throws SysTradeExecuteException {
+		// 调用消息发布平台发送短信
+		int date = getReqDto().getSysDate();
+		int time = getReqDto().getSysTime();
+		int tranceNo = (int) Calendar.getInstance().getTimeInMillis();
+		DataTransObject dto = new DataTransObject();
+		dto.setSourceType("CIP");
+		dto.setSysDate(date);
+		dto.setSysTime(time);
+		dto.setSysTraceno(tranceNo);
+		// 交易机构
+		String txBrno = null;
+		// 柜员号
+		String txTel = null;
+		try (Jedis jedis = myJedis.connect()) {
+			txBrno = jedis.get(COMMON_PREFIX + "ceba_txbrno");
+			txTel = jedis.get(COMMON_PREFIX + "ceba_txtel");
+		}
+		
+		ESB_REQ_50022000401 req_50022000401 = new ESB_REQ_50022000401(null, date, time, tranceNo);
+		// 请求报文头赋值
+		req_50022000401.setReqSysHead(new EsbReqHeaderBuilder(req_50022000401.getReqSysHead(), dto).setUserId(txTel)
+				.setBranchId(txBrno).build());
+		// ESB报文体赋值
+		ESB_REQ_50022000401.REQ_BODY reqBody = req_50022000401.getReqBody();
+		reqBody.setSendtype("100");// 只发短信
+		reqBody.setMid("SMS_FJR003");
+		reqBody.setPacket("620001");// 720001-动账类交易 620001-营销类交易
+		reqBody.setSrvid("6201");
+		reqBody.setChanno(CIP.SYSTEM_ID); // TODO 上线时需在消息发布平台增加系统编号
+		reqBody.setTranscode("qdyw");
+		reqBody.setImmediaflag("1");// 1-实时，0-预约
+		reqBody.setSendtime("" + date + time);
+		reqBody.setBranchno("00000");// 00000-阜新总行
+		reqBody.setRegNo(mobNo);
+		logger.info("开始发送短信...，手机号【" + mobNo + "】");
+		reqBody.setData("|||||||||||||"+message + "《CAP》|");
+
+		// 调用ESB服务
+		forwardToESBService.sendToESB(req_50022000401, reqBody, ESB_REP_50022000401.class);
 	}
 
 	private DataTransObject getReqDto() {
