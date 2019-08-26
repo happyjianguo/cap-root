@@ -231,7 +231,7 @@ public class CebaRefundeTask {
 
 		String localPath = "";
 		try (Jedis jedis = myJedis.connect()) {
-			localPath = jedis.get(COMMON_PREFIX + "txt_path");
+			localPath = jedis.get(COMMON_PREFIX + "cebafile_path");
 		}
 		return localPath + File.separator + fileName;
 	}

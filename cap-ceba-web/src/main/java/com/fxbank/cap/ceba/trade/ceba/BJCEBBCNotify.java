@@ -139,7 +139,7 @@ public class BJCEBBCNotify implements TradeExecutionStrategy {
 		
 		String localPath="";
 		try (Jedis jedis = myJedis.connect()) {
-			localPath = jedis.get(COMMON_PREFIX+"txt_path");
+			localPath = jedis.get(COMMON_PREFIX+"cebafile_path");
 		}
 		//上传商户T日交易的对账文件时，会按照T日的日期为名在商户指定目录下创建一个目录，然后把对应T日的对账文件放到这个目录下。
 		return localPath+File.separator+date+File.separator+fileName;
