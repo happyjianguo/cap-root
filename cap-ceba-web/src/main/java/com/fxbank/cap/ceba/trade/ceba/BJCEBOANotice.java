@@ -21,6 +21,8 @@ import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
+import com.fxbank.cip.base.util.SFtpUtil;
+
 import redis.clients.jedis.Jedis;
 
 /** 
@@ -57,7 +59,7 @@ public class BJCEBOANotice implements TradeExecutionStrategy {
 		String noticeTime = req.getTin().getDate();
 		//文件名称
 		String fileName = req.getTin().getFileName();
-		String localFile = getOutageFile(myLog,noticeTime,fileName);
+		String localFile = getOutageFile(myLog,fileName);
 		//通知类型 0 缴费停运通知(默认为0，其它扩展使用）
 		String noticeType = req.getTin().getNoticetype();
 		if("0".equals(noticeType)) {
@@ -107,13 +109,42 @@ public class BJCEBOANotice implements TradeExecutionStrategy {
 			myLog.info(logger, "停运通知入库结束");
 		}
 	}
-	private String getOutageFile(MyLog myLog,String date, String fileName) throws SysTradeExecuteException {
-		
-		String localPath="";
+	private String getOutageFile(MyLog myLog,String fileName) throws SysTradeExecuteException {
+		//对账文件保存到本地路径
+		String localPath = null;
+		//光大银行上传文件FTP地址
+		String ftpIP = null;
+		//光大银行上传文件FTP端口号
+		Integer ftpPort = null;
+		//光大银行上传文件FTP用户名
+		String ftpUser = null;
+		//光大银行上传文件FTP密码
+		String ftpPassword = null;
+		//光大银行上传文件FTP路径
+		String ftpPath = null;
 		try (Jedis jedis = myJedis.connect()) {
-			localPath = jedis.get(COMMON_PREFIX+"txt_path");
+			localPath = jedis.get(COMMON_PREFIX + "cebafile_path");
+			ftpIP = jedis.get(COMMON_PREFIX + "ftp_ip");
+			ftpPort = null == jedis.get(COMMON_PREFIX + "ftp_port") ? 22
+					: Integer.parseInt(jedis.get(COMMON_PREFIX + "ftp_port"));
+			ftpUser = jedis.get(COMMON_PREFIX + "ftp_user");
+			ftpPassword = jedis.get(COMMON_PREFIX + "ftp_password");
+			ftpPath = jedis.get(COMMON_PREFIX + "ftp_path");
 		}
-		return localPath+File.separator+fileName;
+		SFtpUtil sftpUtil = null;
+		try {
+			sftpUtil = SFtpUtil.getConnect(ftpIP, ftpUser, ftpPort, ftpPassword);
+			File localFilePath = new File(localPath);
+			if (!localFilePath.exists()) {
+				localFilePath.mkdirs();
+			}
+			sftpUtil.download(ftpPath, fileName,
+					localPath + File.separator + fileName);
+			// 上传商户T日交易的对账文件时，会按照T日的日期为名在商户指定目录下创建一个目录，然后把对应T日的对账文件放到这个目录下。
+		} catch (Exception e) {
+			myLog.error(logger, "下载对账文件失败", e);
+		}
+		return localPath + File.separator + fileName;
 	}
 	
 }

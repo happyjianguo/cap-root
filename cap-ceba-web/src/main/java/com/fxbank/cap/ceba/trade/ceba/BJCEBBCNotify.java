@@ -1,6 +1,7 @@
 package com.fxbank.cap.ceba.trade.ceba;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import com.fxbank.cip.base.dto.DataTransObject;
 import com.fxbank.cip.base.exception.SysTradeExecuteException;
 import com.fxbank.cip.base.log.MyLog;
 import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
+import com.fxbank.cip.base.util.SFtpUtil;
 
 import redis.clients.jedis.Jedis;
 
@@ -136,13 +138,40 @@ public class BJCEBBCNotify implements TradeExecutionStrategy {
 	}
 	
 	private String getCheckFile(MyLog myLog,String date, String fileName) throws SysTradeExecuteException {
-		
-		String localPath="";
+		//对账文件保存到本地路径
+		String localPath = null;
+		//光大银行上传文件FTP地址
+		String ftpIP = null;
+		//光大银行上传文件FTP端口号
+		Integer ftpPort = null;
+		//光大银行上传文件FTP用户名
+		String ftpUser = null;
+		//光大银行上传文件FTP密码
+		String ftpPassword = null;
+		//光大银行上传文件FTP路径
+		String ftpPath = null;
 		try (Jedis jedis = myJedis.connect()) {
-			localPath = jedis.get(COMMON_PREFIX+"cebafile_path");
+			localPath = jedis.get(COMMON_PREFIX + "cebafile_path");
+			ftpIP = jedis.get(COMMON_PREFIX + "ftp_ip");
+			ftpPort = null == jedis.get(COMMON_PREFIX + "ftp_port") ? 22
+					: Integer.parseInt(jedis.get(COMMON_PREFIX + "ftp_port"));
+			ftpUser = jedis.get(COMMON_PREFIX + "ftp_user");
+			ftpPassword = jedis.get(COMMON_PREFIX + "ftp_password");
+			ftpPath = jedis.get(COMMON_PREFIX + "ftp_path");
 		}
-		//上传商户T日交易的对账文件时，会按照T日的日期为名在商户指定目录下创建一个目录，然后把对应T日的对账文件放到这个目录下。
-		return localPath+File.separator+date+File.separator+fileName;
+		SFtpUtil sftpUtil = null;
+		try {
+			sftpUtil = SFtpUtil.getConnect(ftpIP, ftpUser, ftpPort, ftpPassword);
+			File localFilePath = new File(localPath + File.separator + date);
+			if (!localFilePath.exists()) {
+				localFilePath.mkdirs();
+			}
+			sftpUtil.download(ftpPath + File.separator + date, fileName,
+					localPath + File.separator + date + File.separator + fileName);
+			// 上传商户T日交易的对账文件时，会按照T日的日期为名在商户指定目录下创建一个目录，然后把对应T日的对账文件放到这个目录下。
+		} catch (Exception e) {
+			myLog.error(logger, "下载对账文件失败", e);
+		}
+		return localPath + File.separator + date + File.separator + fileName;
 	}
-
 }

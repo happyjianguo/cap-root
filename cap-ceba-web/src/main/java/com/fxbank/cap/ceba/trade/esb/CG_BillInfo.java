@@ -109,7 +109,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		ESB_REQ_30011000101 esbReq_30011000101 = new ESB_REQ_30011000101(myLog, reqDto.getSysDate(),
 				reqDto.getSysTime(), reqDto.getSysTraceno());
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30011000101.getReqSysHead(), reqDto)
-				.setSourceType("MB").build();
+				.setSourceType("GD").build();
 		esbReq_30011000101.setReqSysHead(reqSysHead);
   
 		ESB_REQ_30011000101.REQ_BODY reqBody_30011000101 = esbReq_30011000101.getReqBody();
