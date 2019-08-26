@@ -188,17 +188,17 @@ public class CebaCheckTask {
 		ESB_REQ_30011000101 esbReq_30011000101 = new ESB_REQ_30011000101(myLog, getReqDto().getSysDate(),
 				getReqDto().getSysTime(), getReqDto().getSysTraceno());
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30011000101.getReqSysHead(), getReqDto())
-				.setSourceType("MB").build();
+				.setSourceType("GD").build();
 		esbReq_30011000101.setReqSysHead(reqSysHead);
 		// 退款账号
-		String baseAcctNo = null;
+		String othBaseAcctNo = null;
 		try (Jedis jedis = myJedis.connect()) {
-			baseAcctNo = jedis.get(COMMON_PREFIX + "refunde_acct_no");
+			othBaseAcctNo = jedis.get(COMMON_PREFIX + "refunde_acct_no");
 		}
 		ESB_REQ_30011000101.REQ_BODY reqBody_30011000101 = esbReq_30011000101.getReqBody();
 		// 账号/卡号
-		reqBody_30011000101.setBaseAcctNo(baseAcctNo);
-		reqBody_30011000101.setOthBaseAcctNo(model.getPayAccount());
+		reqBody_30011000101.setBaseAcctNo(model.getPayAccount());
+		reqBody_30011000101.setOthBaseAcctNo(othBaseAcctNo);
 		// 账户名称
 		reqBody_30011000101.setAcctName(model.getCustomerName());
 		// 交易类型
