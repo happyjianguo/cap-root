@@ -1,0 +1,107 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>缴费单销账流水日志</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" type="text/css" th:href="@{../ui/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../ui/css/style.css}" />
+    <link rel="stylesheet" th:href="@{../ui/css/form_mobile.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{../ui/css/table.css}"/>
+</head>
+
+<body>
+<div class="iconBox">
+    <div class="iconfont glyphiconSearch_mob"></div>
+</div>
+<div class="searchBox">
+    <form class="formBox layui-form" id="form" th:object="${data}">
+        <div class="form_box line_4">
+            <div class="layui-inline">
+                <label class="layui-form-label">渠道日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="platDate" id="platDate" th:value="*{platDate}"  class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="form_box line_4">
+            <div class="layui-inline">
+                <label class="layui-form-label">渠道流水号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="platTraceno" id="platTraceno" th:value="*{platTraceno}"  class="layui-input">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <button class="layui-btn layui-btn-normal layui-btn-sm" id="query" onclick="query()">查询</button>
+</div>
+    <div id="table_box" lay-filter="table_box">
+        <!--表格盒子-->
+    </div>
+<!--<div id="laypages"></div>-->
+
+
+<script th:src="@{../ui/jquery/jquery.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/layui/layui.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/jquery/jquery-ui.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/js/commons.js}"></script>
+<script th:src="@{../ui/js/Ui_table.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/js/newForm.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../system/paf/paf.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" th:inline="javascript">
+function query(){
+		$('#form').submit();
+}
+    var table=null;
+    layui.use('table', function(){
+        table = layui.table;
+        table.render({
+            elem: '#table_box',
+            url:'../ceba/refundeLogData?platDate='+$("#platDate").val()+'&platTraceno='+$("#platTraceno").val(),
+            isSortBox:true,
+            
+            editor:false,
+            cellMinWidth:170,
+            cols: [
+                [
+                    {field:'platDate', title:'渠道日期'},
+                    {field:'platTraceno', title:'渠道流水号'},
+                    {field:'flag', title:'来源类型',toolbar:'#flagParameter'},
+                    {field:'status', title:'退款状态',toolbar:'#statusParameter'},
+                    {field:'hostCode', title:'核心响应码'},
+                    {field:'hostMsg', title:'核心响应信息'}
+                ]
+            ],
+            page: true
+
+
+        });
+
+    });
+
+</script>
+<script type="text/html" id="flagParameter">
+    {{#if(d.flag==0){}}
+    <span>对账退款</span>
+    {{#}else if(d.flag==1){}}
+    <span>退款文件退款</span>
+    {{#}}}
+</script>
+<script type="text/html" id="statusParameter">
+    {{#if(d.status==0){}}
+    <span>未退款</span>
+    {{#}else if(d.status==1){}}
+    <span>已退款</span>
+    {{#}else if(d.status==2){}}
+    <span>退款失败</span>
+    {{#}else if(d.status==3){}}
+    <span>退款超时</span>
+    {{#}else if(d.status==4){}}
+    <span>销账流水日志未查到</span>
+    {{#}}}
+</script>
+</body>
+
+</html>
