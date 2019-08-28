@@ -83,7 +83,8 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 	
 		REP_BJCEBBRQRes.Tout tout = res.getTout();
 			repBody.setBillKey(tout.getBillKey());
-			repBody.setPltfSeqNo(tout.getBankBillNo());
+			//渠道日期+渠道流水号
+			repBody.setPltfSeqNo(logModel.getSysDate().toString()+logModel.getSysTraceno().toString());
 			repBody.setUnpaidAmt(logModel.getPayAmount().toString());
 			repBody.setDealStatus(tout.getPayState());
 
