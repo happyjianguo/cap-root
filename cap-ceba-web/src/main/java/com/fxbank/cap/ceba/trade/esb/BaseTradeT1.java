@@ -345,8 +345,6 @@ public abstract class BaseTradeT1 {
 					throw othErrorException(e);
 				}
 				}else {
-					updateOthTimeoutSucc(dto);
-					myLog.error(logger,TRADE_DESC+"第三方记账超时，渠道日期"+dto.getSysDate()+"渠道流水号"+dto.getSysTraceno(),e);
 					throw othTimeoutException;
 				}
 			} else {

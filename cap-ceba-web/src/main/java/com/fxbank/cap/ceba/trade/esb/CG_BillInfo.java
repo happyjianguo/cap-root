@@ -114,9 +114,13 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
   
 		ESB_REQ_30011000101.REQ_BODY reqBody_30011000101 = esbReq_30011000101.getReqBody();
 		REQ_30062001001.REQ_BODY reqBody = reqDto.getReqBody();
+		String othBaseAcctNo = null;
+		try (Jedis jedis = myJedis.connect()) {
+			othBaseAcctNo = jedis.get(COMMON_PREFIX + "oth_base_acct_no");
+		}
 		// 账号/卡号
 		reqBody_30011000101.setBaseAcctNo(reqBody.getPayAcctNo());
-		reqBody_30011000101.setOthBaseAcctNo("30060200000014");
+		reqBody_30011000101.setOthBaseAcctNo(othBaseAcctNo);
 		// 账户名称
 		reqBody_30011000101.setAcctName(reqBody.getClientNnae());
 		// 交易类型
