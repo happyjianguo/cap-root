@@ -1,5 +1,7 @@
 package com.fxbank.cap.ceba.trade.esb;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 
 import com.alibaba.dubbo.config.annotation.Reference;
@@ -85,7 +87,8 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 			repBody.setBillKey(tout.getBillKey());
 			//渠道日期+渠道流水号
 			repBody.setPltfSeqNo(logModel.getSysDate().toString()+logModel.getSysTraceno().toString());
-			repBody.setUnpaidAmt(logModel.getPayAmount().toString());
+			repBody.setUnpaidAmt(logModel.getPayAmount().setScale(2,
+					BigDecimal.ROUND_HALF_UP).toString());
 			//2成功3失败 核心状态0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-处理超时
 			String payState = "3";
 			if(!logModel.getHostState().equals("1")) {

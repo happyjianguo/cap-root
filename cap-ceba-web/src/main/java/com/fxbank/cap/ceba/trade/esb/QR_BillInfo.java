@@ -1,5 +1,6 @@
 package com.fxbank.cap.ceba.trade.esb;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
@@ -115,7 +116,8 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 				temp.setContractNo(data.getContractNo());
 				temp.setClientNnae(data.getCustomerName());
 				temp.setBalance(data.getBalance().toString());
-				temp.setUnpaidAmt(data.getPayAmount().toString());
+				temp.setUnpaidAmt(data.getPayAmount().setScale(2,
+						BigDecimal.ROUND_HALF_UP).toString());
 				temp.setStartDate(data.getBeginDate());
 				temp.setEndDate(data.getEndDate());
 				dataList.add(temp);
