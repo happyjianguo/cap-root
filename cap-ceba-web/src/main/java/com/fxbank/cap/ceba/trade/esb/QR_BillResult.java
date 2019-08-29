@@ -86,7 +86,12 @@ public class QR_BillResult extends TradeBase implements TradeExecutionStrategy {
 			//渠道日期+渠道流水号
 			repBody.setPltfSeqNo(logModel.getSysDate().toString()+logModel.getSysTraceno().toString());
 			repBody.setUnpaidAmt(logModel.getPayAmount().toString());
-			repBody.setDealStatus(tout.getPayState());
+			//2成功3失败 核心状态0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-处理超时
+			String payState = "3";
+			if(!logModel.getHostState().equals("1")) {
+				payState = "2";
+			}
+			repBody.setDealStatus(payState);
 
 		myLog.info(logger, "销账结果查询成功，渠道日期" + reqDto.getSysDate() + "渠道流水号" + reqDto.getSysTraceno());
 		return rep;
