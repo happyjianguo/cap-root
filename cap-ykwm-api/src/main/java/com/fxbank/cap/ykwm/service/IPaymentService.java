@@ -54,4 +54,6 @@ public interface IPaymentService {
 	
 	String getTraceNum(String date, String capResult) throws SysTradeExecuteException;
 	
+	Boolean getPaySuccLog(MyLog myLog,String userCardNoT,Integer sysDate) throws SysTradeExecuteException;
+	
 }

@@ -534,4 +534,25 @@ public class PaymentService implements IPaymentService {
 		return ykwmTracelogMapper.selectTraceNum(date, capResult);
 	}
 
+	/** 
+	* @Title: getPaySuccLog 
+	* @Description: 根据渠道日期和用户卡号查询交易完成的记录
+	* @param @param myLog
+	* @param @param userCardNoT
+	* @param @param sysDate
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
+	@Override
+	public Boolean getPaySuccLog(MyLog myLog, String userCardNoT, Integer sysDate)
+			throws SysTradeExecuteException {
+		Boolean flag = false;
+		List<YkwmTracelog> result = ykwmTracelogMapper.selectPaySuccLog(userCardNoT,sysDate.toString());
+		if(result.size()>0) {
+			flag = true;
+		}
+		return flag;
+	}
+
 }

@@ -56,7 +56,7 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	private IPublicService publicService;
 
 	@Reference(version = "1.0.0")
-	IPaymentService iPaymentService; // cap
+	IPaymentService iPaymentService; 
 
 	private static final String COMMON_PREFIX = "ykwm.";
 
@@ -77,6 +77,11 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		BigDecimal userDbtAmtT = new BigDecimal(reqDto.getReqBody().getUserDbtAmtT());
 		if(pyFeeAmtT.compareTo(userDbtAmtT)>0) {
 			YkwmTradeExecuteException e = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10007);
+			throw e;
+		}
+		//同一天对同一卡号做多笔查询，只能缴费成功一次
+		if(iPaymentService.getPaySuccLog(logPool.get(), reqDto.getReqBody().getUserCardNoT(), reqDto.getSysDate())) {
+			YkwmTradeExecuteException e = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10009);
 			throw e;
 		}
 		return super.execute(reqDto);

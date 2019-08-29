@@ -125,4 +125,9 @@
         and cap_result = #{capResult}
       </if>
   </select>
+     <select id="selectPaySuccLog" resultMap="BaseResultMap">
+    select * from ykwm_tracelog t where 
+     t.cap_date=#{capDate} and t.user_card_no_t=#{userCardNoT} 
+     and t.co_result ='0' and t.py_result ='2' 
+  </select>
 </mapper>

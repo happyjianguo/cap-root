@@ -11,4 +11,5 @@ public interface YkwmTracelogMapper extends MyMapper<YkwmTracelog> {
     String selectTotalSum(@Param("date") String date);
     List<YkwmTracelog> selectCheckedTrace(@Param("date") String date);
     String selectTraceNum(@Param("date") String date,@Param("capResult") String capResult);
+    List<YkwmTracelog> selectPaySuccLog(@Param("userCardNoT") String userCardNoT,@Param("capDate") String capDate);
 }
