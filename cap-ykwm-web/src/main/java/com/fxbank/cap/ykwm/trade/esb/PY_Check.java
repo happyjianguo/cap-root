@@ -268,10 +268,10 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 			while ((lineTxt = br.readLine()) != null) {
 				lineTxt += "*|";
 				String[] array = lineTxt.split("\\|");
-                if(array.length==3){
+                if(array.length==4){
                     continue;
                 }
-                DayCheckLogInitModel model = new DayCheckLogInitModel(myLog, dto.getSysDate(),dto.getSysTime(),Integer.parseInt(array[4]));
+                DayCheckLogInitModel model = new DayCheckLogInitModel(myLog, Integer.parseInt(platDate),dto.getSysTime(),Integer.parseInt(array[4]));
                 model.setBranchNo(array[7]); //机构号
                 model.setHostDate(Integer.parseInt(array[0])); //核心交易日期
                 model.setHostTraceno("ENS"+array[0]+array[2]); //核心流水号
