@@ -30,14 +30,14 @@ public class YkwmChecklog {
     /**
      * null
      */
-    @Column(name = "SETTLE_DATE")
-    private Integer settleDate;
+    @Column(name = "TEL_NO")
+    private String telNo;
 
     /**
      * null
      */
-    @Column(name = "SETTLE_BRANCH")
-    private String settleBranch;
+    @Column(name = "BRANCH_NO")
+    private String branchNo;
 
     /**
      * null
@@ -54,12 +54,6 @@ public class YkwmChecklog {
     /**
      * null
      */
-    @Column(name = "CCY")
-    private String ccy;
-
-    /**
-     * null
-     */
     @Column(name = "TX_AMT")
     private BigDecimal txAmt;
 
@@ -68,18 +62,6 @@ public class YkwmChecklog {
      */
     @Column(name = "ACCOUNTNO")
     private String accountno;
-
-    /**
-     * null
-     */
-    @Column(name = "REVERSAL")
-    private String reversal;
-
-    /**
-     * null
-     */
-    @Column(name = "TX_STATUS")
-    private String txStatus;
 
     /**
      * null
@@ -111,38 +93,6 @@ public class YkwmChecklog {
      */
     public void setPlatTrace(Integer platTrace) {
         this.platTrace = platTrace;
-    }
-
-    /**
-     * null
-     * @return SETTLE_DATE null
-     */
-    public Integer getSettleDate() {
-        return settleDate;
-    }
-
-    /**
-     * null
-     * @param settleDate null
-     */
-    public void setSettleDate(Integer settleDate) {
-        this.settleDate = settleDate;
-    }
-
-    /**
-     * null
-     * @return SETTLE_BRANCH null
-     */
-    public String getSettleBranch() {
-        return settleBranch;
-    }
-
-    /**
-     * null
-     * @param settleBranch null
-     */
-    public void setSettleBranch(String settleBranch) {
-        this.settleBranch = settleBranch;
     }
 
     /**
@@ -179,22 +129,6 @@ public class YkwmChecklog {
 
     /**
      * null
-     * @return CCY null
-     */
-    public String getCcy() {
-        return ccy;
-    }
-
-    /**
-     * null
-     * @param ccy null
-     */
-    public void setCcy(String ccy) {
-        this.ccy = ccy;
-    }
-
-    /**
-     * null
      * @return TX_AMT null
      */
     public BigDecimal getTxAmt() {
@@ -225,35 +159,20 @@ public class YkwmChecklog {
         this.accountno = accountno;
     }
 
-    /**
-     * null
-     * @return REVERSAL null
-     */
-    public String getReversal() {
-        return reversal;
-    }
+	public String getTelNo() {
+		return telNo;
+	}
 
-    /**
-     * null
-     * @param reversal null
-     */
-    public void setReversal(String reversal) {
-        this.reversal = reversal;
-    }
+	public void setTelNo(String telNo) {
+		this.telNo = telNo;
+	}
 
-    /**
-     * null
-     * @return TX_STATUS null
-     */
-    public String getTxStatus() {
-        return txStatus;
-    }
+	public String getBranchNo() {
+		return branchNo;
+	}
 
-    /**
-     * null
-     * @param txStatus null
-     */
-    public void setTxStatus(String txStatus) {
-        this.txStatus = txStatus;
-    }
+	public void setBranchNo(String branchNo) {
+		this.branchNo = branchNo;
+	}
+
 }

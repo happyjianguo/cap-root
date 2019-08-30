@@ -4,20 +4,16 @@
   <resultMap id="BaseResultMap" type="com.fxbank.cap.ykwm.entity.YkwmChecklog">
     <id column="PLAT_DATE" jdbcType="INTEGER" property="platDate" />
     <id column="PLAT_TRACE" jdbcType="INTEGER" property="platTrace" />
-    <result column="SETTLE_DATE" jdbcType="INTEGER" property="settleDate" />
-    <result column="SETTLE_BRANCH" jdbcType="VARCHAR" property="settleBranch" />
+    <result column="TEL_NO" jdbcType="VARCHAR" property="telNo" />
+    <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
     <result column="HOST_DATE" jdbcType="INTEGER" property="hostDate" />
     <result column="HOST_TRACENO" jdbcType="VARCHAR" property="hostTraceno" />
-    <result column="CCY" jdbcType="VARCHAR" property="ccy" />
     <result column="TX_AMT" jdbcType="DECIMAL" property="txAmt" />
     <result column="ACCOUNTNO" jdbcType="VARCHAR" property="accountno" />
-    <result column="REVERSAL" jdbcType="VARCHAR" property="reversal" />
-    <result column="TX_STATUS" jdbcType="VARCHAR" property="txStatus" />
   </resultMap>
   <select id="selectAll" resultMap="BaseResultMap">
-    select PLAT_DATE, PLAT_TRACE, SETTLE_DATE, SETTLE_BRANCH, HOST_DATE, HOST_TRACENO, 
-    CCY, TX_AMT, ACCOUNTNO, REVERSAL, TX_STATUS
-    from YKWM_CHECKLOG
+    select PLAT_DATE, PLAT_TRACE, TEL_NO, BRANCH_NO, HOST_DATE, HOST_TRACENO, 
+    TX_AMT, ACCOUNTNO from YKWM_CHECKLOG
   </select>
     <select id="deleteAll" >
     delete from YKWM_CHECKLOG where plat_date = #{platDate}

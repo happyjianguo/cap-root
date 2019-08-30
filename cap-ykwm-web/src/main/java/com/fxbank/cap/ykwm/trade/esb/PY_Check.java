@@ -268,24 +268,17 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 			while ((lineTxt = br.readLine()) != null) {
 				lineTxt += "*|";
 				String[] array = lineTxt.split("\\|");
-                if(array.length<20){
-                    myLog.info(logger,"文件【"+localFile+"】内容缺失");
+                if(array.length==3){
                     continue;
                 }
-                if(array[20].equals("02")) {
-                	continue;
-                }
-                DayCheckLogInitModel model = new DayCheckLogInitModel(myLog, dto.getSysDate(),dto.getSysTime(),Integer.parseInt(array[1].substring(14)));
-                model.setSettleDate(Integer.parseInt(array[2]));//清算日期
-                model.setSettleBranch(array[3]); //清算机构
-                model.setHostDate(Integer.parseInt(array[4])); //核心交易日期
-                model.setHostTraceno(array[5]); //核心流水号
-                model.setCcy(array[10]); //交易币种
-                BigDecimal bg = new BigDecimal(array[11]==null?"0":array[11]);
+                DayCheckLogInitModel model = new DayCheckLogInitModel(myLog, dto.getSysDate(),dto.getSysTime(),Integer.parseInt(array[4]));
+                model.setBranchNo(array[7]); //机构号
+                model.setHostDate(Integer.parseInt(array[0])); //核心交易日期
+                model.setHostTraceno("ENS"+array[0]+array[2]); //核心流水号
+                BigDecimal bg = new BigDecimal(array[10]==null?"0":array[10]);
                 model.setTxAmt(bg); //交易金额
-                model.setAccountno(array[12]); //交易账户 
-                model.setReversal(array[19]); //冲正标志
-                model.setTxStatus(array[20]); //交易状态
+                model.setAccountno(array[5]); //交易账户 
+                model.setTelNo(array[8]); //柜员号
                 
         		dayCheckLogService.dayCheckLogInit(model);
 			}

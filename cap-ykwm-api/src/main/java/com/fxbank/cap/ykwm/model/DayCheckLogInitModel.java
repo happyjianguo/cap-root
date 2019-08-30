@@ -24,14 +24,14 @@ public class DayCheckLogInitModel extends ModelBase implements Serializable {
 	private static final long serialVersionUID = 8850394891802837L;
 
     /**
-     * 清算日期
+     * 柜员号
      */
-    private Integer settleDate;
+    private String telNo;
 
     /**
-     * 清算机构
+     * 机构号
      */
-    private String settleBranch;
+    private String branchNo;
 
     /**
      * 核心交易日期
@@ -44,11 +44,6 @@ public class DayCheckLogInitModel extends ModelBase implements Serializable {
     private String hostTraceno;
 
     /**
-     * 交易币种
-     */
-    private String ccy;
-
-    /**
      * 交易金额
      */
     private BigDecimal txAmt;
@@ -57,32 +52,6 @@ public class DayCheckLogInitModel extends ModelBase implements Serializable {
      * 交易账户
      */
     private String accountno;
-
-    /**
-     * 冲正标志
-     */
-    private String reversal;
-
-    /**
-     * 交易状态；00-成功 02-冲正
-     */
-    private String txStatus;
-    
-	public Integer getSettleDate() {
-		return settleDate;
-	}
-
-	public void setSettleDate(Integer settleDate) {
-		this.settleDate = settleDate;
-	}
-
-	public String getSettleBranch() {
-		return settleBranch;
-	}
-
-	public void setSettleBranch(String settleBranch) {
-		this.settleBranch = settleBranch;
-	}
 
 	public Integer getHostDate() {
 		return hostDate;
@@ -98,14 +67,6 @@ public class DayCheckLogInitModel extends ModelBase implements Serializable {
 
 	public void setHostTraceno(String hostTraceno) {
 		this.hostTraceno = hostTraceno;
-	}
-
-	public String getCcy() {
-		return ccy;
-	}
-
-	public void setCcy(String ccy) {
-		this.ccy = ccy;
 	}
 
 	public BigDecimal getTxAmt() {
@@ -124,22 +85,20 @@ public class DayCheckLogInitModel extends ModelBase implements Serializable {
 		this.accountno = accountno;
 	}
 
-	public String getReversal() {
-		return reversal;
+	public String getTelNo() {
+		return telNo;
 	}
 
-	public void setReversal(String reversal) {
-		this.reversal = reversal;
+	public void setTelNo(String telNo) {
+		this.telNo = telNo;
 	}
 
-	public String getTxStatus() {
-		return txStatus;
+	public String getBranchNo() {
+		return branchNo;
 	}
 
-	public void setTxStatus(String txStatus) {
-		this.txStatus = txStatus;
+	public void setBranchNo(String branchNo) {
+		this.branchNo = branchNo;
 	}
-    
-    
 
 }

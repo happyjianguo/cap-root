@@ -25,16 +25,13 @@ public class DayCheckLogService implements IDayCheckLogService {
 		YkwmChecklog tcexChkLog = new YkwmChecklog();
 		
 		tcexChkLog.setAccountno(model.getAccountno());
-		tcexChkLog.setCcy(model.getCcy());
 		tcexChkLog.setHostDate(model.getHostDate());
 		tcexChkLog.setHostTraceno(model.getHostTraceno());
 		tcexChkLog.setPlatDate(model.getSysDate());
 		tcexChkLog.setPlatTrace(model.getSysTraceno());
-		tcexChkLog.setReversal(model.getReversal());
-		tcexChkLog.setSettleBranch(model.getSettleBranch());
+		tcexChkLog.setBranchNo(model.getBranchNo());
 		tcexChkLog.setTxAmt(model.getTxAmt());
-		tcexChkLog.setTxStatus(model.getTxStatus());
-		tcexChkLog.setSettleDate(model.getSettleDate());
+		tcexChkLog.setTelNo(model.getTelNo());
 		mapper.insertSelective(tcexChkLog);
 	}
 
@@ -48,14 +45,11 @@ public class DayCheckLogService implements IDayCheckLogService {
 		for(YkwmChecklog log : ykwmChkLogList) {
 			DayCheckLogInitModel model = new DayCheckLogInitModel(myLog,platDate,sysTime,log.getPlatTrace());
 			model.setAccountno(log.getAccountno());
-			model.setCcy(log.getCcy());
 			model.setHostDate(log.getHostDate());
 			model.setHostTraceno(log.getHostTraceno());
-			model.setReversal(log.getReversal());
-			model.setSettleBranch(log.getSettleBranch());
-			model.setSettleDate(log.getSettleDate());
+			model.setBranchNo(log.getBranchNo());
+			model.setTelNo(log.getTelNo());
 			model.setTxAmt(log.getTxAmt());
-			model.setTxStatus(log.getTxStatus());
 			dayCheckLogInitModelList.add(model);
 		}
 		
