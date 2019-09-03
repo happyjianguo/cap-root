@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ceba.mapper.CebaChargeLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ceba.entity.CebaChargeLog">
+    <id column="PLAT_DATE" jdbcType="INTEGER" property="platDate" />
+    <id column="PLAT_TRACE" jdbcType="INTEGER" property="platTrace" />
+    <result column="PLAT_TIME" jdbcType="INTEGER" property="platTime" />
+    <result column="SOURCE_TYPE" jdbcType="NVARCHAR" property="sourceType" />
+    <result column="TX_BRANCH" jdbcType="NVARCHAR" property="txBranch" />
+    <result column="TX_TEL" jdbcType="NVARCHAR" property="txTel" />
+    <result column="BILL_KEY" jdbcType="NVARCHAR" property="billKey" />
+    <result column="COMPANY_ID" jdbcType="NVARCHAR" property="companyId" />
+    <result column="CUSTOMER_NAME" jdbcType="NVARCHAR" property="customerName" />
+    <result column="PAY_ACCOUNT" jdbcType="NVARCHAR" property="payAccount" />
+    <result column="PAY_AMOUNT" jdbcType="DECIMAL" property="payAmount" />
+    <result column="AC_TYPE" jdbcType="NVARCHAR" property="acType" />
+    <result column="CONTRACT_NO" jdbcType="NVARCHAR" property="contractNo" />
+    <result column="BANK_BILL_NO" jdbcType="NVARCHAR" property="bankBillNo" />
+    <result column="RECEIPT_NO" jdbcType="NVARCHAR" property="receiptNo" />
+    <result column="ACCT_DATE" jdbcType="NVARCHAR" property="acctDate" />
+    <result column="PAY_STATE" jdbcType="NVARCHAR" property="payState" />
+    <result column="ERROR_CODE" jdbcType="NVARCHAR" property="errorCode" />
+    <result column="HOST_CHECK_STATE" jdbcType="NVARCHAR" property="hostCheckState" />
+    <result column="CEBA_CHECK_STATE" jdbcType="NVARCHAR" property="cebaCheckState" />
+    <result column="SEQ_NO" jdbcType="NVARCHAR" property="seqNo" />
+    <result column="HOST_DATE" jdbcType="INTEGER" property="hostDate" />
+    <result column="HOST_TRACENO" jdbcType="NVARCHAR" property="hostTraceno" />
+    <result column="HOST_STATE" jdbcType="NVARCHAR" property="hostState" />
+    <result column="HOST_RET_CODE" jdbcType="NVARCHAR" property="hostRetCode" />
+    <result column="HOST_RET_MSG" jdbcType="NVARCHAR" property="hostRetMsg" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, PLAT_TIME, SOURCE_TYPE, TX_BRANCH,TX_TEL, BILL_KEY, COMPANY_ID, 
+    CUSTOMER_NAME, PAY_ACCOUNT, PAY_AMOUNT, AC_TYPE, CONTRACT_NO, BANK_BILL_NO, RECEIPT_NO, 
+    ACCT_DATE, PAY_STATE, ERROR_CODE, HOST_CHECK_STATE,CEBA_CHECK_STATE, SEQ_NO, HOST_DATE, HOST_TRACENO, 
+    HOST_STATE, HOST_RET_CODE, HOST_RET_MSG
+    from CEBA_CHARGE_LOG
+  </select>
+  <select id="selectCheckedTrace" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, PLAT_TIME, SOURCE_TYPE, TX_BRANCH,TX_TEL, BILL_KEY, COMPANY_ID, 
+    CUSTOMER_NAME, PAY_ACCOUNT, PAY_AMOUNT, AC_TYPE, CONTRACT_NO, BANK_BILL_NO, RECEIPT_NO, 
+    ACCT_DATE, PAY_STATE, ERROR_CODE, HOST_CHECK_STATE,CEBA_CHECK_STATE, SEQ_NO, HOST_DATE, HOST_TRACENO, 
+    HOST_STATE, HOST_RET_CODE, HOST_RET_MSG
+    from CEBA_CHARGE_LOG where cap_date=#{date} and pay_state=2 and check_state in ('2','3')
+  </select>
+  <select id="selectTotalNum" resultType="java.lang.String" >
+     select count(t.pay_amount) as num from CEBA_CHARGE_LOG t where 
+     t.plat_date=#{date} and t.pay_state='2' and t.host_state='0' and t.host_check_state='2' and t.ceba_check_state='2'
+  </select>
+  <select id="selectTotalSum" resultType="java.lang.String" >
+     select sum(t.pay_amount) as num from CEBA_CHARGE_LOG t where 
+     t.plat_date=#{date} and t.pay_state='2' and t.host_state='0' and t.host_check_state='2' and t.ceba_check_state='2'
+  </select>
+  <select id="selectHostCheckNum" resultType="java.lang.String" >
+    select count(*) as num from CEBA_CHARGE_LOG where plat_date=#{date}  
+     <if test='capResult != null and capResult != ""'>
+        and host_check_state = #{capResult}
+      </if>
+  </select>  
+  <select id="selectCebaCheckNum" resultType="java.lang.String" >
+    select count(*) as num from CEBA_CHARGE_LOG where plat_date=#{date}  
+     <if test='capResult != null and capResult != ""'>
+        and ceba_check_state = #{capResult}
+      </if>
+  </select>  
+  <select id="selectCheckSuccNum" resultType="java.lang.String" >
+    select count(*) as num from CEBA_CHARGE_LOG where plat_date=#{date}  
+        and host_check_state = '2' and ceba_check_state = '2'
+  </select>  
+  <select id="selectTotalCheckNum" resultType="java.lang.String" >
+    select count(*) as num from CEBA_CHARGE_LOG where plat_date=#{date}  
+        and host_check_state != '1' and ceba_check_state != '1'
+  </select>
+  <select id="selectCheckSuccAmt" resultType="java.lang.String" >
+    select sum(PAY_AMOUNT) as num from CEBA_CHARGE_LOG where plat_date=#{date}  
+    and host_check_state = '2' and ceba_check_state = '2' and host_state = '0' and pay_state = '2'
+  </select>     
+  <select id="selectByCheckState" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, PLAT_TIME, SOURCE_TYPE, TX_BRANCH,TX_TEL, BILL_KEY, COMPANY_ID, 
+    CUSTOMER_NAME, PAY_ACCOUNT, PAY_AMOUNT, AC_TYPE, CONTRACT_NO, BANK_BILL_NO, RECEIPT_NO, 
+    ACCT_DATE, PAY_STATE, ERROR_CODE, HOST_CHECK_STATE,CEBA_CHECK_STATE, SEQ_NO, HOST_DATE, HOST_TRACENO, 
+    HOST_STATE, HOST_RET_CODE, HOST_RET_MSG
+    from CEBA_CHARGE_LOG where plat_date=#{date} and pay_state = '2' and check_state in ('2','3')
+  </select>
+</mapper>

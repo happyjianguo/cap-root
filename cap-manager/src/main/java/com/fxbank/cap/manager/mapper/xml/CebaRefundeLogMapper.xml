@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.manager.mapper.CebaRefundeLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.manager.entity.CebaRefundeLog">
+    <id column="PLAT_DATE" jdbcType="DECIMAL" property="platDate" />
+    <id column="PLAT_TRACENO" jdbcType="DECIMAL" property="platTraceno" />
+    <result column="FLAG" jdbcType="VARCHAR" property="flag" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="HOST_CODE" jdbcType="VARCHAR" property="hostCode" />
+    <result column="HOST_MSG" jdbcType="VARCHAR" property="hostMsg" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACENO, FLAG, STATUS, HOST_CODE, HOST_MSG
+    from CEBA_REFUNDE_LOG
+  </select>
+  <select id="selectListPage" parameterType="com.fxbank.cap.manager.entity.CebaRefundeLog" resultMap="BaseResultMap">
+        select * from CEBA_REFUNDE_LOG
+        <trim prefix="WHERE" prefixOverrides="AND | OR ">
+            <if test="platTraceno != null and platTraceno != ''">
+                and plat_traceno = #{platTraceno}
+            </if>
+            <if test="platDate != null and platDate != ''">
+                and plat_date = #{platDate}
+            </if>
+        </trim>
+    </select>
+</mapper>

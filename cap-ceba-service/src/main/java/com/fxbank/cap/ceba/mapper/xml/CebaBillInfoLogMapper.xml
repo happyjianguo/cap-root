@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ceba.mapper.CebaBillInfoLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ceba.entity.CebaBillInfoLog">
+    <id column="SEQ_NO" jdbcType="VARCHAR" property="seqNo" />
+    <result column="BILL_KEY" jdbcType="VARCHAR" property="billKey" />
+    <result column="COMPANY_ID" jdbcType="VARCHAR" property="companyId" />
+    <result column="CONTRACT_NO" jdbcType="VARCHAR" property="contractNo" />
+    <result column="CUSTOMER_NAME" jdbcType="VARCHAR" property="customerName" />
+    <result column="BALANCE" jdbcType="DECIMAL" property="balance" />
+    <result column="PAY_AMOUNT" jdbcType="DECIMAL" property="payAmount" />
+    <result column="BEGIN_DATE" jdbcType="VARCHAR" property="beginDate" />
+    <result column="END_DATE" jdbcType="VARCHAR" property="endDate" />
+    <result column="ITEM1" jdbcType="VARCHAR" property="item1" />
+    <result column="ITEM2" jdbcType="VARCHAR" property="item2" />
+    <result column="ITEM3" jdbcType="VARCHAR" property="item3" />
+    <result column="ITEM4" jdbcType="VARCHAR" property="item4" />
+    <result column="ITEM5" jdbcType="VARCHAR" property="item5" />
+    <result column="ITEM6" jdbcType="VARCHAR" property="item6" />
+    <result column="ITEM7" jdbcType="VARCHAR" property="item7" />
+    <result column="FILED1" jdbcType="VARCHAR" property="filed1" />
+    <result column="FILED2" jdbcType="VARCHAR" property="filed2" />
+    <result column="FILED3" jdbcType="VARCHAR" property="filed3" />
+    <result column="FILED4" jdbcType="VARCHAR" property="filed4" />
+    <result column="FILED5" jdbcType="VARCHAR" property="filed5" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select SEQ_NO, BILL_KEY, COMPANY_ID, CONTRACT_NO, CUSTOMER_NAME, BALANCE, PAY_AMOUNT, 
+    BEGIN_DATE, END_DATE, ITEM1, ITEM2, ITEM3, ITEM4, ITEM5, ITEM6, ITEM7, FILED1, FILED2, 
+    FILED3, FILED4, FILED5
+    from CEBA_BILL_INFO_LOG
+  </select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ceba.mapper.CebaCheckLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ceba.entity.CebaCheckLog">
+    <id column="PLAT_DATE" jdbcType="DECIMAL" property="platDate" />
+    <id column="PLAT_TRACE" jdbcType="DECIMAL" property="platTrace" />
+    <result column="TX_AMT" jdbcType="DECIMAL" property="txAmt" />
+    <result column="PLAT_TIME" jdbcType="DECIMAL" property="platTime" />
+    <result column="BANK_BILL_NO" jdbcType="VARCHAR" property="bankBillNo" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, TX_AMT, PLAT_TIME, BANK_BILL_NO
+    from CEBA_CHECK_LOG
+  </select>
+  <select id="deleteAll" >
+    delete from CEBA_CHECK_LOG where plat_date = #{platDate}
+  </select>  
+</mapper>
