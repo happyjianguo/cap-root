@@ -124,7 +124,7 @@ public class CebaCheckTask {
 		myLog.info(logger, "光大银行与外围对账开始");
 		// 取对账文件数据
 		List<CebaCheckLogInitModel> checkLogList1 = cebaCheckLogService.getCebaCheckLog(myLog, getReqDto().getSysTime(),
-				getReqDto().getSysTraceno(), getReqDto().getSysDate());
+				getReqDto().getSysTraceno(), date);
 		// 光大银行与外围对账
 		cebaCheckChannelTraceLog(myLog, date.toString(), checkLogList1);
 		myLog.info(logger, "光大银行与外围对账结束");
@@ -576,7 +576,7 @@ public class CebaCheckTask {
 		// 对账文件入库
 		initHostCheckLog(localFile, myLog, date);
 		// 取对账文件数据
-		List<HostCheckLogInitModel> dayCheckLogList = hostCheckLogService.getHostCheckLog(myLog,getReqDto().getSysDate());
+		List<HostCheckLogInitModel> dayCheckLogList = hostCheckLogService.getHostCheckLog(myLog,Integer.parseInt(date));
 		return dayCheckLogList;
 	}
 
