@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.manager.mapper.CebaChargeLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.manager.entity.CebaChargeLog">
+    <id column="PLAT_DATE" jdbcType="DECIMAL" property="platDate" />
+    <id column="PLAT_TRACE" jdbcType="DECIMAL" property="platTrace" />
+    <result column="PLAT_TIME" jdbcType="DECIMAL" property="platTime" />
+    <result column="SOURCE_TYPE" jdbcType="NVARCHAR" property="sourceType" />
+    <result column="TX_BRANCH" jdbcType="NVARCHAR" property="txBranch" />
+    <result column="TX_TEL" jdbcType="NVARCHAR" property="txTel" />
+    <result column="BILL_KEY" jdbcType="NVARCHAR" property="billKey" />
+    <result column="COMPANY_ID" jdbcType="NVARCHAR" property="companyId" />
+    <result column="CUSTOMER_NAME" jdbcType="NVARCHAR" property="customerName" />
+    <result column="PAY_ACCOUNT" jdbcType="NVARCHAR" property="payAccount" />
+    <result column="PAY_AMOUNT" jdbcType="DECIMAL" property="payAmount" />
+    <result column="AC_TYPE" jdbcType="NVARCHAR" property="acType" />
+    <result column="CONTRACT_NO" jdbcType="NVARCHAR" property="contractNo" />
+    <result column="BANK_BILL_NO" jdbcType="NVARCHAR" property="bankBillNo" />
+    <result column="RECEIPT_NO" jdbcType="NVARCHAR" property="receiptNo" />
+    <result column="ACCT_DATE" jdbcType="NVARCHAR" property="acctDate" />
+    <result column="PAY_STATE" jdbcType="NVARCHAR" property="payState" />
+    <result column="ERROR_CODE" jdbcType="NVARCHAR" property="errorCode" />
+    <result column="HOST_CHECK_STATE" jdbcType="NVARCHAR" property="hostCheckState" />
+    <result column="SEQ_NO" jdbcType="NVARCHAR" property="seqNo" />
+    <result column="HOST_DATE" jdbcType="DECIMAL" property="hostDate" />
+    <result column="HOST_TRACENO" jdbcType="NVARCHAR" property="hostTraceno" />
+    <result column="HOST_STATE" jdbcType="NVARCHAR" property="hostState" />
+    <result column="HOST_RET_CODE" jdbcType="NVARCHAR" property="hostRetCode" />
+    <result column="HOST_RET_MSG" jdbcType="NVARCHAR" property="hostRetMsg" />
+    <result column="CEBA_CHECK_STATE" jdbcType="NVARCHAR" property="cebaCheckState" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, PLAT_TIME, SOURCE_TYPE, TX_BRANCH, TX_TEL, BILL_KEY, 
+    COMPANY_ID, CUSTOMER_NAME, PAY_ACCOUNT, PAY_AMOUNT, AC_TYPE, CONTRACT_NO, BANK_BILL_NO, 
+    RECEIPT_NO, ACCT_DATE, PAY_STATE, ERROR_CODE, HOST_CHECK_STATE, SEQ_NO, HOST_DATE, 
+    HOST_TRACENO, HOST_STATE, HOST_RET_CODE, HOST_RET_MSG, CEBA_CHECK_STATE
+    from CEBA_CHARGE_LOG
+  </select>
+      <select id="selectListPage" parameterType="com.fxbank.cap.manager.entity.CebaChargeLog" resultMap="BaseResultMap">
+        select * from CEBA_CHARGE_LOG
+        <trim prefix="WHERE" prefixOverrides="AND | OR ">
+            <if test="platTrace != null and platTrace != ''">
+                and plat_trace = #{platTrace}
+            </if>
+            <if test="platDate != null and platDate != ''">
+                and plat_date = #{platDate}
+            </if>
+        </trim>
+    </select>
+</mapper>

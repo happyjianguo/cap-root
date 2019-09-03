@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ceba.mapper.CebaOutageLogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ceba.entity.CebaOutageLog">
+    <id column="NOTICE_TIME" jdbcType="DECIMAL" property="noticeTime" />
+    <id column="COMPANY_ID" jdbcType="VARCHAR" property="companyId" />
+    <result column="OUTAGE_NOTICE_ID" jdbcType="VARCHAR" property="outageNoticeId" />
+    <result column="COMPANY_NAME" jdbcType="VARCHAR" property="companyName" />
+    <result column="OUTAGE_REASON" jdbcType="VARCHAR" property="outageReason" />
+    <result column="OUTAGE_DESC" jdbcType="VARCHAR" property="outageDesc" />
+    <result column="OUTAGE_BEGIN_TIME" jdbcType="DECIMAL" property="outageBeginTime" />
+    <result column="OUTAGE_END_TIME" jdbcType="DECIMAL" property="outageEndTime" />
+    <result column="FIX_DATE" jdbcType="DECIMAL" property="fixDate" />
+    <result column="FIX_TIME" jdbcType="DECIMAL" property="fixTime" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select NOTICE_TIME,OUTAGE_NOTICE_ID, COMPANY_ID, COMPANY_NAME, OUTAGE_REASON, OUTAGE_DESC, OUTAGE_BEGIN_TIME, 
+    OUTAGE_END_TIME, FIX_DATE, FIX_TIME, REMARK
+    from CEBA_OUTAGE_LOG
+  </select>
+    <select id="queryOutageLog" resultMap="BaseResultMap">
+    select NOTICE_TIME,OUTAGE_NOTICE_ID, COMPANY_ID, COMPANY_NAME, OUTAGE_REASON, OUTAGE_DESC, OUTAGE_BEGIN_TIME, 
+    OUTAGE_END_TIME, FIX_DATE, FIX_TIME, REMARK
+    from CEBA_OUTAGE_LOG where company_id =#{companyId} and 
+    outage_begin_time<![CDATA[ <= ]]>#{sysDate} 
+    and outage_end_time<![CDATA[ >= ]]>#{sysDate} 
+    and notice_time=(select max(notice_time) from ceba_outage_log where company_id =#{companyId} )
+  </select>
+</mapper>

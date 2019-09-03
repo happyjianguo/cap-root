@@ -1,0 +1,147 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>缴费单销账流水日志</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" type="text/css" th:href="@{../ui/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../ui/css/style.css}" />
+    <link rel="stylesheet" th:href="@{../ui/css/form_mobile.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{../ui/css/table.css}"/>
+</head>
+
+<body>
+<div class="iconBox">
+    <div class="iconfont glyphiconSearch_mob"></div>
+</div>
+<div class="searchBox">
+    <form class="formBox layui-form" id="form" th:object="${data}">
+        <div class="form_box line_4">
+            <div class="layui-inline">
+                <label class="layui-form-label">渠道日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="platDate" id="platDate" th:value="*{platDate}"  class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="form_box line_4">
+            <div class="layui-inline">
+                <label class="layui-form-label">渠道流水号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="platTrace" id="platTrace" th:value="*{platTrace}"  class="layui-input">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <button class="layui-btn layui-btn-normal layui-btn-sm" id="query" onclick="query()">查询</button>
+</div>
+    <div id="table_box" lay-filter="table_box">
+        <!--表格盒子-->
+    </div>
+<!--<div id="laypages"></div>-->
+
+
+<script th:src="@{../ui/jquery/jquery.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/layui/layui.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/jquery/jquery-ui.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/js/commons.js}"></script>
+<script th:src="@{../ui/js/Ui_table.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/js/newForm.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../system/paf/paf.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" th:inline="javascript">
+function query(){
+		$('#form').submit();
+}
+    var table=null;
+    layui.use('table', function(){
+        table = layui.table;
+        table.render({
+            elem: '#table_box',
+            url:'../ceba/chargeLogData?platDate='+$("#platDate").val()+'&platTrace='+$("#platTrace").val(),
+            isSortBox:true,
+            
+            editor:false,
+            cellMinWidth:170,
+            cols: [
+                [
+                    {field:'platDate', title:'渠道日期'},
+                    {field:'platTrace', title:'渠道流水号'},
+                    {field:'billKey', title:'机表号'},
+                    {field:'companyId', title:'收费单位标识号'},
+                    {field:'customerName', title:'客户姓名'},
+                    {field:'payAccount', title:'缴费账号'},
+                    {field:'payAmount', title:'缴费金额'},
+                    {field:'bankBillNo', title:'光大银行流水号'},
+                    {field:'acctDate', title:'光大银行账务日期'},
+                    {field:'seqNo', title:'来源渠道流水号'},
+                    {field:'hostDate', title:'核心日期'},
+                    {field:'hostTraceno', title:'核心流水号'},
+                    {field:'hostState', title:'核心记账状态',toolbar:'#hostStateParameter'},
+                    {field:'hostRetCode', title:'核心反馈响应码'},
+                    {field:'hostRetMsg', title:'核心返回响应信息'},
+                    {field:'payState', title:'光大银行记账状态',toolbar:'#payStateParameter'},
+                    {field:'errorCode', title:'光大银行错误码'},
+                    {field:'hostCheckState', title:'核心对账状态',toolbar:'#hostCheckStateParameter'},
+                    {field:'cebaCheckState', title:'光大银行对账状态',toolbar:'#cebaCheckStateParameter'}
+
+                ]
+            ],
+            page: true
+
+
+        });
+
+    });
+
+</script>
+<script type="text/html" id="hostStateParameter">
+    {{#if(d.hostState==0){}}
+    <span>成功</span>
+    {{#}else if(d.hostState==1){}}
+    <span>冲正成功</span>
+    {{#}else if(d.hostState==2){}}
+    <span>冲正失败</span>
+    {{#}else if(d.hostState==3){}}
+    <span>冲正超时</span>
+    {{#}else if(d.hostState==4){}}
+    <span>超时</span>
+    {{#}}}
+</script>
+<script type="text/html" id="payStateParameter">
+    {{#if(d.payState==0){}}
+    <span>登记</span>
+    {{#}else if(d.payState==1){}}
+    <span>超时</span>
+    {{#}else if(d.payState==2){}}
+    <span>处理成功</span>
+    {{#}else if(d.payState==3){}}
+    <span>处理失败</span>
+    {{#}}}
+</script>
+<script type="text/html" id="hostCheckStateParameter">
+    {{#if(d.hostCheckState==1){}}
+    <span>未对账</span>
+    {{#}else if(d.hostCheckState==2){}}
+    <span>已对账</span>
+    {{#}else if(d.hostCheckState==3){}}
+    <span>核心多</span>
+    {{#}else if(d.hostCheckState==4){}}
+    <span>渠道多</span>
+    {{#}}}
+</script>
+<script type="text/html" id="cebaCheckStateParameter">
+    {{#if(d.cebaCheckState==1){}}
+    <span>未对账</span>
+    {{#}else if(d.cebaCheckState==2){}}
+    <span>已对账</span>
+    {{#}else if(d.cebaCheckState==3){}}
+    <span>光大银行多</span>
+    {{#}else if(d.cebaCheckState==4){}}
+    <span>渠道多</span>
+    {{#}}}
+</script>
+</body>
+
+</html>
