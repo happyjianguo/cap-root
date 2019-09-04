@@ -18,7 +18,7 @@ public class CheckErrorService implements ICheckErrorService {
 	private CebaErrorLogMapper mapper;
 
 	@Override
-	public List<CheckErrorModel> getListByDate(MyLog myLog,Integer sysTime, Integer sysDate,Integer sysTraceno,String date) throws SysTradeExecuteException {
+	public List<CheckErrorModel> getListByDate(MyLog myLog,String date) throws SysTradeExecuteException {
 		List<CebaErrorLog> list = mapper.selectByDate(date);
 		List<CheckErrorModel> modelList = new ArrayList<>();
 		for(CebaErrorLog log : list) {

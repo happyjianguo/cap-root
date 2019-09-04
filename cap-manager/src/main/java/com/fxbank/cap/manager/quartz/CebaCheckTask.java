@@ -109,7 +109,6 @@ public class CebaCheckTask {
 		// 渠道日期前一天对账
 		Integer date = getPreDateByDate(getReqDto().getSysDate());
 		myLog.info(logger, "核心与外围对账开始");
-		checkErrorService.delete(date.toString());
 		// 取核心文件 核心文件入库
 		List<HostCheckLogInitModel> checkLogList = getHostCheckLogList(myLog, date.toString());
 		// 核心与外围对账
@@ -146,11 +145,13 @@ public class CebaCheckTask {
 		String checkSuccNum = cebaChargeLogService.getCheckSuccNum(date.toString());
 		//核心对账标志不为2并且光大银行对账标志不为2的缴费流水总金额
 		BigDecimal checkSuccAmt = new BigDecimal(cebaChargeLogService.getCheckSuccAmt(date.toString()));
+		//对账错误流水日志笔数
+		int errorNum = checkErrorService.getListByDate(myLog,date.toString()).size();
 		//对账成功标志，以光大银行对账文件为准
 		Boolean checkFlag = false;
 		String checkMsg = "光大云缴费【" + date + "】对账统计：共【" + totalCheckNum + "】笔，" + "其中已对账【" + checkSuccNum + "】笔，比核心多出【"
-				+ hostCheckNum + "】笔，" + "比光大银行多出【" + cebaCheckNum + "】笔，";
-		if(checkLogList1.size() == Integer.parseInt(checkSuccNum)) {
+				+ hostCheckNum + "】笔，" + "比光大银行多出【" + cebaCheckNum + "】笔，对账错误流水【"+errorNum+"】笔，";
+		if(checkLogList1.size() == Integer.parseInt(checkSuccNum)&&errorNum==0) {
 			checkFlag = true;
 			checkMsg += "对账成功";
 		}else {
@@ -187,8 +188,16 @@ public class CebaCheckTask {
 	public ESB_REP_30011000101 hostRefunde(MyLog myLog, CebaChargeLogModel model) throws SysTradeExecuteException {
 		ESB_REQ_30011000101 esbReq_30011000101 = new ESB_REQ_30011000101(myLog, getReqDto().getSysDate(),
 				getReqDto().getSysTime(), getReqDto().getSysTraceno());
+		// 交易机构
+		String txBrno = null;
+		// 柜员号
+		String txTel = null;
+		try (Jedis jedis = myJedis.connect()) {
+			txBrno = jedis.get(COMMON_PREFIX + "ceba_txbrno");
+			txTel = jedis.get(COMMON_PREFIX + "ceba_txtel");
+		}
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30011000101.getReqSysHead(), getReqDto())
-				.setSourceType("GD").build();
+				.setBranchId(txBrno).setUserId(txTel).setSourceType("GD").build();
 		esbReq_30011000101.setReqSysHead(reqSysHead);
 		// 退款账号
 		String othBaseAcctNo = null;
@@ -206,7 +215,7 @@ public class CebaCheckTask {
 		// 交易币种
 		reqBody_30011000101.setTranCcy("CNY");
 		// 支取方式 支取时必输S凭印鉴支取P凭密码支取W无密码无印鉴支取B凭印鉴和密码支取O凭证件支取
-		reqBody_30011000101.setWithdrawalType("W");
+		//reqBody_30011000101.setWithdrawalType("W");
 		// 交易金额
 		reqBody_30011000101.setTranAmt(model.getPayAmount().toString());
 		// 记账渠道类型
@@ -243,7 +252,7 @@ public class CebaCheckTask {
 				ceModel.setPreHostState(model.getHostState());
 				ceModel.setRePayState("");
 				// 对账问题数据表 核心对账标志，1-记账状态不符，2-核心多，3-渠道多
-				ceModel.setCebaCheckFlag("3");
+				ceModel.setHostCheckFlag("3");
 				ceModel.setTxAmt(model.getPayAmount());
 				ceModel.setRemark("渠道多出记录，渠道日期【" + model.getSysDate() + "】，渠道流水【"
 						+ model.getSysTraceno() + "】，渠道记账状态【" + model.getHostState() + "】");
@@ -369,6 +378,8 @@ public class CebaCheckTask {
 						// 退款失败
 						// 退款状态，0未退款,1已退款,2退款失败,3退款超时,4销账流水日志未查到
 						refundeLogModel.setStatus("2");
+						refundeLogModel.setHostCode(e.getRspCode());
+						refundeLogModel.setHostMsg(e.getRspMsg());
 						cebaRefundeLogService.initRefundeLog(myLog, refundeLogModel);
 						myLog.error(logger, "对账退款失败,渠道日期" + model.getSysDate() + "渠道流水号" + model.getSysTraceno(), e);
 					}
@@ -497,10 +508,13 @@ public class CebaCheckTask {
 	private String getEsbCheckFile(MyLog myLog, String date) throws SysTradeExecuteException {
 		ESB_REQ_50015000101 esbReq_50015000101 = new ESB_REQ_50015000101(myLog, getReqDto().getSysDate(),
 				getReqDto().getSysTime(), getReqDto().getSysTraceno());
-		String txBrno = null, txTel = null;
+		// 交易机构
+		String txBrno = null;
+		// 柜员号
+		String txTel = null;
 		try (Jedis jedis = myJedis.connect()) {
-			txBrno = jedis.get(COMMON_PREFIX + "txbrno");
-			txTel = jedis.get(COMMON_PREFIX + "txtel");
+			txBrno = jedis.get(COMMON_PREFIX + "ceba_txbrno");
+			txTel = jedis.get(COMMON_PREFIX + "ceba_txtel");
 		}
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_50015000101.getReqSysHead(), getReqDto())
 				.setBranchId(txBrno).setUserId(txTel).setSourceType("MB").build();

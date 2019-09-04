@@ -42,7 +42,6 @@ public class CebaRefundeLogService implements ICebaRefundeLogService{
 		cebaRefundeLog.setPlatDate(model.getSysDate());
 		cebaRefundeLog.setPlatTraceno(model.getSysTraceno());
 		cebaRefundeLog.setFlag(model.getFlag());
-		cebaRefundeLog.setStatus("0");
 		cebaRefundeLog.setHostCode(model.getHostCode());
 		cebaRefundeLog.setHostMsg(model.getHostMsg());
 		cebaRefundeLogMapper.insertSelective(cebaRefundeLog);
