@@ -148,8 +148,16 @@ public class CebaRefundeTask {
 	public ESB_REP_30011000101 hostRefunde(MyLog myLog, CebaChargeLogModel model) throws SysTradeExecuteException {
 		ESB_REQ_30011000101 esbReq_30011000101 = new ESB_REQ_30011000101(myLog, getReqDto().getSysDate(),
 				getReqDto().getSysTime(), getReqDto().getSysTraceno());
+		// 交易机构
+		String txBrno = null;
+		// 柜员号
+		String txTel = null;
+		try (Jedis jedis = myJedis.connect()) {
+			txBrno = jedis.get(COMMON_PREFIX + "ceba_txbrno");
+			txTel = jedis.get(COMMON_PREFIX + "ceba_txtel");
+		}
 		ESB_REQ_SYS_HEAD reqSysHead = new EsbReqHeaderBuilder(esbReq_30011000101.getReqSysHead(), getReqDto())
-				.setSourceType("GD").build();
+				.setBranchId(txBrno).setUserId(txTel).setSourceType("GD").build();
 		esbReq_30011000101.setReqSysHead(reqSysHead);
 		// 退款账号
 		String othBaseAcctNo = null;
@@ -167,7 +175,7 @@ public class CebaRefundeTask {
 		// 交易币种
 		reqBody_30011000101.setTranCcy("CNY");
 		//支取方式 支取时必输S凭印鉴支取P凭密码支取W无密码无印鉴支取B凭印鉴和密码支取O凭证件支取
-		reqBody_30011000101.setWithdrawalType("W");
+		//reqBody_30011000101.setWithdrawalType("W");
 		// 交易金额
 		reqBody_30011000101.setTranAmt(model.getPayAmount().toString());
 		// 记账渠道类型
