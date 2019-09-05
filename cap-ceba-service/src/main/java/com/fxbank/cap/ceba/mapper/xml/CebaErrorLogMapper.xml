@@ -22,6 +22,11 @@
     PRE_HOST_STATE, RE_HOST_STATE, HOST_CHECK_FLAG,  TX_AMT,HOST_DATE,HOST_TRACENO,
     BANK_BILL_NO, REMARK from CEBA_ERROR_LOG
   </select>
+  <select id="selectByDate" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, PLAT_TIME, PRE_PAY_STATE, RE_PAY_STATE, CEBA_CHECK_FLAG, 
+    PRE_HOST_STATE, RE_HOST_STATE, HOST_CHECK_FLAG,  TX_AMT,HOST_DATE,HOST_TRACENO,
+    BANK_BILL_NO, REMARK from CEBA_ERROR_LOG where plat_date = #{date}
+  </select>
   <select id="deleteByDate" >
     delete from CEBA_ERROR_LOG where plat_date = #{date}
   </select>

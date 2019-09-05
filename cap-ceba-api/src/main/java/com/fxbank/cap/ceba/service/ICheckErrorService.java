@@ -15,7 +15,7 @@ import com.fxbank.cip.base.log.MyLog;
 */
 public interface ICheckErrorService {
 
-	List<CheckErrorModel> getListByDate(MyLog myLog,Integer sysTime, Integer sysDate,Integer sysTraceno, String date)throws SysTradeExecuteException;
+	List<CheckErrorModel> getListByDate(MyLog myLog, String date)throws SysTradeExecuteException;
 	
 	void insert(CheckErrorModel model)throws SysTradeExecuteException;
 	
