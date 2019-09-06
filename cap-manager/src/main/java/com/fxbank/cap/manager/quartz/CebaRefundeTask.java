@@ -88,7 +88,7 @@ public class CebaRefundeTask {
 		localFile = getRefundeFile(myLog, fileName);
 		// 根据退款文件申请日期判断是否导入过
 		if (!cebaRefundeLogService.isInitRefundeLog(myLog, sysDate)) {
-			initRefundeLog(localFile, myLog);
+			initRefundeLog(localFile, myLog,sysDate);
 		}
 		List<CebaRefundeLogModel> list;
 		try {
@@ -188,7 +188,7 @@ public class CebaRefundeTask {
 		return esbRep_30011000101;
 	}
 
-	private void initRefundeLog(String localFile, MyLog myLog) throws SysTradeExecuteException {
+	private void initRefundeLog(String localFile, MyLog myLog,Integer sysDate) throws SysTradeExecuteException {
 		BufferedReader br = null;
 		myLog.info(logger, "光大银行退款文件入库开始");
 		try {
@@ -202,6 +202,8 @@ public class CebaRefundeTask {
 					Integer platTraceno = Integer.parseInt(array[2]);
 					CebaRefundeLogModel model = new CebaRefundeLogModel(myLog, platDate, null, platTraceno);
 					model.setFlag("1");
+					model.setStatus("0");
+					model.setReqDate(sysDate);
 					cebaRefundeLogService.initRefundeLog(myLog, model);
 				}
 

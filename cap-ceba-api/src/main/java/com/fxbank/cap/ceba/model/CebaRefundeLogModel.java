@@ -23,7 +23,14 @@ public class CebaRefundeLogModel extends ModelBase implements Serializable{
 	private String status;
 	private String hostCode;
 	private String hostMsg;
-
+	private Integer reqDate;
+	
+	public Integer getReqDate() {
+		return reqDate;
+	}
+	public void setReqDate(Integer reqDate) {
+		this.reqDate = reqDate;
+	}
 	public String getHostCode() {
 		return hostCode;
 	}
