@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.util.List;
 import javax.annotation.Resource;
 import org.quartz.Trigger;
@@ -89,7 +88,7 @@ public class CebaRefundeTask {
 		localFile = getRefundeFile(myLog, fileName);
 		// 根据退款文件申请日期判断是否导入过
 		if (!cebaRefundeLogService.isInitRefundeLog(myLog, sysDate)) {
-			initRefundeLog(localFile, myLog, sysDate);
+			initRefundeLog(localFile, myLog,sysDate);
 		}
 		List<CebaRefundeLogModel> list;
 		try {
@@ -166,8 +165,8 @@ public class CebaRefundeTask {
 		}
 		ESB_REQ_30011000101.REQ_BODY reqBody_30011000101 = esbReq_30011000101.getReqBody();
 		// 账号/卡号
-		reqBody_30011000101.setBaseAcctNo(model.getPayAccount());
-		reqBody_30011000101.setOthBaseAcctNo(othBaseAcctNo);
+		reqBody_30011000101.setBaseAcctNo(othBaseAcctNo);
+		reqBody_30011000101.setOthBaseAcctNo(model.getPayAccount());
 		// 账户名称
 		reqBody_30011000101.setAcctName(model.getCustomerName());
 		// 交易类型
@@ -189,7 +188,7 @@ public class CebaRefundeTask {
 		return esbRep_30011000101;
 	}
 
-	private void initRefundeLog(String localFile, MyLog myLog, Integer refundeDate) throws SysTradeExecuteException {
+	private void initRefundeLog(String localFile, MyLog myLog,Integer sysDate) throws SysTradeExecuteException {
 		BufferedReader br = null;
 		myLog.info(logger, "光大银行退款文件入库开始");
 		try {
@@ -198,23 +197,13 @@ public class CebaRefundeTask {
 			while ((lineTxt = br.readLine()) != null) {
 				lineTxt += "|";
 				String[] array = lineTxt.split("\\|");
-				if (array.length == 2) {
-					int totalNum = Integer.parseInt(array[0]);
-					BigDecimal totalAmt = new BigDecimal(array[1]).movePointLeft(2).setScale(2,
-							BigDecimal.ROUND_HALF_UP);
-					int chargeTotalNum = Integer.parseInt(cebaChargeLogService.getTotalNum(refundeDate.toString()));
-					String chargeAmt = cebaChargeLogService.getTotalAmt(refundeDate.toString());
-					BigDecimal chargeTotalAmt = new BigDecimal(chargeAmt);
-					if (totalNum != chargeTotalNum || totalAmt.compareTo(chargeTotalAmt) != 0) {
-						myLog.error(logger, "退款文件总金额和总笔数与销账流水日志不符,渠道日期"+refundeDate);
-						break;
-					}
-				}
 				if (array.length == 3) {
-					Integer platDate = Integer.parseInt(array[1]);
+					Integer platDate = Integer.parseInt(array[1].substring(0,8));
 					Integer platTraceno = Integer.parseInt(array[2]);
 					CebaRefundeLogModel model = new CebaRefundeLogModel(myLog, platDate, null, platTraceno);
 					model.setFlag("1");
+					model.setStatus("0");
+					model.setReqDate(sysDate);
 					cebaRefundeLogService.initRefundeLog(myLog, model);
 				}
 
