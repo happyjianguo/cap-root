@@ -206,8 +206,8 @@ public class CebaCheckTask {
 		}
 		ESB_REQ_30011000101.REQ_BODY reqBody_30011000101 = esbReq_30011000101.getReqBody();
 		// 账号/卡号
-		reqBody_30011000101.setBaseAcctNo(model.getPayAccount());
-		reqBody_30011000101.setOthBaseAcctNo(othBaseAcctNo);
+		reqBody_30011000101.setBaseAcctNo(othBaseAcctNo);
+		reqBody_30011000101.setOthBaseAcctNo(model.getPayAccount());
 		// 账户名称
 		reqBody_30011000101.setAcctName(model.getCustomerName());
 		// 交易类型
@@ -354,8 +354,8 @@ public class CebaCheckTask {
 			// 光大银行对账标志，1-未对账，2-已对账，3-光大银行多，4-渠道多
 			model.setCebaCheckState("4");
 			cebaChargeLogService.updateCheck(model);
-			// 光大银行记账状态,0-登记，1-超时，2-处理成功，3-处理失败
-			if (model.getPayState().equals("2")) {
+			// 核心记账状态，0-成功，1-冲正成功，2-冲正失败，3-冲正超时，4-处理超时
+			if (model.getHostState().equals("0")) {
 				myLog.error(logger, "光大云缴费【" + date + "】与光大银行对账失败: 渠道多出记录，渠道流水号【" + model.getSysTraceno() + "】，光大银行记账状态【"
 						+ model.getPayState() + "】");
 				// 当实时交易成功，但是对账文件里没有，需要通过对账给客户退款
