@@ -16,7 +16,8 @@
   </select>
   <select id="selectRefundeFileLog" resultMap="BaseResultMap">
     select PLAT_DATE, PLAT_TRACENO, FLAG, STATUS,HOST_CODE,HOST_MSG,REQ_DATE  
-    from CEBA_REFUNDE_LOG where STATUS = '0' and to_date(plat_date,'yyyy-MM-dd') <![CDATA[ > ]]> trunc(to_date(#{date},'yyyy-MM-dd'))-3 
-      and to_date(plat_date,'yyyy-MM-dd') <![CDATA[ <= ]]> trunc(to_date(#{date},'yyyy-MM-dd'))  
+    from CEBA_REFUNDE_LOG,CEBA_SETTLE_LOG t where STATUS = '0' and to_date(plat_date,'yyyy-MM-dd') <![CDATA[ > ]]> trunc(to_date(#{date},'yyyy-MM-dd'))-3 
+      and to_date(plat_date,'yyyy-MM-dd') <![CDATA[ <= ]]> trunc(to_date(#{date},'yyyy-MM-dd')) 
+      and t.chk_date=plat_date and t.tx_sts=3  
   </select>
 </mapper>
