@@ -206,8 +206,8 @@ public class CebaCheckTask {
 		}
 		ESB_REQ_30011000101.REQ_BODY reqBody_30011000101 = esbReq_30011000101.getReqBody();
 		// 账号/卡号
-		reqBody_30011000101.setBaseAcctNo(model.getPayAccount());
-		reqBody_30011000101.setOthBaseAcctNo(othBaseAcctNo);
+		reqBody_30011000101.setBaseAcctNo(othBaseAcctNo);
+		reqBody_30011000101.setOthBaseAcctNo(model.getPayAccount());
 		// 账户名称
 		reqBody_30011000101.setAcctName(model.getCustomerName());
 		// 交易类型
