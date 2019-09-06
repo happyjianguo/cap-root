@@ -181,7 +181,7 @@ public class CebaSettleTask {
 		// 渠道流水号
 		reqBody_30043000102.setOrigChannelSeqNo(chanelSeqNo);
 		// 渠道系统ID
-		reqBody_30043000102.setOrigSysId("CAP");
+		reqBody_30043000102.setOrigSysId("HVPS");
 		try {
 			// 如果第一次查询没查到内容再查询一次
 			esb_rep_30043000102 = forwardToESBService.sendToESB(esbReq_30043000102, reqBody_30043000102,
