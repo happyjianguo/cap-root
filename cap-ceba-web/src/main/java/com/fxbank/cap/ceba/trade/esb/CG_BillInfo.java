@@ -11,6 +11,7 @@ import com.fxbank.cap.ceba.dto.esb.REQ_30062001001;
 import com.fxbank.cap.ceba.exception.CebaTradeExecuteException;
 import com.fxbank.cap.ceba.model.CebaBillInfoLogModel;
 import com.fxbank.cap.ceba.model.CebaChargeLogModel;
+import com.fxbank.cap.ceba.model.CebaOutageLogModel;
 import com.fxbank.cap.ceba.model.ErrorInfo;
 import com.fxbank.cap.ceba.model.MODEL_BASE;
 import com.fxbank.cap.ceba.model.REP_BJCEBBCRes;
@@ -90,7 +91,16 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		super.TRADE_DESC = "缴费单销账";
 		super.othTimeoutQuery = false;
 		super.logger = logger;
+		MyLog myLog = logPool.get();
 		REQ_30062001001 reqDto = (REQ_30062001001) dto;
+		//查询seqNo是否存在
+		String seqNo = reqDto.getReqSysHead().getSeqNo();
+		CebaChargeLogModel cebaChargeLogModel = cebaChargeLogService.queryLogBySeqNo(myLog, seqNo);
+		if(null!=cebaChargeLogModel) {
+			myLog.error(logger, "来源流水号已存在"+seqNo);
+			CebaTradeExecuteException e = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10015);
+		    throw e;
+		}
 		return super.execute(reqDto);
 	}
 
