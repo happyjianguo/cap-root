@@ -35,7 +35,7 @@ public class ReqWorkKeyController {
 	@Reference(version = "1.0.0")
 	private IForwardToCebaService forwardToCebaService;
 
-	@Reference(version = "1.0.0")
+	@Reference(version = "1.0.0", cluster="broadcast")
 	private IWorkKeyService workKeyService;
 
 	@Reference(version = "1.0.0")
