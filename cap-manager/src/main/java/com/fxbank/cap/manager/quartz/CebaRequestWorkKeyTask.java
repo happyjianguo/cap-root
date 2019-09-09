@@ -18,6 +18,8 @@ import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.fxbank.cap.ceba.model.REP_BJCEBRWKRes;
+import com.fxbank.cap.ceba.model.REQ_BJCEBRWKReq;
 import com.fxbank.cap.ceba.service.IForwardToCebaService;
 import com.fxbank.cap.ceba.service.IWorkKeyService;
 import com.fxbank.cip.base.common.MyJedis;
@@ -49,18 +51,47 @@ public class CebaRequestWorkKeyTask {
 
 	public void exec() throws Exception {
 		MyLog myLog = new MyLog();
+		Integer sysDate = publicService.getSysDate("CIP");
+		Integer sysTime = publicService.getSysTime();
+		Integer sysTraceno = publicService.getSysTraceno();
+		REQ_BJCEBRWKReq reqW = new REQ_BJCEBRWKReq(myLog, sysDate, sysTime,
+				sysTraceno);
+		String instld = null;
+		try (Jedis jedis = myJedis.connect()) {
+			instld = jedis.get(COMMON_PREFIX + "ceba_instld");
+		}
+		reqW.getHead().setInstId(instld);
+		reqW.getHead().setAnsTranCode("BJCEBRWKReq");
+		reqW.getHead().setTrmSeqNum(sysDate.toString() + sysTraceno.toString());
+		reqW.getTin().setPartnerCode("746");
+		reqW.getTin().setOperationDate(sysDate.toString());
+		REP_BJCEBRWKRes res = (REP_BJCEBRWKRes) forwardToCebaService.sendToCeba(reqW);
+		
+		REP_BJCEBRWKRes.Tout tout = res.getTout();
+		myLog.info(logger, "申请工作密钥成功：" + tout.getKeyName() + "," + tout.getKeyValue() + "," + tout.getVerifyValue()
+				+ "," + tout.getKeyName1() + "," + tout.getKeyValue1() + "," + tout.getVerifyValue1());
+
 		String ipArray = null;
 		try (Jedis jedis = myJedis.connect()) {
 			ipArray = jedis.get(COMMON_PREFIX + "work_key_ip");
 		}
 		for(String ip:ipArray.split("\\|")) {
-			sendRwk(myLog,ip);
+			sendRwk(myLog,ip,tout.getKeyValue1(), tout.getVerifyValue1(), tout.getKeyValue(),
+					tout.getVerifyValue());
 		}
 	}
 	
-	private void sendRwk(MyLog myLog,String ip) {
+	private void sendRwk(MyLog myLog,String ip,String macKey,String macVerify,String pinKey,String pinVerify) {
 		try {
-			HttpPost httpPost = new HttpPost("http://"+ip+":8004/cap/ceba/test");
+			StringBuffer url = new StringBuffer();
+			url.append("http://");
+			url.append(ip);
+			url.append(":8004/cap/ceba/updateWk");
+			url.append("?macKey="+macKey);
+			url.append("&macVerify="+macVerify);
+			url.append("&pinKey="+pinKey);
+			url.append("&pinVerify="+pinVerify);
+			HttpPost httpPost = new HttpPost(""+ip+"");
 			httpPost.setHeader("Content-Type", "application/json");
 			StringEntity se = new StringEntity("{\"BODY\":{},\"SYS_HEAD\":{\"SCENE_ID\":\"01\",\"SERVICE_ID\":\"300630014\"}}", "utf-8");
 			httpPost.setEntity(se);

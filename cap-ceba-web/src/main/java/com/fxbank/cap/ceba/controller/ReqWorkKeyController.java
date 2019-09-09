@@ -68,5 +68,14 @@ public class ReqWorkKeyController {
 		return res.creaFixPack();
 
 	}
+	
+	@RequestMapping("/ceba/updateWk")
+	@ResponseBody
+	public String updateWk(String macKey,String macVerify,String pinKey,String pinVerify) throws SysTradeExecuteException {
+		MyLog myLog = new MyLog();
+		workKeyService.updateWorkKey(myLog, macKey, macVerify, pinKey,pinVerify);
+		return "success";
+
+	}
 
 }
