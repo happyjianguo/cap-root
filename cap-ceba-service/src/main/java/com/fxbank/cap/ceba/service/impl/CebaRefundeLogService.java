@@ -75,7 +75,7 @@ public class CebaRefundeLogService implements ICebaRefundeLogService{
 
 	/** 
 	* @Title: updateRefundeLog 
-	* @Description: TODO(这里用一句话描述这个方法的作用) 
+	* @Description: 更新退款日志流水
 	* @param @param myLog
 	* @param @param model
 	* @param @throws SysTradeExecuteException    设定文件 
@@ -114,6 +114,32 @@ public class CebaRefundeLogService implements ICebaRefundeLogService{
 		if(count>0){
 			result = true;
 		}
+		return result;
+	}
+
+	/** 
+	* @Title: queryRefundeLog 
+	* @Description: 通过渠道日期和渠道流水号查询退款日志流水 
+	* @param @param myLog
+	* @param @param platDate
+	* @param @param platTraceno
+	* @param @return
+	* @param @throws SysTradeExecuteException    设定文件 
+	* @throws 
+	*/
+	@Override
+	public CebaRefundeLogModel queryRefundeLog(MyLog myLog, Integer platDate, Integer platTraceno)
+			throws SysTradeExecuteException {
+		CebaRefundeLog log = new CebaRefundeLog();
+		log.setPlatDate(platDate);
+		log.setPlatTraceno(platTraceno);
+		log = cebaRefundeLogMapper.selectByPrimaryKey(log);
+		CebaRefundeLogModel result = new CebaRefundeLogModel(null,log.getPlatDate(),0,log.getPlatTraceno());
+		result.setFlag(log.getFlag());
+		result.setHostCode(log.getHostCode());
+		result.setHostMsg(log.getHostMsg());
+		result.setReqDate(log.getReqDate());
+		result.setStatus(log.getStatus());
 		return result;
 	}
 
