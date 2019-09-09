@@ -1,6 +1,11 @@
 package com.fxbank.cap.manager.quartz;
 
+import java.net.SocketTimeoutException;
 import javax.annotation.Resource;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +18,6 @@ import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.fxbank.cap.ceba.model.REP_BJCEBRWKRes;
-import com.fxbank.cap.ceba.model.REQ_BJCEBRWKReq;
 import com.fxbank.cap.ceba.service.IForwardToCebaService;
 import com.fxbank.cap.ceba.service.IWorkKeyService;
 import com.fxbank.cip.base.common.MyJedis;
@@ -36,7 +39,7 @@ public class CebaRequestWorkKeyTask {
 	@Reference(version = "1.0.0")
 	private IForwardToCebaService forwardToCebaService;
 	
-	@Reference(version = "1.0.0")
+	@Reference(version = "1.0.0", cluster="broadcast")
 	private IWorkKeyService workKeyService;
 
 	@Resource
@@ -46,29 +49,29 @@ public class CebaRequestWorkKeyTask {
 
 	public void exec() throws Exception {
 		MyLog myLog = new MyLog();
-		Integer sysDate = publicService.getSysDate("CIP");
-		Integer sysTime = publicService.getSysTime();
-		Integer sysTraceno = publicService.getSysTraceno();
-		REQ_BJCEBRWKReq reqW = new REQ_BJCEBRWKReq(myLog, sysDate, sysTime,
-				sysTraceno);
-		String instld = null;
+		String ipArray = null;
 		try (Jedis jedis = myJedis.connect()) {
-			instld = jedis.get(COMMON_PREFIX + "ceba_instld");
+			ipArray = jedis.get(COMMON_PREFIX + "work_key_ip");
 		}
-		reqW.getHead().setInstId(instld);
-		reqW.getHead().setAnsTranCode("BJCEBRWKReq");
-		reqW.getHead().setTrmSeqNum(sysDate.toString() + sysTraceno.toString());
-		reqW.getTin().setPartnerCode("746");
-		reqW.getTin().setOperationDate(sysDate.toString());
-		REP_BJCEBRWKRes res = (REP_BJCEBRWKRes) forwardToCebaService.sendToCeba(reqW);
-		
-		REP_BJCEBRWKRes.Tout tout = res.getTout();
-		myLog.info(logger, "申请工作密钥成功：" + tout.getKeyName() + "," + tout.getKeyValue() + "," + tout.getVerifyValue()
-				+ "," + tout.getKeyName1() + "," + tout.getKeyValue1() + "," + tout.getVerifyValue1());
-
-		workKeyService.updateWorkKey(myLog, tout.getKeyValue1(), tout.getVerifyValue1(), tout.getKeyValue(),
-				tout.getVerifyValue());
-
+		for(String ip:ipArray.split("\\|")) {
+			sendRwk(myLog,ip);
+		}
+	}
+	
+	private void sendRwk(MyLog myLog,String ip) {
+		try {
+			HttpPost httpPost = new HttpPost("http://"+ip+":8004/cap/ceba/test");
+			httpPost.setHeader("Content-Type", "application/json");
+			StringEntity se = new StringEntity("{\"BODY\":{},\"SYS_HEAD\":{\"SCENE_ID\":\"01\",\"SERVICE_ID\":\"300630014\"}}", "utf-8");
+			httpPost.setEntity(se);
+			CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
+			closeableHttpClient.execute(httpPost);
+			closeableHttpClient.close();
+		} catch (SocketTimeoutException e) {
+			myLog.error(logger,"工作密钥申请请求响应超时",e);
+		} catch (Exception e) {
+			myLog.error(logger,"工作密钥申请请求失败",e);
+		}
 	}
 
 	@Bean(name = "cebaRequestWorkKeyJobDetail")
