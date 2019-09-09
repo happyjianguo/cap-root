@@ -134,6 +134,9 @@ public class CebaRefundeLogService implements ICebaRefundeLogService{
 		log.setPlatDate(platDate);
 		log.setPlatTraceno(platTraceno);
 		log = cebaRefundeLogMapper.selectByPrimaryKey(log);
+		if(null==log) {
+			return null;
+		}
 		CebaRefundeLogModel result = new CebaRefundeLogModel(null,log.getPlatDate(),0,log.getPlatTraceno());
 		result.setFlag(log.getFlag());
 		result.setHostCode(log.getHostCode());
