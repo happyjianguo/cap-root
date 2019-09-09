@@ -91,7 +91,7 @@ public class CebaRequestWorkKeyTask {
 			url.append("&macVerify="+macVerify);
 			url.append("&pinKey="+pinKey);
 			url.append("&pinVerify="+pinVerify);
-			HttpPost httpPost = new HttpPost(""+ip+"");
+			HttpPost httpPost = new HttpPost(url.toString());
 			httpPost.setHeader("Content-Type", "application/json");
 			StringEntity se = new StringEntity("{\"BODY\":{},\"SYS_HEAD\":{\"SCENE_ID\":\"01\",\"SERVICE_ID\":\"300630014\"}}", "utf-8");
 			httpPost.setEntity(se);
