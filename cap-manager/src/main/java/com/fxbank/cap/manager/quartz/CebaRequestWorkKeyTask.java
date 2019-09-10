@@ -1,6 +1,11 @@
 package com.fxbank.cap.manager.quartz;
 
+import java.net.SocketTimeoutException;
 import javax.annotation.Resource;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +41,7 @@ public class CebaRequestWorkKeyTask {
 	@Reference(version = "1.0.0")
 	private IForwardToCebaService forwardToCebaService;
 	
-	@Reference(version = "1.0.0")
+	@Reference(version = "1.0.0", cluster="broadcast")
 	private IWorkKeyService workKeyService;
 
 	@Resource
@@ -66,9 +71,38 @@ public class CebaRequestWorkKeyTask {
 		myLog.info(logger, "申请工作密钥成功：" + tout.getKeyName() + "," + tout.getKeyValue() + "," + tout.getVerifyValue()
 				+ "," + tout.getKeyName1() + "," + tout.getKeyValue1() + "," + tout.getVerifyValue1());
 
-		workKeyService.updateWorkKey(myLog, tout.getKeyValue1(), tout.getVerifyValue1(), tout.getKeyValue(),
-				tout.getVerifyValue());
-
+		String ipArray = null;
+		try (Jedis jedis = myJedis.connect()) {
+			ipArray = jedis.get(COMMON_PREFIX + "work_key_ip");
+		}
+		for(String ip:ipArray.split("\\|")) {
+			sendRwk(myLog,ip,tout.getKeyValue1(), tout.getVerifyValue1(), tout.getKeyValue(),
+					tout.getVerifyValue());
+		}
+	}
+	
+	private void sendRwk(MyLog myLog,String ip,String macKey,String macVerify,String pinKey,String pinVerify) {
+		try {
+			StringBuffer url = new StringBuffer();
+			url.append("http://");
+			url.append(ip);
+			url.append(":8004/cap/ceba/updateWk");
+			url.append("?macKey="+macKey);
+			url.append("&macVerify="+macVerify);
+			url.append("&pinKey="+pinKey);
+			url.append("&pinVerify="+pinVerify);
+			HttpPost httpPost = new HttpPost(url.toString());
+			httpPost.setHeader("Content-Type", "application/json");
+			StringEntity se = new StringEntity("{\"BODY\":{},\"SYS_HEAD\":{\"SCENE_ID\":\"01\",\"SERVICE_ID\":\"300630014\"}}", "utf-8");
+			httpPost.setEntity(se);
+			CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
+			closeableHttpClient.execute(httpPost);
+			closeableHttpClient.close();
+		} catch (SocketTimeoutException e) {
+			myLog.error(logger,"工作密钥申请请求响应超时",e);
+		} catch (Exception e) {
+			myLog.error(logger,"工作密钥申请请求失败",e);
+		}
 	}
 
 	@Bean(name = "cebaRequestWorkKeyJobDetail")

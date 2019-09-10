@@ -35,7 +35,7 @@ public class ReqWorkKeyController {
 	@Reference(version = "1.0.0")
 	private IForwardToCebaService forwardToCebaService;
 
-	@Reference(version = "1.0.0")
+	@Reference(version = "1.0.0", cluster="broadcast")
 	private IWorkKeyService workKeyService;
 
 	@Reference(version = "1.0.0")
@@ -66,6 +66,15 @@ public class ReqWorkKeyController {
 				tout.getVerifyValue());
 
 		return res.creaFixPack();
+
+	}
+	
+	@RequestMapping("/ceba/updateWk")
+	@ResponseBody
+	public String updateWk(String macKey,String macVerify,String pinKey,String pinVerify) throws SysTradeExecuteException {
+		MyLog myLog = new MyLog();
+		workKeyService.updateWorkKey(myLog, macKey, macVerify, pinKey,pinVerify);
+		return "success";
 
 	}
 

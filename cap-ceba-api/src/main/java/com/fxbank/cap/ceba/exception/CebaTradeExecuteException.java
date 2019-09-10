@@ -31,6 +31,7 @@ public class CebaTradeExecuteException extends SysTradeExecuteException {
 	public final static String CEBA_E_10012 = "FX0012";
 	public final static String CEBA_E_10013 = "FX0013";
 	public final static String CEBA_E_10014 = "FX0014";
+	public final static String CEBA_E_10015 = "FX0015";
 	
 	public final static Map<String, String> TCEXERRCODECONV = new HashMap<String, String>() {
 
@@ -51,6 +52,7 @@ public class CebaTradeExecuteException extends SysTradeExecuteException {
 			put(CEBA_E_10012, "退款文件总金额和总笔数与销账流水日志不符");
 			put(CEBA_E_10013, "退款超时，请查账");
 			put(CEBA_E_10014, "该缴费项目已停运");
+			put(CEBA_E_10015, "不能重复缴费");
 		}
 	};
 

@@ -21,4 +21,6 @@ public interface ICebaRefundeLogService {
     void updateRefundeLog(MyLog myLog,CebaRefundeLogModel model) throws SysTradeExecuteException;
 
     Boolean isInitRefundeLog(MyLog myLog,Integer platDate) throws SysTradeExecuteException;
+    
+    CebaRefundeLogModel queryRefundeLog(MyLog myLog,Integer platDate,Integer platTraceno) throws SysTradeExecuteException;
 }
