@@ -165,7 +165,6 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 				logger.error("关闭临时文件异常", e);
 			}
 		}
-		
 		FtpUtil ftp = new FtpUtil("GBK");
 		try {
 			String host, port, user, password;

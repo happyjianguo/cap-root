@@ -18,11 +18,11 @@ public class CheckErrorService implements ICheckErrorService {
 	private YkwmErrorlogMapper mapper;
 
 	@Override
-	public List<CheckErrorModel> getListByDate(MyLog myLog,Integer sysTime, Integer sysDate,Integer sysTraceno,String date) throws SysTradeExecuteException {
+	public List<CheckErrorModel> getListByDate(MyLog myLog,String date) throws SysTradeExecuteException {
 		List<YkwmErrorlog> list = mapper.selectByDate(date);
 		List<CheckErrorModel> modelList = new ArrayList<>();
 		for(YkwmErrorlog log : list) {
-			CheckErrorModel model = new CheckErrorModel(myLog, sysDate, sysTime, sysTraceno);
+			CheckErrorModel model = new CheckErrorModel(myLog, null, null, null);
 			model.setPlatDate(log.getPlatDate());
 			model.setPlatTrace(log.getPlatTrace());
 			model.setPreHostState(log.getPreHostState());

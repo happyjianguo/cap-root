@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.manager.mapper.YkwmSettlelogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.manager.entity.YkwmSettlelog">
+    <id column="CHK_DATE" jdbcType="DECIMAL" property="chkDate" />
+    <result column="TX_STS" jdbcType="VARCHAR" property="txSts" />
+    <result column="HOST_DATE" jdbcType="DECIMAL" property="hostDate" />
+    <result column="HOST_TRACENO" jdbcType="VARCHAR" property="hostTraceno" />
+    <result column="TX_AMT" jdbcType="DECIMAL" property="txAmt" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select CHK_DATE, TX_STS, HOST_DATE, HOST_TRACENO, TX_AMT
+    from YKWM_SETTLELOG
+  </select>
+  <select id="selectListPage" parameterType="com.fxbank.cap.manager.entity.YkwmSettlelog" resultMap="BaseResultMap">
+        select * from YKWM_SETTLELOG
+        <trim prefix="WHERE" prefixOverrides="AND | OR ">
+            <if test="chkDate != null and chkDate != ''">
+                and CHK_DATE = #{chkDate}
+            </if>
+        </trim>
+    </select>
+</mapper>

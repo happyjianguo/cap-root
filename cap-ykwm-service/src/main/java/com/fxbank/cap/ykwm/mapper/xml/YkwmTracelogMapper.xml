@@ -113,11 +113,11 @@
   </select>
    <select id="selectTotalNum" resultType="java.lang.String" >
      select count(t.py_fee_amt_t) as num from ykwm_tracelog t where 
-     t.cap_date=#{date} and t.co_result=0 and cap_result in ('2','3')
+     t.cap_date=#{date} and t.co_result=0 and cap_result = '2'
   </select>
    <select id="selectTotalSum" resultType="java.lang.String" >
     select sum(t.py_fee_amt_t) as num from ykwm_tracelog t where 
-     t.cap_date=#{date} and t.co_result=0 and cap_result in ('2','3')
+     t.cap_date=#{date} and t.co_result=0 and cap_result = '2'
   </select>
    <select id="selectTraceNum" resultType="java.lang.String" >
     select count(*) as num from ykwm_tracelog where cap_date=#{date}  

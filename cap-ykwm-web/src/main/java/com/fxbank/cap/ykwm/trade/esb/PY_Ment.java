@@ -35,6 +35,8 @@ import com.fxbank.cip.base.model.ModelBase;
 import com.fxbank.cip.base.route.trade.TradeExecutionStrategy;
 import com.fxbank.cip.pub.service.IPublicService;
 
+import redis.clients.jedis.Jedis;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -98,6 +100,10 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 	@Override
 	public ModelBase hostCharge(DataTransObject dto) throws SysTradeExecuteException {
 		MyLog myLog = logPool.get();
+		String baseAcctNo = null;
+		try (Jedis jedis = myJedis.connect()) {
+			baseAcctNo = jedis.get(COMMON_PREFIX + "payment_base_acct_no");
+		}
 		REQ_30061001201 reqDto = (REQ_30061001201) dto;
 		REQ_30061001201.REQ_BODY reqBody = reqDto.getReqBody();
 		ESB_REQ_30011000101 req_30011000101 = new ESB_REQ_30011000101(myLog, dto.getSysDate(), dto.getSysTime(),
@@ -120,10 +126,10 @@ public class PY_Ment extends BaseTradeT1 implements TradeExecutionStrategy {
 		esb_reqBody.setTranAmt(reqBody.getPyFeeAmtT());// 缴费金额
 		esb_reqBody.setPassword(reqBody.getPassword());
 		if("1".equals(pyFeeTpT)) {
-			esb_reqBody.setBaseAcctNo("34128070020000004");// 卡号
+			esb_reqBody.setBaseAcctNo(baseAcctNo);// 卡号
 		}else{
 			esb_reqBody.setBaseAcctNo(reqBody.getAcctNo());// 卡号
-			esb_reqBody.setOthBaseAcctNo("34128070020000004");// 对方账号
+			esb_reqBody.setOthBaseAcctNo(baseAcctNo);// 对方账号
 		}
 		esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
 		esb_reqBody.setSettlementDate(reqDto.getSysDate().toString());// 渠道日期
