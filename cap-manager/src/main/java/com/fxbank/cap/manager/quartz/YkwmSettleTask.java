@@ -67,7 +67,6 @@ public class YkwmSettleTask {
 			return;
 		}
 		for (YkwmSettleLogModel model : list) {
-			// 跨行付款
 			try {
 				if (model.getTxSts().equals("0") || model.getTxSts().equals("1")) {
 					ESB_REP_30011000101 rep = hostCharge(myLog, model.getTxAmt().toString(),model.getChkDate().toString());
@@ -158,7 +157,7 @@ public class YkwmSettleTask {
 		esb_reqBody.setChannelType("BH");// 渠道类型 ESB写死为
 		esb_reqBody.setSettlementDate(date);// 渠道日期
 		esb_reqBody.setWithdrawalType("P");
-		esb_reqBody.setNarrative("ykjf");
+		esb_reqBody.setNarrative("营口缴费过度户转账");
 		// 捕获异常 对核心记账结果进行判断
 		// *****************************
 
