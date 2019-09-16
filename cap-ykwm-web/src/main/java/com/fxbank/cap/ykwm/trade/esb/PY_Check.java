@@ -39,6 +39,7 @@ import com.fxbank.cap.ykwm.model.YkwmTraceLogModel;
 import com.fxbank.cap.ykwm.service.ICheckErrorService;
 import com.fxbank.cap.ykwm.service.IDayCheckLogService;
 import com.fxbank.cap.ykwm.service.IPaymentService;
+import com.fxbank.cap.ykwm.service.IYkwmSettleLogService;
 
 import redis.clients.jedis.Jedis;
 
@@ -54,6 +55,9 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 	
 	@Reference(version = "1.0.0")
 	private IDayCheckLogService dayCheckLogService;
+	
+	@Reference(version = "1.0.0")
+	private IYkwmSettleLogService ykwmSettleLogService;
 	
 	@Reference(version = "1.0.0")
 	private ICheckErrorService checkErrorService;
@@ -139,9 +143,15 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 		String num3 = paymentService.getTraceNum(date, "3");
 		String num4 = paymentService.getTraceNum(date, "4");
 		int total = Integer.parseInt(num2)+Integer.parseInt(num3)+Integer.parseInt(num4);
-		String s = "营口热电【"+date+"】对账统计：共【"+total+"】笔，其中已对账【"+num2+"】笔，核心多出【"+num3+"】笔，渠道多出【"+num4+"】笔";
-
-		myLog.info(logger, s);
+		String checkMsg = "营口热电【"+date+"】对账统计：共【"+total+"】笔，其中已对账【"+num2+"】笔，核心多出【"+num3+"】笔，渠道多出【"+num4+"】笔";
+		myLog.info(logger, checkMsg);
+		
+		if(checkLogList.size()==Integer.parseInt(num2)) {
+			ykwmSettleLogService.initSettleLog(myLog, Integer.parseInt(date), new BigDecimal(totalAmt));
+			checkMsg += "对账成功";
+		}else {
+			checkMsg += "对账失败";
+		}
 		
 		return repDto;
 	}
