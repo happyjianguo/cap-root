@@ -107,7 +107,7 @@ public class YkwmCheckTask {
 				aceModel.setPlatTrace(model.getSysTraceno());
 				aceModel.setPreHostState(model.getCoResult());
 				aceModel.setCheckFlag("4");
-				aceModel.setRemark("渠道补充数据，渠道日期【"+model.getSysDate()+"】，渠道流水【"+model.getSysTraceno()+"】");
+				aceModel.setRemark("渠道多出数据，渠道日期【"+model.getSysDate()+"】，渠道流水【"+model.getSysTraceno()+"】");
 				checkErrorService.insert(aceModel);
 				myLog.error(logger,"营口热电【"+date+"】对账失败: 多出记录，渠道流水号【"+model.getSysTraceno()+"】，核心状态【"+model.getCoResult()+"】");
 				YkwmTradeExecuteException e = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10006);
