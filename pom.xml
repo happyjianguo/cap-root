@@ -91,6 +91,9 @@
 		<module>cap-ceba-api</module>
 		<module>cap-ceba-service</module>
 		<module>cap-ceba-web</module>	
+		<module>cap-ykwm-api</module>
+		<module>cap-ykwm-service</module>
+		<module>cap-ykwm-web</module>		
 		<module>cap-paf-api</module>
 		<module>cap-paf-service</module>
 		<module>cap-paf-web</module>

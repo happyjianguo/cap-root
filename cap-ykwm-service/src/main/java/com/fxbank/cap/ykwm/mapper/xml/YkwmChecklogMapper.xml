@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ykwm.mapper.YkwmChecklogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ykwm.entity.YkwmChecklog">
+    <id column="PLAT_DATE" jdbcType="INTEGER" property="platDate" />
+    <id column="PLAT_TRACE" jdbcType="INTEGER" property="platTrace" />
+    <result column="TEL_NO" jdbcType="VARCHAR" property="telNo" />
+    <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
+    <result column="HOST_DATE" jdbcType="INTEGER" property="hostDate" />
+    <result column="HOST_TRACENO" jdbcType="VARCHAR" property="hostTraceno" />
+    <result column="TX_AMT" jdbcType="DECIMAL" property="txAmt" />
+    <result column="ACCOUNTNO" jdbcType="VARCHAR" property="accountno" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, TEL_NO, BRANCH_NO, HOST_DATE, HOST_TRACENO, 
+    TX_AMT, ACCOUNTNO from YKWM_CHECKLOG
+  </select>
+    <select id="deleteAll" >
+    delete from YKWM_CHECKLOG where plat_date = #{platDate}
+  </select>
+</mapper>

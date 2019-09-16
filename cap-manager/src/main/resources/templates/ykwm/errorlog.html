@@ -1,0 +1,126 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>缴费单销账流水日志</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" type="text/css" th:href="@{../ui/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" type="text/css" th:href="@{../ui/css/style.css}" />
+    <link rel="stylesheet" th:href="@{../ui/css/form_mobile.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{../ui/css/table.css}"/>
+</head>
+
+<body>
+<div class="iconBox">
+    <div class="iconfont glyphiconSearch_mob"></div>
+</div>
+<div class="searchBox">
+    <form class="formBox layui-form" id="form" th:object="${data}">
+        <div class="form_box line_4">
+            <div class="layui-inline">
+                <label class="layui-form-label">渠道日期</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="platDate" id="platDate" th:value="*{platDate}"  class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="form_box line_4">
+            <div class="layui-inline">
+                <label class="layui-form-label">渠道流水号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="platTrace" id="platTrace" th:value="*{platTrace}"  class="layui-input">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <button class="layui-btn layui-btn-normal layui-btn-sm" id="query" onclick="query()">查询</button>
+</div>
+    <div id="table_box" lay-filter="table_box">
+        <!--表格盒子-->
+    </div>
+<!--<div id="laypages"></div>-->
+
+
+<script th:src="@{../ui/jquery/jquery.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/layui/layui.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/jquery/jquery-ui.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/js/commons.js}"></script>
+<script th:src="@{../ui/js/Ui_table.js}" type="text/javascript" charset="utf-8"></script>
+<script th:src="@{../ui/js/newForm.js}" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" th:inline="javascript">
+function query(){
+		$('#form').submit();
+}
+    var table=null;
+    layui.use('table', function(){
+        table = layui.table;
+        table.render({
+            elem: '#table_box',
+            url:'../ykwm/errorlogData?platDate='+$("#platDate").val()+'&platTrace='+$("#platTrace").val(),
+            isSortBox:true,
+            
+            editor:false,
+            cellMinWidth:170,
+            cols: [
+                [
+                    {field:'platDate', title:'渠道日期'},
+                    {field:'platTrace', title:'渠道流水号'},
+                    {field:'preHostState', title:'调整前核心记账状态',toolbar:'#preHostStateParameter'},
+                    {field:'reHostState', title:'调整后核心记账状态',toolbar:'#reHostStateParameter'},
+                    {field:'checkFlag', title:'核心对账标志',toolbar:'#checkFlagParameter'},
+                    {field:'txAmt', title:'交易金额'},
+                    {field:'acctNo', title:'账号'},
+                    {field:'userName', title:'用户名'},
+                    {field:'userCard', title:'用户卡号'},
+                    {field:'remark', title:'备注'}
+                ]
+            ],
+            page: true
+
+
+        });
+
+    });
+
+</script>
+<script type="text/html" id="preHostStateParameter">
+    {{#if(d.preHostState==0){}}
+    <span>成功</span>
+    {{#}else if(d.preHostState==1){}}
+    <span>冲正成功</span>
+    {{#}else if(d.preHostState==2){}}
+    <span>冲正失败</span>
+    {{#}else if(d.preHostState==3){}}
+    <span>冲正超时</span>
+    {{#}else if(d.preHostState==4){}}
+    <span>超时</span>
+    {{#}}}
+</script>
+<script type="text/html" id="reHostStateParameter">
+    {{#if(d.reHostState==0){}}
+    <span>成功</span>
+    {{#}else if(d.reHostState==1){}}
+    <span>冲正成功</span>
+    {{#}else if(d.reHostState==2){}}
+    <span>冲正失败</span>
+    {{#}else if(d.reHostState==3){}}
+    <span>冲正超时</span>
+    {{#}else if(d.reHostState==4){}}
+    <span>超时</span>
+    {{#}}}
+</script>
+<script type="text/html" id="checkFlagParameter">
+    {{#if(d.checkFlag==1){}}
+    <span>未对账</span>
+    {{#}else if(d.hostCheckFlag==2){}}
+    <span>已对账</span>
+    {{#}else if(d.hostCheckFlag==3){}}
+    <span>核心多</span>
+    {{#}else if(d.hostCheckFlag==4){}}
+    <span>渠道多</span>
+</script>
+</body>
+
+</html>

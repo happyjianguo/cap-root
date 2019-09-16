@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ykwm.mapper.YkwmErrorlogMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ykwm.entity.YkwmErrorlog">
+    <id column="PLAT_DATE" jdbcType="DECIMAL" property="platDate" />
+    <id column="PLAT_TRACE" jdbcType="DECIMAL" property="platTrace" />
+    <result column="PRE_HOST_STATE" jdbcType="VARCHAR" property="preHostState" />
+    <result column="RE_HOST_STATE" jdbcType="VARCHAR" property="reHostState" />
+    <result column="CHECK_FLAG" jdbcType="VARCHAR" property="checkFlag" />
+    <result column="TX_AMT" jdbcType="DECIMAL" property="txAmt" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="ACCT_NO" jdbcType="VARCHAR" property="acctNo" />
+    <result column="USER_CARD" jdbcType="VARCHAR" property="userCard" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, PRE_HOST_STATE, RE_HOST_STATE, CHECK_FLAG, TX_AMT, 
+    USER_NAME, ACCT_NO, USER_CARD,REMARK 
+    from YKWM_ERRORLOG
+  </select>
+    <select id="deleteByDate" >
+    delete from YKWM_ERRORLOG where plat_date = #{date}
+  </select>
+</mapper>
