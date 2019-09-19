@@ -120,8 +120,8 @@ public class YkwmCheckTask {
 		
 		StringBuffer sb = new StringBuffer();
 		//首行:总笔数|总金额|公司名称|批次号
-		String totalNum = paymentService.getTotalNum(date.toString());
-		String totalAmt = paymentService.getTotalAmt(date.toString());
+		String totalNum = "".equals(paymentService.getTotalNum(date.toString()))?"0":paymentService.getTotalNum(date.toString());
+		String totalAmt = null==paymentService.getTotalAmt(date.toString())?"0":paymentService.getTotalAmt(date.toString());
 		sb.append(totalNum).append("|");
 		sb.append(totalAmt).append("|");
 		String companyName = "";
@@ -159,7 +159,9 @@ public class YkwmCheckTask {
 		myLog.info(logger, checkMsg);
 		
 		if(checkLogList.size()==Integer.parseInt(num2)) {
-			ykwmSettleLogService.initSettleLog(myLog, date, new BigDecimal(totalAmt));
+			if(!totalAmt.equals("0")&&null==ykwmSettleLogService.querySettleLogByPk(myLog, date)) {
+				ykwmSettleLogService.initSettleLog(myLog, date, new BigDecimal(totalAmt));	
+			}
 			checkMsg += "对账成功";
 		}else {
 			checkMsg += "对账失败";
@@ -202,20 +204,19 @@ public class YkwmCheckTask {
 						record.setCapResult("2");
 						paymentService.updateCheck(record);
 						myLog.info(logger,"渠道调整往账数据核心状态，渠道日期【"+ykwmTracelogModel.getSysDate()+"】，渠道流水【"+model.getSysTraceno()+"】，调整前状态【"+hostState+"】，调整后状态【1】");
-					
+					}else {
 						CheckErrorModel ceModel = new CheckErrorModel(myLog, model.getSysDate(), getReqDto().getSysTime(), model.getSysTraceno());
 						ceModel.setPlatDate(model.getSysDate());
 						ceModel.setPlatTrace(model.getSysTraceno());
 						ceModel.setPreHostState(hostState);
 						ceModel.setReHostState("0");
-						ceModel.setCheckFlag("2");
+						ceModel.setCheckFlag("4");
 						ceModel.setTxAmt(new BigDecimal(ykwmTracelogModel.getPyFeeAmtT()));
 						ceModel.setAcctNo(ykwmTracelogModel.getAcctNoT());
 						ceModel.setUserCard(ykwmTracelogModel.getUserCardNoT());
 						ceModel.setUserName(ykwmTracelogModel.getLnmT3());
-						ceModel.setRemark("渠道调整往账数据核心状态，渠道日期【"+ykwmTracelogModel.getSysDate()+"】，渠道流水【"+ykwmTracelogModel.getSysTraceno()+"】，调整前状态【"+hostState+"】，调整后状态【0】");
+						ceModel.setRemark("渠道流水号【"+ykwmTracelogModel.getSysTraceno()+"】记录核心状态为【"+ykwmTracelogModel.getCoResult()+"】,与核心记账状态不符");
 						checkErrorService.insert(ceModel);
-					}else {
 						myLog.error(logger, "营口热电【"+date+"】对账失败: 渠道流水号【"+ykwmTracelogModel.getSysTraceno()+"】记录核心状态为【"+ykwmTracelogModel.getCoResult()+"】,与核心记账状态不符");
 						YkwmTradeExecuteException e = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10006);
 						throw e;
