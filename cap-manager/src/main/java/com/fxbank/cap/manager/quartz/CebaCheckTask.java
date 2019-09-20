@@ -108,6 +108,7 @@ public class CebaCheckTask {
 		}
 		// 渠道日期前一天对账
 		Integer date = getPreDateByDate(getReqDto().getSysDate());
+		checkErrorService.delete(date.toString());
 		myLog.info(logger, "核心与外围对账开始");
 		// 取核心文件 核心文件入库
 		List<HostCheckLogInitModel> checkLogList = getHostCheckLogList(myLog, date.toString());
@@ -116,7 +117,7 @@ public class CebaCheckTask {
 		myLog.info(logger, "核心与外围对账结束");
 		myLog.info(logger, "外围与核心对账开始");
 		// 获取未核心对账的缴费记录
-		List<CebaChargeLogModel> traceList = cebaChargeLogService.getCheckTrace(myLog, date.toString(), "1", "1");
+		List<CebaChargeLogModel> traceList = cebaChargeLogService.getCheckTrace(myLog, date.toString(), "1,4", "1");
 		// 外围与核心对账
 		channelCheckHostTraceLog(myLog, date.toString(), traceList);
 		myLog.info(logger, "外围与核心对账结束");
@@ -144,14 +145,15 @@ public class CebaCheckTask {
 		//核心对账标志不为2并且光大银行对账标志不为2的缴费流水数
 		String checkSuccNum = cebaChargeLogService.getCheckSuccNum(date.toString());
 		//核心对账标志不为2并且光大银行对账标志不为2的缴费流水总金额
-		BigDecimal checkSuccAmt = new BigDecimal(cebaChargeLogService.getCheckSuccAmt(date.toString()));
+		String succAmt = cebaChargeLogService.getCheckSuccAmt(date.toString());
+		BigDecimal checkSuccAmt = new BigDecimal(succAmt==null?"0":succAmt);
 		//对账错误流水日志笔数
 		int errorNum = checkErrorService.getListByDate(myLog,date.toString()).size();
 		//对账成功标志，以光大银行对账文件为准
 		Boolean checkFlag = false;
 		String checkMsg = "光大云缴费【" + date + "】对账统计：共【" + totalCheckNum + "】笔，" + "其中已对账【" + checkSuccNum + "】笔，比核心多出【"
 				+ hostCheckNum + "】笔，" + "比光大银行多出【" + cebaCheckNum + "】笔，对账错误流水【"+errorNum+"】笔，";
-		if(checkLogList1.size() == Integer.parseInt(checkSuccNum)&&errorNum==0) {
+		if(checkLogList.size() == Integer.parseInt(checkSuccNum)&&checkLogList1.size() == Integer.parseInt(checkSuccNum)) {
 			checkFlag = true;
 			checkMsg += "对账成功";
 		}else {
@@ -165,7 +167,7 @@ public class CebaCheckTask {
 		}
 		try {
 			//如果光大银行对账文件成功笔数和对账成功笔数相同并且清算日志没有该对账日期流水，登记清算流水表
-			if (checkFlag && null == cebaSettleLogService.querySettleLogByPk(myLog, date)) {
+			if (checkSuccAmt.compareTo(new BigDecimal(0))>0&&checkFlag && null == cebaSettleLogService.querySettleLogByPk(myLog, date)) {
 				cebaSettleLogService.initSettleLog(myLog, date, checkSuccAmt);
 				myLog.info(logger, "登记清算流水表成功，渠道日期" + date);
 			}
@@ -265,7 +267,6 @@ public class CebaCheckTask {
 			}
 		}
 	}
-
 	/**
 	 * @Title: hostCheckChannelTraceLog 
 	 * @Description: 核心与外围对账 

@@ -80,6 +80,18 @@
     CUSTOMER_NAME, PAY_ACCOUNT, PAY_AMOUNT, AC_TYPE, CONTRACT_NO, BANK_BILL_NO, RECEIPT_NO, 
     ACCT_DATE, PAY_STATE, ERROR_CODE, HOST_CHECK_STATE,CEBA_CHECK_STATE, SEQ_NO, HOST_DATE, HOST_TRACENO, 
     HOST_STATE, HOST_RET_CODE, HOST_RET_MSG
-    from CEBA_CHARGE_LOG where plat_date=#{date} and pay_state = '2' and check_state in ('2','3')
+    from CEBA_CHARGE_LOG where plat_date=#{date} and pay_state = '2' and ceba_check_state in ('2','3')
   </select>
+  <select id="selectTraceByCheckState" resultMap="BaseResultMap">
+    select PLAT_DATE, PLAT_TRACE, PLAT_TIME, SOURCE_TYPE, TX_BRANCH,TX_TEL, BILL_KEY, COMPANY_ID, 
+    CUSTOMER_NAME, PAY_ACCOUNT, PAY_AMOUNT, AC_TYPE, CONTRACT_NO, BANK_BILL_NO, RECEIPT_NO, 
+    ACCT_DATE, PAY_STATE, ERROR_CODE, HOST_CHECK_STATE,CEBA_CHECK_STATE, SEQ_NO, HOST_DATE, HOST_TRACENO, 
+    HOST_STATE, HOST_RET_CODE, HOST_RET_MSG
+    from CEBA_CHARGE_LOG where plat_date=#{date} and host_check_state in 
+    <foreach item="item" index="index" collection="hostCheckState.split(',')" 
+    open="(" separator="," close=")">'${item}'</foreach>
+     and ceba_check_state in 
+    <foreach item="item1" index="index" collection="cebaCheckState.split(',')" 
+    open="(" separator="," close=")">'${item1}'</foreach>     
+  </select>  
 </mapper>
