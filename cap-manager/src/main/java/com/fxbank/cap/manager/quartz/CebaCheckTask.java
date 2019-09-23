@@ -136,15 +136,15 @@ public class CebaCheckTask {
 		myLog.info(logger, "外围与光大银行对账结束");
 		// 光大银行对账标志，1-未对账，2-已对账，3-光大银行多，4-渠道多
 		// 核心对账标志，1-未对账，2-已对账，3-核心多，4-渠道多
-		// 核心对账标志不为1并且光大银行对账标志不为1的缴费流水数
+		// 核心对账标志不为1或者光大银行对账标志不为1的缴费流水数
 		String totalCheckNum = cebaChargeLogService.getTotalCheckNum(date.toString());
 		// 核心对账标志为4的缴费流水数
 		String hostCheckNum = cebaChargeLogService.getHostCheckNum(date.toString(), "4");
 		// 光大银行对账标志为4的缴费流水数
 		String cebaCheckNum = cebaChargeLogService.getCebaCheckNum(date.toString(), "4");
-		//核心对账标志不为2并且光大银行对账标志不为2的缴费流水数
+		//核心对账标志为2并且光大银行对账标志为2的缴费流水数
 		String checkSuccNum = cebaChargeLogService.getCheckSuccNum(date.toString());
-		//核心对账标志不为2并且光大银行对账标志不为2的缴费流水总金额
+		//核心对账标志为2并且光大银行对账标志为2的缴费流水总金额
 		String succAmt = cebaChargeLogService.getCheckSuccAmt(date.toString());
 		BigDecimal checkSuccAmt = new BigDecimal(succAmt==null?"0":succAmt);
 		//对账错误流水日志笔数

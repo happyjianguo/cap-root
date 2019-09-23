@@ -69,11 +69,11 @@
   </select>  
   <select id="selectTotalCheckNum" resultType="java.lang.String" >
     select count(*) as num from CEBA_CHARGE_LOG where plat_date=#{date}  
-        and host_check_state != '1' and ceba_check_state != '1'
+        and (host_check_state != '1' or ceba_check_state != '1')
   </select>
   <select id="selectCheckSuccAmt" resultType="java.lang.String" >
     select sum(PAY_AMOUNT) as num from CEBA_CHARGE_LOG where plat_date=#{date}  
-    and host_check_state = '2' and ceba_check_state = '2' and host_state = '0' and pay_state = '2'
+    and host_check_state = '2' and ceba_check_state = '2'
   </select>     
   <select id="selectByCheckState" resultMap="BaseResultMap">
     select PLAT_DATE, PLAT_TRACE, PLAT_TIME, SOURCE_TYPE, TX_BRANCH,TX_TEL, BILL_KEY, COMPANY_ID, 
