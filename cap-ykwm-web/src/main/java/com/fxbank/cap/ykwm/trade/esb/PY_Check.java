@@ -109,8 +109,8 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 		
 		StringBuffer sb = new StringBuffer();
 		//首行:总笔数|总金额|公司名称|批次号
-		String totalNum = paymentService.getTotalNum(date);
-		String totalAmt = paymentService.getTotalAmt(date);
+		String totalNum = "".equals(paymentService.getTotalNum(date))?"0":paymentService.getTotalNum(date);
+		String totalAmt = null==paymentService.getTotalAmt(date)?"0":paymentService.getTotalAmt(date);
 		sb.append(totalNum).append("|");
 		sb.append(totalAmt).append("|");
 		String companyName = "";
@@ -147,7 +147,9 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 		myLog.info(logger, checkMsg);
 		
 		if(checkLogList.size()==Integer.parseInt(num2)) {
-			ykwmSettleLogService.initSettleLog(myLog, Integer.parseInt(date), new BigDecimal(totalAmt));
+			if(!totalAmt.equals("0")&&null==ykwmSettleLogService.querySettleLogByPk(myLog, Integer.parseInt(date))) {
+				ykwmSettleLogService.initSettleLog(myLog, Integer.parseInt(date), new BigDecimal(totalAmt));	
+			}
 			checkMsg += "对账成功";
 		}else {
 			checkMsg += "对账失败";
@@ -244,20 +246,19 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 						record.setCapResult("2");
 						paymentService.updateCheck(record);
 						myLog.info(logger,"渠道调整往账数据核心状态，渠道日期【"+ykwmTracelogModel.getSysDate()+"】，渠道流水【"+model.getSysTraceno()+"】，调整前状态【"+hostState+"】，调整后状态【1】");
-					
+					}else {
 						CheckErrorModel ceModel = new CheckErrorModel(myLog, model.getSysDate(), dto.getSysTime(), model.getSysTraceno());
 						ceModel.setPlatDate(model.getSysDate());
 						ceModel.setPlatTrace(model.getSysTraceno());
 						ceModel.setPreHostState(hostState);
 						ceModel.setReHostState("0");
-						ceModel.setCheckFlag("2");
+						ceModel.setCheckFlag("4");
 						ceModel.setTxAmt(new BigDecimal(ykwmTracelogModel.getPyFeeAmtT()));
 						ceModel.setAcctNo(ykwmTracelogModel.getAcctNoT());
 						ceModel.setUserCard(ykwmTracelogModel.getUserCardNoT());
 						ceModel.setUserName(ykwmTracelogModel.getLnmT3());
-						ceModel.setRemark("渠道调整往账数据核心状态，渠道日期【"+ykwmTracelogModel.getSysDate()+"】，渠道流水【"+ykwmTracelogModel.getSysTraceno()+"】，调整前状态【"+hostState+"】，调整后状态【0】");
+						ceModel.setRemark("渠道流水号【"+ykwmTracelogModel.getSysTraceno()+"】记录核心状态为【"+ykwmTracelogModel.getCoResult()+"】,与核心记账状态不符");
 						checkErrorService.insert(ceModel);
-					}else {
 						myLog.error(logger, "营口热电【"+date+"】对账失败: 渠道流水号【"+ykwmTracelogModel.getSysTraceno()+"】记录核心状态为【"+ykwmTracelogModel.getCoResult()+"】,与核心记账状态不符");
 						YkwmTradeExecuteException e = new YkwmTradeExecuteException(YkwmTradeExecuteException.YKWM_E_10006);
 						throw e;
@@ -271,7 +272,7 @@ public class PY_Check extends TradeBase implements TradeExecutionStrategy {
 		//对账文件入库
 		initCheckLog(localFile,myLog,dto,platDate);
 		//取对账文件数据
-		List<DayCheckLogInitModel> dayCheckLogList = dayCheckLogService.getDayCheckLog(myLog, dto.getSysTime(), dto.getSysTraceno(), dto.getSysDate());
+		List<DayCheckLogInitModel> dayCheckLogList = dayCheckLogService.getDayCheckLog(myLog, dto.getSysTime(), dto.getSysTraceno(), Integer.parseInt(platDate));
 		return 	dayCheckLogList;
 	}
 	

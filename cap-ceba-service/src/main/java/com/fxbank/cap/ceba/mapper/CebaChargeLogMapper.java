@@ -25,6 +25,8 @@ public interface CebaChargeLogMapper extends MyMapper<CebaChargeLog> {
     String selectTotalNum(@Param("date") String date);
     String selectTotalSum(@Param("date") String date);
     List<CebaChargeLog> selectCheckedTrace(@Param("date") String date);
+    List<CebaChargeLog> selectTraceByCheckState(@Param("date") String date,@Param("hostCheckState") String hostCheckState,
+    		@Param("cebaCheckState") String cebaCheckState);
     String selectHostCheckNum(@Param("date") String date,@Param("capResult") String capResult);
     String selectCebaCheckNum(@Param("date") String date,@Param("capResult") String capResult);
     String selectCheckSuccNum(@Param("date") String date);

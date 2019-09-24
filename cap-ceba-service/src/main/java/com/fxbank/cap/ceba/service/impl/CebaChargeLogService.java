@@ -173,15 +173,7 @@ public class CebaChargeLogService implements ICebaChargeLogService{
 	}
 	@Override
 	public List<CebaChargeLogModel> getCheckTrace(MyLog myLog, String date,String hostCheckState,String cebaCheckState) throws SysTradeExecuteException {
-		CebaChargeLog log = new CebaChargeLog();
-		log.setPlatDate(Integer.parseInt(date));
-		if(!"".equals(hostCheckState)) {
-		log.setHostCheckState(hostCheckState);
-		}
-		if(!"".equals(cebaCheckState)) {
-		log.setCebaCheckState(cebaCheckState);
-		}
-		List<CebaChargeLog> dataList = cebaChargeLogMapper.select(log);
+	    List<CebaChargeLog> dataList = cebaChargeLogMapper.selectTraceByCheckState(date, hostCheckState, cebaCheckState);
 		List<CebaChargeLogModel> modelList = new ArrayList<>();
 		for(CebaChargeLog data : dataList) {
 			CebaChargeLogModel model = new CebaChargeLogModel(myLog, data.getPlatDate(), 0, data.getPlatTrace());

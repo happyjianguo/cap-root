@@ -11,7 +11,6 @@ import com.fxbank.cap.ceba.dto.esb.REQ_30062001001;
 import com.fxbank.cap.ceba.exception.CebaTradeExecuteException;
 import com.fxbank.cap.ceba.model.CebaBillInfoLogModel;
 import com.fxbank.cap.ceba.model.CebaChargeLogModel;
-import com.fxbank.cap.ceba.model.CebaOutageLogModel;
 import com.fxbank.cap.ceba.model.ErrorInfo;
 import com.fxbank.cap.ceba.model.MODEL_BASE;
 import com.fxbank.cap.ceba.model.REP_BJCEBBCRes;
@@ -194,7 +193,7 @@ public class CG_BillInfo extends BaseTradeT1 implements TradeExecutionStrategy {
 		tin.setBillKey(reqBody.getBillKey());
 		tin.setCompanyId(reqBody.getPyCityCode()+reqBody.getPyCreditNo());
 		tin.setBillNo(reqDto.getSysTraceno().toString());
-		tin.setPayDate(reqDto.getSysDate().toString()+reqDto.getSysTime().toString());
+		tin.setPayDate(reqDto.getSysDate().toString()+String.format("%06d", reqDto.getSysTime()));
 		String companyId = reqBody.getPyCityCode() + reqBody.getPyCreditNo();
 		JSONObject companyListFiled3Json= JSONObject.parseObject(companyListFiled3);
 		JSONObject companyListFiled3sJson= JSONObject.parseObject(companyListFiled3s);
