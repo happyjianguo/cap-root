@@ -164,7 +164,7 @@ public class CebaCheckTask {
 			Boolean checkFlag = false;
 			checkMsg += "【" + date + "】对账统计：共【" + totalCheckNum + "】笔，" + "其中已对账【" + checkSuccNum + "】笔，比核心多出【"
 					+ hostCheckNum + "】笔，" + "比光大银行多出【" + cebaCheckNum + "】笔，对账错误流水【"+errorNum+"】笔，";
-			if(checkLogList.size() == Integer.parseInt(checkSuccNum)&&checkLogList1.size() == Integer.parseInt(checkSuccNum)) {
+			if(checkLogList1.size() == Integer.parseInt(checkSuccNum)) {
 				checkFlag = true;
 				checkMsg += "对账成功";
 				model.setStatus("3");
