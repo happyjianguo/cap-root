@@ -27,11 +27,13 @@ import com.dcfs.esb.ftp.client.FtpClientConfigSet;
 import com.dcfs.esb.ftp.client.FtpGet;
 import com.dcfs.esb.ftp.server.error.FtpException;
 import com.fxbank.cap.ceba.exception.CebaTradeExecuteException;
+import com.fxbank.cap.ceba.model.CebaBillCheckModel;
 import com.fxbank.cap.ceba.model.CebaChargeLogModel;
 import com.fxbank.cap.ceba.model.CebaCheckLogInitModel;
 import com.fxbank.cap.ceba.model.CebaRefundeLogModel;
 import com.fxbank.cap.ceba.model.CheckErrorModel;
 import com.fxbank.cap.ceba.model.HostCheckLogInitModel;
+import com.fxbank.cap.ceba.service.ICebaBillCheckService;
 import com.fxbank.cap.ceba.service.ICebaChargeLogService;
 import com.fxbank.cap.ceba.service.ICebaCheckLogService;
 import com.fxbank.cap.ceba.service.ICebaRefundeLogService;
@@ -87,6 +89,9 @@ public class CebaCheckTask {
 
 	@Reference(version = "1.0.0")
 	private ICebaCheckLogService cebaCheckLogService;
+	
+	@Reference(version = "1.0.0")
+	private ICebaBillCheckService cebaBillCheckService;
 
 	@Reference(version = "1.0.0")
 	private ICheckErrorService checkErrorService;
@@ -102,77 +107,88 @@ public class CebaCheckTask {
 	public void exec() throws Exception {
 		MyLog myLog = new MyLog();
 		myLog.info(logger, "开始进行对账处理");
-		String mobNos;
+		String mobNos,checkMsg = "光大云缴费";
 		try (Jedis jedis = myJedis.connect()) {
 			mobNos = jedis.get(COMMON_PREFIX + "checkNoticeMobNos");
 		}
-		// 渠道日期前一天对账
-		Integer date = getPreDateByDate(getReqDto().getSysDate());
-		checkErrorService.delete(date.toString());
-		myLog.info(logger, "核心与外围对账开始");
-		// 取核心文件 核心文件入库
-		List<HostCheckLogInitModel> checkLogList = getHostCheckLogList(myLog, date.toString());
-		// 核心与外围对账
-		hostCheckChannelTraceLog(myLog, date.toString(), checkLogList);
-		myLog.info(logger, "核心与外围对账结束");
-		myLog.info(logger, "外围与核心对账开始");
-		// 获取未核心对账的缴费记录
-		List<CebaChargeLogModel> traceList = cebaChargeLogService.getCheckTrace(myLog, date.toString(), "1,4", "1");
-		// 外围与核心对账
-		channelCheckHostTraceLog(myLog, date.toString(), traceList);
-		myLog.info(logger, "外围与核心对账结束");
-		myLog.info(logger, "光大银行与外围对账开始");
-		// 取对账文件数据
-		List<CebaCheckLogInitModel> checkLogList1 = cebaCheckLogService.getCebaCheckLog(myLog, getReqDto().getSysTime(),
-				getReqDto().getSysTraceno(), date);
-		// 光大银行与外围对账
-		cebaCheckChannelTraceLog(myLog, date.toString(), checkLogList1);
-		myLog.info(logger, "光大银行与外围对账结束");
-		myLog.info(logger, "外围与光大银行对账开始");
-		// 获取光大银行未对账、核心已对账的缴费记录
-		List<CebaChargeLogModel> traceList1 = cebaChargeLogService.getCheckTrace(myLog, date.toString(), "2", "1");
-		// 外围与光大银行对账
-		channelCheckCebaTraceLog(myLog, date.toString(), traceList1);
-		myLog.info(logger, "外围与光大银行对账结束");
-		// 光大银行对账标志，1-未对账，2-已对账，3-光大银行多，4-渠道多
-		// 核心对账标志，1-未对账，2-已对账，3-核心多，4-渠道多
-		// 核心对账标志不为1或者光大银行对账标志不为1的缴费流水数
-		String totalCheckNum = cebaChargeLogService.getTotalCheckNum(date.toString());
-		// 核心对账标志为4的缴费流水数
-		String hostCheckNum = cebaChargeLogService.getHostCheckNum(date.toString(), "4");
-		// 光大银行对账标志为4的缴费流水数
-		String cebaCheckNum = cebaChargeLogService.getCebaCheckNum(date.toString(), "4");
-		//核心对账标志为2并且光大银行对账标志为2的缴费流水数
-		String checkSuccNum = cebaChargeLogService.getCheckSuccNum(date.toString());
-		//核心对账标志为2并且光大银行对账标志为2的缴费流水总金额
-		String succAmt = cebaChargeLogService.getCheckSuccAmt(date.toString());
-		BigDecimal checkSuccAmt = new BigDecimal(succAmt==null?"0":succAmt);
-		//对账错误流水日志笔数
-		int errorNum = checkErrorService.getListByDate(myLog,date.toString()).size();
-		//对账成功标志，以光大银行对账文件为准
-		Boolean checkFlag = false;
-		String checkMsg = "光大云缴费【" + date + "】对账统计：共【" + totalCheckNum + "】笔，" + "其中已对账【" + checkSuccNum + "】笔，比核心多出【"
-				+ hostCheckNum + "】笔，" + "比光大银行多出【" + cebaCheckNum + "】笔，对账错误流水【"+errorNum+"】笔，";
-		if(checkLogList.size() == Integer.parseInt(checkSuccNum)&&checkLogList1.size() == Integer.parseInt(checkSuccNum)) {
-			checkFlag = true;
-			checkMsg += "对账成功";
-		}else {
-			checkMsg += "对账失败";
+		List<CebaBillCheckModel> list = cebaBillCheckService.queryBillCheck();
+		if (list == null || list.size() == 0) {
+			myLog.info(logger, "没有待对账数据");
+			return;
 		}
-		myLog.info(logger, checkMsg);
+		for (CebaBillCheckModel model : list) {
+			// 对账日期
+			Integer date = model.getSignDate();
+			checkErrorService.delete(date.toString());
+			myLog.info(logger, "核心与外围对账开始");
+			// 取核心文件 核心文件入库
+			List<HostCheckLogInitModel> checkLogList = getHostCheckLogList(myLog, date.toString());
+			// 核心与外围对账
+			hostCheckChannelTraceLog(myLog, date.toString(), checkLogList);
+			myLog.info(logger, "核心与外围对账结束");
+			myLog.info(logger, "外围与核心对账开始");
+			// 获取未核心对账的缴费记录
+			List<CebaChargeLogModel> traceList = cebaChargeLogService.getCheckTrace(myLog, date.toString(), "1,4", "1");
+			// 外围与核心对账
+			channelCheckHostTraceLog(myLog, date.toString(), traceList);
+			myLog.info(logger, "外围与核心对账结束");
+			myLog.info(logger, "光大银行与外围对账开始");
+			// 取对账文件数据
+			List<CebaCheckLogInitModel> checkLogList1 = cebaCheckLogService.getCebaCheckLog(myLog, getReqDto().getSysTime(),
+					getReqDto().getSysTraceno(), date);
+			// 光大银行与外围对账
+			cebaCheckChannelTraceLog(myLog, date.toString(), checkLogList1);
+			myLog.info(logger, "光大银行与外围对账结束");
+			myLog.info(logger, "外围与光大银行对账开始");
+			// 获取光大银行未对账、核心已对账的缴费记录
+			List<CebaChargeLogModel> traceList1 = cebaChargeLogService.getCheckTrace(myLog, date.toString(), "2", "1");
+			// 外围与光大银行对账
+			channelCheckCebaTraceLog(myLog, date.toString(), traceList1);
+			myLog.info(logger, "外围与光大银行对账结束");
+			// 光大银行对账标志，1-未对账，2-已对账，3-光大银行多，4-渠道多
+			// 核心对账标志，1-未对账，2-已对账，3-核心多，4-渠道多
+			// 核心对账标志不为1或者光大银行对账标志不为1的缴费流水数
+			String totalCheckNum = cebaChargeLogService.getTotalCheckNum(date.toString());
+			// 核心对账标志为4的缴费流水数
+			String hostCheckNum = cebaChargeLogService.getHostCheckNum(date.toString(), "4");
+			// 光大银行对账标志为4的缴费流水数
+			String cebaCheckNum = cebaChargeLogService.getCebaCheckNum(date.toString(), "4");
+			//核心对账标志为2并且光大银行对账标志为2的缴费流水数
+			String checkSuccNum = cebaChargeLogService.getCheckSuccNum(date.toString());
+			//核心对账标志为2并且光大银行对账标志为2的缴费流水总金额
+			String succAmt = cebaChargeLogService.getCheckSuccAmt(date.toString());
+			BigDecimal checkSuccAmt = new BigDecimal(succAmt==null?"0":succAmt);
+			//对账错误流水日志笔数
+			int errorNum = checkErrorService.getListByDate(myLog,date.toString()).size();
+			//对账成功标志，以光大银行对账文件为准
+			Boolean checkFlag = false;
+			checkMsg += "【" + date + "】对账统计：共【" + totalCheckNum + "】笔，" + "其中已对账【" + checkSuccNum + "】笔，比核心多出【"
+					+ hostCheckNum + "】笔，" + "比光大银行多出【" + cebaCheckNum + "】笔，对账错误流水【"+errorNum+"】笔，";
+			if(checkLogList.size() == Integer.parseInt(checkSuccNum)&&checkLogList1.size() == Integer.parseInt(checkSuccNum)) {
+				checkFlag = true;
+				checkMsg += "对账成功";
+				model.setStatus("3");
+			}else {
+				checkMsg += "对账失败";
+				model.setStatus("4");
+			}
+			cebaBillCheckService.billCheckUpdate(model);
+			myLog.info(logger, checkMsg);
+			try {
+				//如果光大银行对账文件成功笔数和对账成功笔数相同并且清算日志没有该对账日期流水，登记清算流水表
+				if (checkSuccAmt.compareTo(new BigDecimal(0))>0&&checkFlag && null == cebaSettleLogService.querySettleLogByPk(myLog, date)) {
+					cebaSettleLogService.initSettleLog(myLog, date, checkSuccAmt);
+					myLog.info(logger, "登记清算流水表成功，渠道日期" + date);
+				}
+			} catch (SysTradeExecuteException e) {
+				myLog.error(logger, "登记清算流水表失败，渠道日期" + date, e);
+			}
+			
+		}
 		try {
 			sendMessage(mobNos, checkMsg);
 		}catch(SysTradeExecuteException e) {
 			myLog.error(logger, "缴费清算短信通知发送失败",e);
-		}
-		try {
-			//如果光大银行对账文件成功笔数和对账成功笔数相同并且清算日志没有该对账日期流水，登记清算流水表
-			if (checkSuccAmt.compareTo(new BigDecimal(0))>0&&checkFlag && null == cebaSettleLogService.querySettleLogByPk(myLog, date)) {
-				cebaSettleLogService.initSettleLog(myLog, date, checkSuccAmt);
-				myLog.info(logger, "登记清算流水表成功，渠道日期" + date);
-			}
-		} catch (SysTradeExecuteException e) {
-			myLog.error(logger, "登记清算流水表失败，渠道日期" + date, e);
 		}
 		myLog.info(logger, "对账处理完成");
 	}

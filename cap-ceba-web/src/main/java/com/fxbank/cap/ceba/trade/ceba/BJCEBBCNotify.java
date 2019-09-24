@@ -1,7 +1,6 @@
 package com.fxbank.cap.ceba.trade.ceba;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,7 +13,9 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.fxbank.cap.ceba.dto.ceba.REP_BJCEBBCNotify;
 import com.fxbank.cap.ceba.dto.ceba.REQ_BJCEBBCNotify;
+import com.fxbank.cap.ceba.model.CebaBillCheckModel;
 import com.fxbank.cap.ceba.model.CebaCheckLogInitModel;
+import com.fxbank.cap.ceba.service.ICebaBillCheckService;
 import com.fxbank.cap.ceba.service.ICebaChargeLogService;
 import com.fxbank.cap.ceba.service.ICebaCheckLogService;
 import com.fxbank.cap.ceba.service.ICebaSettleLogService;
@@ -56,6 +57,9 @@ public class BJCEBBCNotify implements TradeExecutionStrategy {
 	private ICebaCheckLogService cebaCheckLogService;
 	
 	@Reference(version = "1.0.0")
+	private ICebaBillCheckService cebaBillCheckService;
+	
+	@Reference(version = "1.0.0")
 	private ICheckErrorService checkErrorService;
 	
 	@Reference(version = "1.0.0")
@@ -79,14 +83,24 @@ public class BJCEBBCNotify implements TradeExecutionStrategy {
 		String fileName = req.getTin().getFileName();
 		//获取光大银行对账文件
 		String localFile = getCheckFile(myLog,date,fileName);
+		CebaBillCheckModel model = new CebaBillCheckModel(myLog,0,0,0);
+		model.setSignDate(Integer.parseInt(date));
+		model.setFileName(fileName);
+		model.setUploadDate(Long.parseLong(req.getTin().getDate()));
+		model.setStatus("0");
+		model.setRemark(req.getTin().getFiled1());
+		cebaBillCheckService.billCheckInit(model);
 		//登记光大银行对账信息日志
-		initCebaCheckLog(localFile,myLog,date);
+		initCebaCheckLog(localFile,myLog,date,req.getTin().getDate());
 		REP_BJCEBBCNotify rep = new REP_BJCEBBCNotify();
 		return rep;
 	}
-	private void initCebaCheckLog(String localFile, MyLog myLog,String platDate) throws SysTradeExecuteException {
+	private void initCebaCheckLog(String localFile, MyLog myLog,String platDate,String uploadDate) throws SysTradeExecuteException {
 		BufferedReader br = null;
 		myLog.info(logger, "光大银行对账文件入库开始");
+		CebaBillCheckModel checkModel = new CebaBillCheckModel(myLog,0,0,0);
+		checkModel.setSignDate(Integer.parseInt(platDate));
+		checkModel.setUploadDate(Long.parseLong(uploadDate));
 		try {
 			cebaCheckLogService.delete(platDate);
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(localFile)),"GBK"));
@@ -116,14 +130,12 @@ public class BJCEBBCNotify implements TradeExecutionStrategy {
             		totalSuccNum1++;
                 }
 			}
-			//对账文件成功金额、笔数和明细累加的金额、笔数不同，删除对账明细数据
-			if(totalSuccNum!=totalSuccNum1||totalSuccAmt.compareTo(totalSuccAmt1)!=0) {
-				cebaCheckLogService.delete(platDate);
-				myLog.error(logger, "光大银行对账文件成功明细累加总金额、总笔数和成功金额、成功笔数不同，对账日期"+platDate);
-			}
-
+			checkModel.setStatus("1");
+			cebaBillCheckService.billCheckUpdate(checkModel);
 		} catch (Exception e) {
             myLog.error(logger, "文件【"+localFile+"】插入失败", e);
+			checkModel.setStatus("2");
+			cebaBillCheckService.billCheckUpdate(checkModel);
             throw new RuntimeException("文件【"+localFile+"】插入失败");
 		} finally {
 			if(null != br) {

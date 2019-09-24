@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fxbank.cap.ceba.mapper.CebaBillCheckMapper">
+  <resultMap id="BaseResultMap" type="com.fxbank.cap.ceba.entity.CebaBillCheck">
+    <id column="SIGN_DATE" jdbcType="DECIMAL" property="signDate" />
+    <id column="UPLOAD_DATE" jdbcType="DECIMAL" property="uploadDate" />
+    <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select SIGN_DATE, FILE_NAME, UPLOAD_DATE, STATUS, REMARK
+    from CEBA_BILL_CHECK
+  </select>
+</mapper>

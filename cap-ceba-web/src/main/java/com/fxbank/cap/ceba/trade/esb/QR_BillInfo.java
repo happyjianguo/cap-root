@@ -69,7 +69,7 @@ public class QR_BillInfo extends TradeBase implements TradeExecutionStrategy {
 		REP_30063001401 rep = new REP_30063001401();
 		//查询是否停运
 		String companyId = reqBody.getPyCityCode() + reqBody.getPyCreditNo();
-		CebaOutageLogModel cebaOutageLogModel = cebaOutageLogService.isOutageByCompanyId(myLog, companyId, Long.parseLong(reqDto.getSysDate().toString()+reqDto.getSysTime().toString()));
+		CebaOutageLogModel cebaOutageLogModel = cebaOutageLogService.isOutageByCompanyId(myLog, companyId, Long.parseLong(reqDto.getSysDate().toString()+String.format("%06d",reqDto.getSysTime())));
 		if(null!=cebaOutageLogModel) {
 			myLog.error(logger, "缴费项目编号"+companyId+"已停运");
 			CebaTradeExecuteException e = new CebaTradeExecuteException(CebaTradeExecuteException.CEBA_E_10014,
